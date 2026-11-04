@@ -1,6 +1,11 @@
+'use client';
+
 import styles from './courses.module.css';
+import { useFetchCourses } from '@/hooks/useFetchCourses';
 
 export default function Main() {
+  useFetchCourses();
+
   return (
     <div className={styles.main__container}>
       <div className={styles.header__block}>
