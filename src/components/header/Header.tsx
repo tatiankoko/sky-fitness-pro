@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useAppSelector } from '@/store/store';
 import { useState } from 'react';
 import styles from './header.module.css';
+import Button from '@/components/button/Button';
 
 export default function Header() {
   const { isAuth, user } = useAppSelector((state) => state.user);
@@ -36,7 +37,7 @@ export default function Header() {
             {showUser ? <div /> : null}
           </div>
         ) : (
-          <button className={styles.auth__button}>Войти</button>
+          <Button text={'Войти'} />
         )}
       </div>
     </div>

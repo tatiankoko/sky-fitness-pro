@@ -1,0 +1,47 @@
+.button__primary {
+    border-radius: 46px;
+    padding: 16px 26px;
+    background-color: #BCEC30;
+    border: none;
+
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    text-align: center;
+    color: #000000;
+}
+
+.button__primary:hover {
+    background-color: #C6FF00;
+}
+
+.button__primary:active {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.button__primary:disabled {
+    background-color: #F7F7F7;
+    color: #999999;
+}
+
+.button__secondary {
+    border: 1px solid #000000;
+    background-color: transparent;
+}
+
+.button__secondary:hover {
+    background-color: #F7F7F7;
+}
+
+.button__secondary:active {
+    background-color: #E9ECED;
+    color: #000000;
+}
+
+.button__secondary:disabled {
+    border: 1px solid #999999;
+    background-color: transparent;
+    color: #999999;
+}

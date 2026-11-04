@@ -63,30 +63,3 @@
     border-bottom-color: #000000;
 }
 
-.auth__button {
-    border-radius: 46px;
-    padding: 16px 26px;
-    background-color: #BCEC30;
-    border: none;
-
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 110.00000000000001%;
-    letter-spacing: 0;
-    text-align: center;
-    color: #000000;
-}
-
-.auth__button:hover {
-    background-color: #C6FF00;
-}
-
-.auth__button:active {
-    background-color: #000000;
-    color: #FFFFFF;
-}
-
-.auth__button:disabled {
-    background-color: #F7F7F7;
-    color: #999999;
-}
