@@ -1,4 +1,16 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+
+module.exports = {
+  redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/courses/main',
+        permanent: true,
+      },
+    ];
+  },
+};
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -6,9 +18,9 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   turbopack: {
     rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
+      '*.css': {
+        loaders: ['@tailwindcss/turbopack'],
+        as: '*.css',
       },
     },
   },

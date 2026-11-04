@@ -12,8 +12,8 @@ import { authSliceReducer } from '@/store/features/authSlice';
 export const makeStore = () => {
   return configureStore({
     reducer: combineReducers({
-      /*courses: courseSliceReducer,
-      workouts: workoutSliceReducer,*/
+      courses: courseSliceReducer,
+      workouts: workoutSliceReducer,
       user: authSliceReducer,
     }),
   });

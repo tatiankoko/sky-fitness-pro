@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 type workoutStateType = {
   _id: string;
@@ -16,7 +16,7 @@ const workoutInitialState: workoutStateType = {
 
 const workoutSlice = createSlice({
   name: 'workout',
-  workoutInitialState,
+  initialState: workoutInitialState,
   reducers: {},
 });
 

@@ -1,0 +1,92 @@
+.header__container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    width: 100%;
+}
+
+.auth__block{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.user__block{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.user__icon{
+    width: 42px;
+    height: 42px;
+}
+
+.user__name {
+    height: 26px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    text-align: right;
+    color: #000000;
+    cursor: pointer;
+}
+
+.user__name::after {
+    content: "";
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    border-left: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    transform: rotate(-45deg);
+    margin: 6px 0 8px 12px;
+    padding: 0;
+}
+
+.user__name:hover {
+    color: #000000;
+}
+
+.user__name:hover::after {
+    border-left-color: #000000;
+    border-bottom-color: #000000;
+}
+
+.auth__button {
+    border-radius: 46px;
+    padding: 16px 26px;
+    background-color: #BCEC30;
+    border: none;
+
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    text-align: center;
+    color: #000000;
+}
+
+.auth__button:hover {
+    background-color: #C6FF00;
+}
+
+.auth__button:active {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.auth__button:disabled {
+    background-color: #F7F7F7;
+    color: #999999;
+}

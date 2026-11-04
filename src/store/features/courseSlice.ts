@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 interface courseState {
   _id: string;
@@ -31,7 +31,7 @@ const courseInitialState: courseState = {
 
 const courseSlice = createSlice({
   name: 'course',
-  courseInitialState,
+  initialState: courseInitialState,
   reducers: {},
 });
 

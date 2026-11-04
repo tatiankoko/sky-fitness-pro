@@ -1,0 +1,44 @@
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import { useAppSelector } from '@/store/store';
+import { useState } from 'react';
+import styles from './header.module.css';
+
+export default function Header() {
+  const { isAuth, user } = useAppSelector((state) => state.user);
+  const [showUser, setShowUser] = useState(false);
+
+  return (
+    <div className={styles.header__container}>
+      <Link href="/">
+        <Image
+          src="/img/logo.png"
+          alt="logo"
+          width={223}
+          height={36}
+          loading="eager"
+        />
+      </Link>
+      <div className={styles.auth__block}>
+        {isAuth ? (
+          <div className={styles.user__block}>
+            <svg className={styles.user__icon}>
+              <use xlinkHref="/img/icon/sprite.svg#icon-profile"></use>
+            </svg>
+            <a
+              className={styles.user__name}
+              onClick={() => setShowUser(!showUser)}
+            >
+              {user?.username || 'username'}
+            </a>
+            {showUser ? <div /> : null}
+          </div>
+        ) : (
+          <button className={styles.auth__button}>Войти</button>
+        )}
+      </div>
+    </div>
+  );
+}
