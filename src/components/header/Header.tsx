@@ -6,8 +6,11 @@ import { useAppSelector } from '@/store/store';
 import { useState } from 'react';
 import styles from './header.module.css';
 import Button from '@/components/button/Button';
+import { useInitAuth } from '@/hooks/useInitAuth';
 
 export default function Header() {
+  useInitAuth();
+
   const { isAuth, user } = useAppSelector((state) => state.user);
   const [showUser, setShowUser] = useState(false);
 
