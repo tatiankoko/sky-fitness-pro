@@ -17,6 +17,8 @@ export default function Main() {
     });
   };
 
+  const onCourseCardClick = (): void => {};
+
   return (
     <div ref={mainRef} className={styles.main__container}>
       <div className={styles.header__block}>
@@ -39,7 +41,11 @@ export default function Main() {
 
       <div className={styles.courses__block}>
         {allCourses.map((item) => (
-          <CourseCard key={item._id} course={item} />
+          <CourseCard
+            key={item._id}
+            course={item}
+            onClick={onCourseCardClick}
+          />
         ))}
       </div>
 

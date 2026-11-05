@@ -10,6 +10,8 @@
     letter-spacing: 0;
     text-align: center;
     color: #000000;
+
+    cursor: pointer;
 }
 
 .button__primary:hover {

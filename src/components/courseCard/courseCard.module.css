@@ -6,6 +6,7 @@
     border-radius: 30px;
     width: 360px;
     box-shadow: 0 4px 67px -12px #00000021;
+    cursor: pointer;
 }
 
 .image__block {

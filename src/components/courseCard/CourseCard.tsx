@@ -2,14 +2,16 @@ import styles from './courseCard.module.css';
 import Image from 'next/image';
 import { CourseInfo, CourseType } from '@/sharedTypes/sharedTypes';
 import InfoItem from '@/components/infoItem/InfoItem';
+import React from 'react';
 
 type CourseCardProps = {
   course: CourseType;
+  onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
-export default function CourseCard({ course }: CourseCardProps) {
+export default function CourseCard({ course, onClick }: CourseCardProps) {
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} onClick={onClick}>
       <div className={styles.image__block}>
         <Image
           width={360}
