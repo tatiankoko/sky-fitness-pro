@@ -1,8 +1,8 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    /*height: calc(100vh - 52px);*/
-    /*overflow-y: auto;*/
+    flex: 1;
+    min-height: 0;
     margin: 0 16px;
 }
 
@@ -17,7 +17,14 @@
 .main__container {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 50px;
     padding: 60px 0;
+    overflow-y: auto;
+}
+.main__container::-webkit-scrollbar {
+    width: 0;
 }
 
 .header__block {
@@ -61,10 +68,16 @@
 
 .courses__block {
     display: flex;
+    flex-wrap: wrap;
+    gap: 39px;
+}
 
-    overflow-y: auto;
-
-    &::-webkit-scrollbar {
-        width: 0;
-    }
+.courses__up {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 3;
+    bottom: 0;
+    right: calc(100% / 2 - 52px);
 }

@@ -1,0 +1,57 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    width: 360px;
+    box-shadow: 0 4px 67px -12px #00000021;
+}
+
+.image__block {
+    border-radius: 30px;
+    position: relative;
+}
+
+.image__image {
+
+
+}
+
+.image__button {
+    position: absolute;
+    top: 23px;
+    right: 23px;
+    width: 27px;
+    height: 27px;
+    z-index: 2;
+}
+
+.course__block {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px 30px 15px 30px;
+}
+
+.course__title {
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.course__info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+}
+
+.progress__block {
+    display: none;
+}
+.progress__title {}
+.progress__indicator {}

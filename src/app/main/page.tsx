@@ -1,13 +1,24 @@
 'use client';
 
 import styles from './courses.module.css';
-import { useFetchCourses } from '@/hooks/useFetchCourses';
+import { useAppSelector } from '@/store/store';
+import CourseCard from '@/components/courseCard/CourseCard';
+import Button from '@/components/button/Button';
+import { useRef } from 'react';
 
 export default function Main() {
-  useFetchCourses();
+  const { allCourses } = useAppSelector((state) => state.courses);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  const onButtonUpClick = (): void => {
+    mainRef.current?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   return (
-    <div className={styles.main__container}>
+    <div ref={mainRef} className={styles.main__container}>
       <div className={styles.header__block}>
         <h1 className={styles.header__title}>
           Начните заниматься спортом
@@ -26,7 +37,15 @@ export default function Main() {
         </div>
       </div>
 
-      <div className={styles.courses__block}></div>
+      <div className={styles.courses__block}>
+        {allCourses.map((item) => (
+          <CourseCard key={item._id} course={item} />
+        ))}
+      </div>
+
+      <div className={styles.courses__up}>
+        <Button text={'Наверх ↑'} onClick={onButtonUpClick} />
+      </div>
     </div>
   );
 }

@@ -19,3 +19,9 @@ export type userType = {
   email: string;
   username: string;
 };
+
+export enum CourseInfo {
+  durationInDays,
+  dailyDurationInMinutes,
+  difficulty,
+}

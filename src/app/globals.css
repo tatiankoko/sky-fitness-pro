@@ -71,7 +71,7 @@ ul li {
   flex-direction: column;
   height: calc(100vh - 152px);
   width: 100%;
-  overflow: hidden;
+  /*overflow: hidden;*/
   /*overflow-y: auto;*/
   /*padding: 0 16px;*/
 
