@@ -51,25 +51,72 @@ export default function Course() {
       });
   }, []);
 
-  interface ColorImagePair {
+  const findImageStyle = (
+    courseType: CourseType | null,
+  ): ImageStyleType | undefined => {
+    return imageColors.find((pair) => pair.key === courseType?.order);
+  };
+
+  interface ImageStyleType {
     key: number;
     color: string;
+    bottom: string;
+    right: string;
+    width: number;
+    height: number;
   }
 
-  const imageColors: ColorImagePair[] = [
-    { key: 1, color: '#FFC700' },
-    { key: 2, color: '#2491D2' },
-    { key: 3, color: '#F7A012' },
-    { key: 4, color: '#FF7E65' },
-    { key: 5, color: '#7D458C' },
+  const imageColors: ImageStyleType[] = [
+    {
+      key: 1,
+      color: '#FFC700',
+      bottom: '-4px',
+      right: '90px',
+      width: 360,
+      height: 400,
+    },
+    {
+      key: 2,
+      color: '#2491D2',
+      bottom: '-20px',
+      right: '0',
+      width: 360,
+      height: 325,
+    },
+    {
+      key: 3,
+      color: '#F7A012',
+      bottom: '-20px',
+      right: '70px',
+      width: 360,
+      height: 325,
+    },
+    {
+      key: 4,
+      color: '#FF7E65',
+      bottom: '50px',
+      right: '70px',
+      width: 460,
+      height: 400,
+    },
+    {
+      key: 5,
+      color: '#7D458C',
+      bottom: '-40px',
+      right: '-110px',
+      width: 779,
+      height: 400,
+    },
   ];
 
-  const scale: number = course?.order == 1 ? 1.05 : 0.97;
-  const imageStyle: React.CSSProperties | undefined = {
-    scale: scale,
+  const imageStyle: React.CSSProperties = {
+    width: course?.order === 4 ? '150%' : course?.order === 1 ? '95%' : '100%',
     objectFit: 'cover',
-    objectPosition: 'center',
-    height: '310px',
+    objectPosition: 'bottom',
+    position: 'absolute',
+    bottom: findImageStyle(course)?.bottom,
+    right: findImageStyle(course)?.right,
+    zIndex: 10,
   };
 
   const onAddCourse = () => {};
@@ -94,19 +141,24 @@ export default function Course() {
       <div
         className={styles.header__container}
         style={{
-          backgroundColor: imageColors.find((pair) => pair.key === course.order)
-            ?.color,
+          backgroundColor: findImageStyle(course)?.color,
         }}
       >
         <div className={styles.title__block}>
           <h1 className={styles.title__text}>{course.nameRU}</h1>
         </div>
 
-        <div className={styles.image__block}>
+        <div
+          className={styles.image__block}
+          style={{
+            width: `${findImageStyle(course)?.width}px`,
+            overflow: `${course?.order === 5 || course?.order === 4 ? 'hidden' : 'visible'}`,
+          }}
+        >
           <Image
-            width={360}
-            height={325}
-            src={`/img/course_${course?.order}.png`}
+            width={findImageStyle(course)?.width}
+            height={findImageStyle(course)?.height}
+            src={`/img/course_${course?.order}${course?.order === 4 || course?.order === 5 ? '_full.jpg' : '.png'}`}
             alt={`изображение курса ${course?.nameRU}`}
             loading="eager"
             style={imageStyle}

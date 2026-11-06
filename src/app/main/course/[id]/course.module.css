@@ -5,7 +5,6 @@
     min-height: 0;
     gap: 60px;
     margin: 60px 0;
-    /*margin: 0 auto;*/
     overflow-y: auto;
 }
 .course__container::-webkit-scrollbar {
@@ -14,20 +13,22 @@
 
 .header__container {
     display: flex;
+    flex: 0 0 310px;
     flex-direction: row;
+    /*column-gap: 100px;*/
     border-radius: 30px;
     width: 100%;
     max-width: 1160px;
-    height: 310px;
     max-height: 310px;
     justify-content: space-between;
-    padding: 0 80px 0 40px;
+    padding: 0 0 0 40px;
     margin: 0 auto;
-    /*overflow-y: hidden;*/
+    overflow: hidden;
 }
 
 .title__block {
     margin: 40px 0;
+    z-index: 20;
 }
 
 .title__text {
@@ -38,34 +39,32 @@
 }
 
 .image__block {
-    /*height: 310px;*/
-    border-radius: 30px;
     position: relative;
-    align-self: self-end;
-    margin-top: auto;
+    height: 310px;
+    border-radius: 30px;
+    align-self: flex-end;
+    overflow: hidden;
 }
 
 .fitting__container {
     margin: 0 auto;
+    width: 100%;
     max-width: 1160px;
 }
 
 .fitting__block {
-    width: 100%;
     display: flex;
-    /*flex: 1 1 auto;*/
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: stretch;
     gap: 17px;
     margin-top: 40px;
 }
 
 .fitting__item {
+    flex: content;
     align-items: center;
     justify-content: flex-start;
-    flex: 1 1 auto;
-    height: 141px;
+    min-width: 270px;
+    min-height: 141px;
     background: linear-gradient(115.81deg, #151720 34.98%, #1E212E 91.5%);
     padding: 20px;
     border-radius: 28px;
@@ -74,6 +73,7 @@
 }
 
 .fitting__number {
+    flex-shrink: 0;
     color: #BCEC30;
     font-weight: 500;
     font-size: 75px;
@@ -82,18 +82,13 @@
 }
 
 .fitting__text {
-    height: 100%;
-    /*display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4; !* Количество строк *!
-    line-clamp: 4;*/
-    max-height: 101px;
+    min-width: 0;
+    margin: 0;
     color: #FFFFFF;
     font-weight: 400;
     font-size: 24px;
     line-height: 110%;
     letter-spacing: 0;
-    width: auto;
     text-align: left;
 }
 
@@ -249,6 +244,12 @@
     .addCourse__list {
         font-size: 18px;
         line-height: 1.555556;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .fitting__block {
+        grid-template-columns: 1fr;
     }
 }
 
