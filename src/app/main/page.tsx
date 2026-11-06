@@ -1,10 +1,11 @@
 'use client';
 
-import styles from './courses.module.css';
+import styles from './main.module.css';
 import { useAppSelector } from '@/store/store';
 import CourseCard from '@/components/courseCard/CourseCard';
 import Button from '@/components/button/Button';
 import { useRef } from 'react';
+import Link from 'next/link';
 
 export default function Main() {
   const { allCourses } = useAppSelector((state) => state.courses);
@@ -41,11 +42,9 @@ export default function Main() {
 
       <div className={styles.courses__block}>
         {allCourses.map((item) => (
-          <CourseCard
-            key={item._id}
-            course={item}
-            onClick={onCourseCardClick}
-          />
+          <Link href={`/main/course/${item._id}`} key={item._id}>
+            <CourseCard course={item} onClick={onCourseCardClick} />
+          </Link>
         ))}
       </div>
 

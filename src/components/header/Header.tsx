@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAppSelector } from '@/store/store';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styles from './header.module.css';
 import Button from '@/components/button/Button';
 import { useInitAuth } from '@/hooks/useInitAuth';
@@ -13,6 +13,8 @@ export default function Header() {
 
   const { isAuth, user } = useAppSelector((state) => state.user);
   const [showUser, setShowUser] = useState(false);
+
+  const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
 
   return (
     <div className={styles.header__container}>
@@ -40,7 +42,7 @@ export default function Header() {
             {showUser ? <div /> : null}
           </div>
         ) : (
-          <Button text={'Войти'} />
+          <Button text={'Войти'} onClick={onClick} />
         )}
       </div>
     </div>

@@ -17,7 +17,7 @@ export default function CourseCard({ course, onClick }: CourseCardProps) {
           width={360}
           height={325}
           src={`/img/course_${course?.order}.png`}
-          alt={''}
+          alt={`изображение курса ${course?.nameRU}`}
           loading="eager"
         ></Image>
         <svg className={styles.image__button}>

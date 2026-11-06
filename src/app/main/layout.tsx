@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import styles from './courses.module.css';
+import styles from './main.module.css';
 import { useFetchCourses } from '@/hooks/useFetchCourses';
 
 interface CoursesLayoutProps {

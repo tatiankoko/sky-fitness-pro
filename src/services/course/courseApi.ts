@@ -8,6 +8,12 @@ export const getAllCourses = async (): Promise<CourseType[]> => {
   });
 };
 
+export const getCourseById = async (id: string): Promise<CourseType> => {
+  return await axios.get(BASE_URL + `/courses/${id}`).then((response) => {
+    return response.data;
+  });
+};
+
 /*
 {
         "dailyDurationInMinutes": {
