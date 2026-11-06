@@ -1,7 +1,7 @@
 'use client';
 
 import styles from './course.module.css';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useParams } from 'next/navigation';
 import { getCourseById } from '@/services/course/courseApi';
@@ -41,13 +41,49 @@ export default function Course() {
 
   return (
     <div className={styles.course__container}>
-      {/* Направления */}
-      <div className={styles.directions__block}>
-        <h2 className={styles.directions__title}>Направления</h2>
+      <div
+        className={styles.header__container}
+        style={{
+          backgroundColor: imageColors.find(
+            (pair) => pair.key === currentCourse.order,
+          )?.value,
+        }}
+      >
+        <div className={styles.title__block}>
+          <h1 className={styles.title__text}>{currentCourse.nameRU}</h1>
+        </div>
 
-        <div className={styles.directions__list}>
-          {currentCourse.directions.map((item) => (
-            <span className={styles.directions__item}>✦ {item}</span>
+        <Image
+          width={360}
+          height={325}
+          src={`/img/course_${currentCourse?.order}.png`}
+          alt={`изображение курса ${currentCourse?.nameRU}`}
+          loading="eager"
+        ></Image>
+      </div>
+
+      <div className={styles.fitting__container}>
+        <h2 className={styles.block__title}>Подойдет для вас, если:</h2>
+
+        <div className={styles.fitting__block}>
+          {currentCourse.fitting.map((item, index) => (
+            <div className={styles.fitting__item} key={index}>
+              <span className={styles.fitting__number}>{index + 1}</span>
+              <p className={styles.fitting__text}>{item}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Направления */}
+      <div className={styles.directions__container}>
+        <h2 className={styles.block__title}>Направления</h2>
+
+        <div className={styles.directions__block}>
+          {currentCourse.directions.map((item, index) => (
+            <span className={styles.directions__item} key={index}>
+              ✦ {item}
+            </span>
           ))}
         </div>
       </div>

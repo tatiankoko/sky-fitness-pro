@@ -55,3 +55,8 @@ a {
   height: calc(100vh - 152px);
   width: 100%;
 }
+
+.center {
+  padding-left: calc(50% - 596px);
+  padding-right: calc(50% - 596px);
+}

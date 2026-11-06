@@ -2,7 +2,7 @@ export type CourseType = {
   _id: string;
   nameRU: string;
   nameEN: string;
-  order: number | null;
+  order: number; // | null
   description: string;
   directions: string[];
   fitting: string[];
