@@ -6,9 +6,13 @@ import CourseCard from '@/components/courseCard/CourseCard';
 import Button from '@/components/button/Button';
 import { useRef } from 'react';
 import Link from 'next/link';
+import classNames from 'classnames';
+import CourseCardSkeleton from '@/components/courseCardSkeleton/CourseCardSkeleton';
 
 export default function Main() {
-  const { allCourses } = useAppSelector((state) => state.courses);
+  const { allCourses, fetchIsLoading } = useAppSelector(
+    (state) => state.courses,
+  );
   const mainRef = useRef<HTMLDivElement>(null);
 
   const onButtonUpClick = (): void => {
@@ -21,7 +25,10 @@ export default function Main() {
   const onCourseCardClick = (): void => {};
 
   return (
-    <div ref={mainRef} className={styles.main__container}>
+    <div
+      ref={mainRef}
+      className={classNames(styles.main__container, styles.center)}
+    >
       <div className={styles.header__block}>
         <h1 className={styles.header__title}>
           Начните заниматься спортом
@@ -41,11 +48,21 @@ export default function Main() {
       </div>
 
       <div className={styles.courses__block}>
-        {allCourses.map((item) => (
-          <Link href={`/main/course/${item._id}`} key={item._id}>
-            <CourseCard course={item} onClick={onCourseCardClick} />
-          </Link>
-        ))}
+        {fetchIsLoading ? (
+          <>
+            <CourseCardSkeleton />
+            <CourseCardSkeleton />
+            <CourseCardSkeleton />
+            <CourseCardSkeleton />
+            <CourseCardSkeleton />
+          </>
+        ) : (
+          allCourses.map((item) => (
+            <Link href={`/main/course/${item._id}`} key={item._id}>
+              <CourseCard course={item} onClick={onCourseCardClick} />
+            </Link>
+          ))
+        )}
       </div>
 
       <div className={styles.courses__up}>

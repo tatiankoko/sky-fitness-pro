@@ -42,11 +42,13 @@ a {
 }
 
 .container {
-  max-width: 1192px;
+  max-width: 1160px;
+  min-width: 100%;
   height: 100%;
-  margin: 50px auto;
+  margin: 50px 16px;/*auto*/
   position: relative;
   background-color: #FAFAFA;
+  align-content: center;
 }
 
 .main {
@@ -56,7 +58,3 @@ a {
   width: 100%;
 }
 
-.center {
-  padding-left: calc(50% - 596px);
-  padding-right: calc(50% - 596px);
-}

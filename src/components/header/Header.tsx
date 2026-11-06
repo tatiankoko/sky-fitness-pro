@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import styles from './header.module.css';
 import Button from '@/components/button/Button';
 import { useInitAuth } from '@/hooks/useInitAuth';
+import classNames from 'classnames';
 
 export default function Header() {
   useInitAuth();
@@ -17,7 +18,7 @@ export default function Header() {
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
 
   return (
-    <div className={styles.header__container}>
+    <div className={classNames(styles.header__container, styles.center)}>
       <Link href="/">
         <Image
           src="/img/logo.png"

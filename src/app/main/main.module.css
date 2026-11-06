@@ -1,3 +1,8 @@
+.center {
+    padding-left: calc(50% - 580px);
+    padding-right: calc(50% - 580px);
+}
+
 .wrapper {
     display: flex;
     flex-direction: column;
