@@ -8,8 +8,11 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import CourseCardSkeleton from '@/components/courseCardSkeleton/CourseCardSkeleton';
+import { useFetchCourses } from '@/hooks/useFetchCourses';
 
 export default function Main() {
+  useFetchCourses();
+
   const { allCourses, fetchIsLoading } = useAppSelector(
     (state) => state.courses,
   );

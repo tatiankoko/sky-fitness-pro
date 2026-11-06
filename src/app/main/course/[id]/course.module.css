@@ -18,9 +18,12 @@
     border-radius: 30px;
     width: 100%;
     max-width: 1160px;
+    height: 310px;
+    max-height: 310px;
     justify-content: space-between;
     padding: 0 80px 0 40px;
     margin: 0 auto;
+    /*overflow-y: hidden;*/
 }
 
 .title__block {
@@ -35,8 +38,11 @@
 }
 
 .image__block {
+    /*height: 310px;*/
     border-radius: 30px;
     position: relative;
+    align-self: self-end;
+    margin-top: auto;
 }
 
 .fitting__container {
@@ -56,6 +62,8 @@
 }
 
 .fitting__item {
+    align-items: center;
+    justify-content: flex-start;
     flex: 1 1 auto;
     height: 141px;
     background: linear-gradient(115.81deg, #151720 34.98%, #1E212E 91.5%);
@@ -75,17 +83,24 @@
 
 .fitting__text {
     height: 100%;
+    /*display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4; !* Количество строк *!
+    line-clamp: 4;*/
     max-height: 101px;
     color: #FFFFFF;
     font-weight: 400;
     font-size: 24px;
     line-height: 110%;
     letter-spacing: 0;
+    width: auto;
+    text-align: left;
 }
 
 .directions__container {
     margin: 0 auto;
     max-width: 1160px;
+    width: 100%;
 }
 
 .block__title {

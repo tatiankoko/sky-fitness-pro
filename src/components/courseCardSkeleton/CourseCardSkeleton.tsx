@@ -1,14 +1,13 @@
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import styles from '@/components/courseCard/courseCard.module.css';
+import { baseSkeletonColor } from '@/utils/constants';
 
 export default function CourseCardSkeleton() {
-  const colorBase = '#C8C8C8';
-
   return (
     <div className={styles.wrapper}>
       <Skeleton
-        baseColor={colorBase}
+        baseColor={baseSkeletonColor}
         width={360}
         height={325}
         borderRadius={30}
@@ -16,7 +15,7 @@ export default function CourseCardSkeleton() {
 
       <div className={styles.course__block}>
         <Skeleton
-          baseColor={colorBase}
+          baseColor={baseSkeletonColor}
           width={300}
           height={35}
           borderRadius={0}
@@ -24,19 +23,19 @@ export default function CourseCardSkeleton() {
 
         <div className={styles.course__info}>
           <Skeleton
-            baseColor={colorBase}
+            baseColor={baseSkeletonColor}
             width={103}
             height={38}
             borderRadius={50}
           />
           <Skeleton
-            baseColor={colorBase}
+            baseColor={baseSkeletonColor}
             width={163}
             height={38}
             borderRadius={50}
           />
           <Skeleton
-            baseColor={colorBase}
+            baseColor={baseSkeletonColor}
             width={129}
             height={38}
             borderRadius={50}

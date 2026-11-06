@@ -8,65 +8,117 @@ import { getCourseById } from '@/services/course/courseApi';
 import Button from '@/components/button/Button';
 import Image from 'next/image';
 import classNames from 'classnames';
+import { setFetchError, setFetchIsLoading } from '@/store/features/courseSlice';
+import { AxiosError } from 'axios';
+import { CourseType } from '@/sharedTypes/sharedTypes';
+import { baseSkeletonColor } from '@/utils/constants';
+import Skeleton from 'react-loading-skeleton';
 
 export default function Course() {
   const dispatch = useAppDispatch();
   const params = useParams<{ id: string }>();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const { allCourses, fetchIsLoading, fetchError } = useAppSelector(
     (state) => state.courses,
   );
+  const [course, setCourse] = useState<CourseType | null>(null);
+
+  useEffect(() => {
+    if (allCourses.length > 0) {
+      setCourse(allCourses.find((course) => course._id === params.id) || null);
+      return;
+    }
+
+    dispatch(setFetchIsLoading(true));
+
+    getCourseById(params.id)
+      .then((course) => {
+        setCourse(course);
+        // dispatch(setCurrentCourse(course)); // todo
+      })
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          if (error.response) {
+            dispatch(setFetchError(error.response.data));
+          } else if (error.request) {
+            dispatch(setFetchError('Произошла ошибка. Попробуйте позже'));
+          } else {
+            dispatch(setFetchError('Неизвестная ошибка'));
+          }
+        }
+      })
+      .finally(() => {
+        dispatch(setFetchIsLoading(false));
+      });
+  }, []);
 
   interface ColorImagePair {
     key: number;
-    value: string;
+    color: string;
   }
 
   const imageColors: ColorImagePair[] = [
-    { key: 1, value: '#FFC700' },
-    { key: 2, value: '#2491D2' },
-    { key: 3, value: '#F7A012' },
-    { key: 4, value: '#FF7E65' },
-    { key: 5, value: '#7D458C' },
+    { key: 1, color: '#FFC700' },
+    { key: 2, color: '#2491D2' },
+    { key: 3, color: '#F7A012' },
+    { key: 4, color: '#FF7E65' },
+    { key: 5, color: '#7D458C' },
   ];
 
-  const currentCourse = allCourses.find((course) => course._id === params.id);
+  const scale: number = course?.order == 1 ? 1.05 : 0.97;
+  const imageStyle: React.CSSProperties | undefined = {
+    scale: scale,
+    objectFit: 'cover',
+    objectPosition: 'center',
+    height: '310px',
+  };
 
   const onAddCourse = () => {};
 
-  if (!currentCourse) {
+  if (!course) {
     return <></>;
   }
 
   return (
     <div className={styles.course__container}>
+      {fetchIsLoading ? (
+        <div className={styles.fitting__container}>
+          <Skeleton
+            baseColor={baseSkeletonColor}
+            width={1160}
+            height={310}
+            borderRadius={30}
+          />
+        </div>
+      ) : null}
+
       <div
         className={styles.header__container}
         style={{
-          backgroundColor: imageColors.find(
-            (pair) => pair.key === currentCourse.order,
-          )?.value,
+          backgroundColor: imageColors.find((pair) => pair.key === course.order)
+            ?.color,
         }}
       >
         <div className={styles.title__block}>
-          <h1 className={styles.title__text}>{currentCourse.nameRU}</h1>
+          <h1 className={styles.title__text}>{course.nameRU}</h1>
         </div>
 
-        <Image
-          width={360}
-          height={325}
-          src={`/img/course_${currentCourse?.order}.png`}
-          alt={`изображение курса ${currentCourse?.nameRU}`}
-          loading="eager"
-        ></Image>
+        <div className={styles.image__block}>
+          <Image
+            width={360}
+            height={325}
+            src={`/img/course_${course?.order}.png`}
+            alt={`изображение курса ${course?.nameRU}`}
+            loading="eager"
+            style={imageStyle}
+          ></Image>
+        </div>
       </div>
 
       <div className={styles.fitting__container}>
         <h2 className={styles.block__title}>Подойдет для вас, если:</h2>
 
         <div className={styles.fitting__block}>
-          {currentCourse.fitting.map((item, index) => (
+          {course.fitting.map((item, index) => (
             <div className={styles.fitting__item} key={index}>
               <span className={styles.fitting__number}>{index + 1}</span>
               <p className={styles.fitting__text}>{item}</p>
@@ -80,7 +132,7 @@ export default function Course() {
         <h2 className={styles.block__title}>Направления</h2>
 
         <div className={styles.directions__block}>
-          {currentCourse.directions.map((item, index) => (
+          {course.directions.map((item, index) => (
             <span className={styles.directions__item} key={index}>
               ✦ {item}
             </span>
