@@ -4,19 +4,24 @@ import styles from './main.module.css';
 import { useAppSelector } from '@/store/store';
 import CourseCard from '@/components/courseCard/CourseCard';
 import Button from '@/components/button/Button';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import CourseCardSkeleton from '@/components/courseCardSkeleton/CourseCardSkeleton';
 import { useFetchCourses } from '@/hooks/useFetchCourses';
+import { toast } from 'react-toastify';
 
 export default function Main() {
   useFetchCourses();
 
-  const { allCourses, fetchIsLoading } = useAppSelector(
+  const { allCourses, fetchIsLoading, fetchError } = useAppSelector(
     (state) => state.courses,
   );
   const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (fetchError) toast.error(fetchError);
+  }, [fetchError]);
 
   const onButtonUpClick = (): void => {
     mainRef.current?.scrollTo({

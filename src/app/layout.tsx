@@ -3,6 +3,7 @@ import { Roboto } from 'next/font/google';
 import './globals.css';
 import ReduxProvider from '@/store/ReduxProvider';
 import Header from '@/components/header/Header';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -27,6 +28,19 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           </div>
         </body>
       </html>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
     </ReduxProvider>
   );
 }

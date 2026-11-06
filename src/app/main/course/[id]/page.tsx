@@ -8,19 +8,26 @@ import { getCourseById } from '@/services/course/courseApi';
 import Button from '@/components/button/Button';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { setFetchError, setFetchIsLoading } from '@/store/features/courseSlice';
+import { setFetchIsLoading } from '@/store/features/courseSlice';
 import { AxiosError } from 'axios';
 import { CourseType } from '@/sharedTypes/sharedTypes';
 import { baseSkeletonColor } from '@/utils/constants';
 import Skeleton from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
 export default function Course() {
   const dispatch = useAppDispatch();
   const params = useParams<{ id: string }>();
-  const { allCourses, fetchIsLoading, fetchError } = useAppSelector(
+  const { allCourses, fetchIsLoading } = useAppSelector(
     (state) => state.courses,
   );
+  const { isAuth } = useAppSelector((state) => state.user);
   const [course, setCourse] = useState<CourseType | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
   useEffect(() => {
     if (allCourses.length > 0) {
@@ -38,11 +45,11 @@ export default function Course() {
       .catch((error) => {
         if (error instanceof AxiosError) {
           if (error.response) {
-            dispatch(setFetchError(error.response.data));
+            setError(error.response.data);
           } else if (error.request) {
-            dispatch(setFetchError('Произошла ошибка. Попробуйте позже'));
+            setError('Произошла ошибка. Попробуйте позже');
           } else {
-            dispatch(setFetchError('Неизвестная ошибка'));
+            setError('Неизвестная ошибка');
           }
         }
       })
@@ -221,7 +228,10 @@ export default function Course() {
               </li>
             </ul>
 
-            <Button text={'Добавить курс'} onClick={onAddCourse} />
+            <Button
+              text={isAuth ? 'Добавить курс' : 'Войдите, чтобы добавить курс'}
+              onClick={onAddCourse}
+            />
           </div>
 
           {/* Desktop заглушка изображения — only на lg+ */}
