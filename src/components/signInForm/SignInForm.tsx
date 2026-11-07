@@ -10,6 +10,7 @@ import { useAppDispatch } from '@/store/store';
 import { setAccessToken, setIsAuth, setUser } from '@/store/features/authSlice';
 import Button from '@/components/button/Button';
 import { useRouter } from 'next/navigation';
+import classNames from 'classnames';
 
 export default function SignInForm({ returnTo }: { returnTo?: string }) {
   const dispatch = useAppDispatch();
@@ -18,20 +19,33 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [errors, setErrors] = useState({
+    email: false,
+    password: false,
+  });
+
+  const clearErrors = () => {
+    setErrors({ email: false, password: false });
+    setErrorMessage('');
+  };
 
   const onChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
+    clearErrors();
   };
 
   const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    clearErrors();
   };
 
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     setErrorMessage('');
+    clearErrors();
 
     if (!email.trim() || !password.trim()) {
+      setErrors({ email: !email.trim(), password: !password.trim() });
       return setErrorMessage('Заполните все поля');
     }
 
@@ -53,6 +67,16 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
         if (error instanceof AxiosError) {
           if (error.response) {
             setErrorMessage(error.response.data.message);
+
+            const errorMessage: string = error.response.data.message;
+
+            if (errorMessage.includes('email')) {
+              setErrors({ email: true, password: false });
+            } else if (errorMessage.includes('пароль')) {
+              setErrors({ email: false, password: true });
+            } else {
+              setErrors({ email: true, password: true });
+            }
           } else if (error.request) {
             setErrorMessage('Произошла ошибка. Попробуйте позже');
           } else {
@@ -73,15 +97,19 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
 
       <form className={styles.form}>
         <input
-          className={styles.form__input}
+          className={classNames(styles.form__input, {
+            [styles.input__error]: errors.email,
+          })}
           type="text"
           name="login"
-          placeholder="Почта"
+          placeholder="Логин"
           onChange={onChangeEmail}
           autoComplete="on"
         />
         <input
-          className={styles.form__input}
+          className={classNames(styles.form__input, {
+            [styles.input__error]: errors.password,
+          })}
           type="password"
           name="password"
           placeholder="Пароль"
