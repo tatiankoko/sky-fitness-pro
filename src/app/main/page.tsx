@@ -74,7 +74,7 @@ export default function Main() {
       </div>
 
       <div className={styles.courses__up}>
-        <Button text={'Наверх ↑'} onClick={onButtonUpClick} />
+        <Button onClick={onButtonUpClick}>Наверх ↑</Button>
       </div>
     </div>
   );

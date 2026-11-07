@@ -51,7 +51,7 @@ export default function Header() {
           </div>
         ) : (
           <Link href={signInHref}>
-            <Button text={'Войти'} />
+            <Button>Войти</Button>
           </Link>
         )}
       </div>

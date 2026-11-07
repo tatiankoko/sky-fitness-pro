@@ -228,10 +228,9 @@ export default function Course() {
               </li>
             </ul>
 
-            <Button
-              text={isAuth ? 'Добавить курс' : 'Войдите, чтобы добавить курс'}
-              onClick={onAddCourse}
-            />
+            <Button onClick={onAddCourse}>
+              {isAuth ? 'Добавить курс' : 'Войдите, чтобы добавить курс'}
+            </Button>
           </div>
 
           {/* Desktop заглушка изображения — only на lg+ */}

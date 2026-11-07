@@ -16,6 +16,7 @@ export default function AuthModal({
   returnTo,
 }: AuthModalProps) {
   const router = useRouter();
+
   const close = () => {
     if (returnTo) {
       router.replace(returnTo);

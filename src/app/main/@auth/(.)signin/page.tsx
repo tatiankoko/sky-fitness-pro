@@ -1,5 +1,5 @@
-import AuthModal from '../AuthModal';
-import SignInForm from '../../signin/SignInForm';
+import AuthModal from '../../../../components/authModal/AuthModal';
+import SignInForm from '../../../../components/signInForm/SignInForm';
 
 interface SignInModalProps {
   searchParams: Promise<{ returnTo?: string | string[] }>;

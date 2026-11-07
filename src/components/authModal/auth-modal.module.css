@@ -12,12 +12,12 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    width: min(100%, 440px);
+    gap: 48px;
+    width: min(100%, 360px);
     padding: 40px;
-    border-radius: 16px;
+    border-radius: 30px;
     background: #fff;
-    box-shadow: 0 16px 48px rgb(0 0 0 / 20%);
+    box-shadow: 0 4px 67px -12px #00000021;
 }
 
 .close {

@@ -1,5 +1,5 @@
-import AuthModal from '../AuthModal';
-import SignUpForm from '../../signup/SignUpForm';
+import AuthModal from '../../../../components/authModal/AuthModal';
+import SignUpForm from '../../../../components/signUpForm/SignUpForm';
 
 interface SignUpModalProps {
   searchParams: Promise<{ returnTo?: string | string[] }>;
@@ -15,7 +15,7 @@ export default async function SignUpModal({ searchParams }: SignUpModalProps) {
 
   return (
     <AuthModal title="Регистрация" returnTo={validReturnTo}>
-      <SignUpForm />
+      <SignUpForm returnTo={validReturnTo} />
     </AuthModal>
   );
 }

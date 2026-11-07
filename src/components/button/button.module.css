@@ -2,7 +2,7 @@
     border-radius: 46px;
     padding: 16px 26px;
     background-color: #BCEC30;
-    border: none;
+    border: 1px solid #BCEC30;
 
     font-weight: 400;
     font-size: 18px;
@@ -29,7 +29,7 @@
 }
 
 .button__secondary {
-    border: 1px solid #000000;
+    border-color: #000000;
     background-color: transparent;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .button__secondary:disabled {
-    border: 1px solid #999999;
+    border-color: #999999;
     background-color: transparent;
     color: #999999;
 }

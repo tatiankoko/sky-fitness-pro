@@ -1,20 +1,20 @@
 'use client';
 
-import classNames from 'classnames';
-import Image from 'next/image';
 import Link from 'next/link';
-import styles from './signin.module.css';
+import Image from 'next/image';
+import styles from '@/components/signInForm/signin.module.css';
 import React, { ChangeEvent, useState } from 'react';
-import { authUser } from '@/services/auth/authApi';
+import { registerUser } from '@/services/auth/authApi';
 import { AxiosError } from 'axios';
 import { useAppDispatch } from '@/store/store';
-import { setAccessToken, setUser } from '@/store/features/authSlice';
+import { setAccessToken } from '@/store/features/authSlice';
 import Button from '@/components/button/Button';
 
-export default function SignInForm({ returnTo }: { returnTo?: string }) {
+export default function SignUpForm({ returnTo }: { returnTo?: string }) {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -26,19 +26,26 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
     setPassword(event.target.value);
   };
 
+  const onChangeConfirmPassword = (event: ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(event.target.value);
+  };
+
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     setErrorMessage('');
 
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
       return setErrorMessage('Заполните все поля');
+    }
+
+    if (password !== confirmPassword) {
+      return setErrorMessage('Пароли не совпадают');
     }
 
     setLoading(true);
 
-    authUser({ email, password })
+    registerUser({ email, password })
       .then((token) => {
-        dispatch(setUser({ email: email, password: password }));
         dispatch(setAccessToken(token.token || ''));
       })
       .catch((error) => {
@@ -60,13 +67,14 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
   return (
     <>
       <Link href="/main">
-        <div className={styles.modal__logo}>
-          <Image src="/img/logo.png" alt="logo" width={140} height={23} />
+        <div className={styles.logo__container}>
+          <Image src="/img/logo.png" alt="logo" width={223} height={36} />
         </div>
       </Link>
+
       <form className={styles.form}>
         <input
-          className={classNames(styles.modal__input, styles.login)}
+          className={styles.form__input}
           type="text"
           name="login"
           placeholder="Почта"
@@ -74,25 +82,40 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
           autoComplete="on"
         />
         <input
-          className={styles.modal__input}
+          className={styles.form__input}
           type="password"
           name="password"
           placeholder="Пароль"
           onChange={onChangePassword}
-          autoComplete="on"
+          autoComplete="off"
         />
-        <div className={styles.errorContainer}>{errorMessage}</div>
-        <Button text="Войти" disabled={loading} onClick={onSubmit} />
-        <Link
-          href={
-            returnTo
-              ? `/main/signup?returnTo=${encodeURIComponent(returnTo)}`
-              : '/main/signup'
-          }
-          className={styles.modal__btnSignup}
-        >
+        <input
+          className={styles.form__input}
+          type="password"
+          name="password"
+          placeholder="Повторите пароль"
+          onChange={onChangeConfirmPassword}
+          autoComplete="off"
+        />
+
+        <div className={styles.form__error}>{errorMessage}</div>
+
+        <Button disabled={loading} onClick={onSubmit}>
           Зарегистрироваться
-        </Link>
+        </Button>
+
+        <Button primary={false} disabled={loading}>
+          <Link
+            href={
+              returnTo
+                ? `/main/signin?returnTo=${encodeURIComponent(returnTo)}`
+                : '/main/signin'
+            }
+            className={styles.button__link}
+          >
+            Войти
+          </Link>
+        </Button>
       </form>
     </>
   );

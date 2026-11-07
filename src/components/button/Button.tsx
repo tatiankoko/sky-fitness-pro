@@ -1,19 +1,19 @@
 import styles from './button.module.css';
 import classNames from 'classnames';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 type buttonProps = {
-  text: string;
   primary?: boolean;
   disabled?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  children: ReactNode;
 };
 
 export default function Button({
-  text,
   primary = true,
   disabled = false,
   onClick,
+  children,
 }: buttonProps) {
   return (
     <button
@@ -24,7 +24,7 @@ export default function Button({
       type="button"
       onClick={onClick}
     >
-      {text}
+      {children}
     </button>
   );
 }
