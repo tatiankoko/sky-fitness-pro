@@ -35,14 +35,6 @@ export default function AuthModal({
         aria-label={title}
         onClick={(event) => event.stopPropagation()}
       >
-        <button
-          className={styles.close}
-          type="button"
-          aria-label="Закрыть окно"
-          onClick={close}
-        >
-          ×
-        </button>
         {children}
       </section>
     </div>

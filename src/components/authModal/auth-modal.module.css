@@ -9,7 +9,6 @@
 }
 
 .dialog {
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: 48px;
@@ -18,16 +17,6 @@
     border-radius: 30px;
     background: #fff;
     box-shadow: 0 4px 67px -12px #00000021;
-}
-
-.close {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    border: 0;
-    background: transparent;
-    font-size: 28px;
-    cursor: pointer;
 }
 
 @media (max-width: 480px) {

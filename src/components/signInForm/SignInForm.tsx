@@ -7,7 +7,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { authUser } from '@/services/auth/authApi';
 import { AxiosError } from 'axios';
 import { useAppDispatch } from '@/store/store';
-import { setAccessToken, setUser } from '@/store/features/authSlice';
+import { setAccessToken, setIsAuth, setUser } from '@/store/features/authSlice';
 import Button from '@/components/button/Button';
 import { useRouter } from 'next/navigation';
 
@@ -41,6 +41,7 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
       .then((token) => {
         dispatch(setUser({ email: email, password: password }));
         dispatch(setAccessToken(token.token || ''));
+        dispatch(setIsAuth());
 
         if (returnTo) {
           router.replace(returnTo);

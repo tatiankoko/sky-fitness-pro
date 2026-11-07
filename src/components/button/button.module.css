@@ -16,6 +16,7 @@
 
 .button__primary:hover {
     background-color: #C6FF00;
+    border-color: #C6FF00;
 }
 
 .button__primary:active {
@@ -34,10 +35,12 @@
 }
 
 .button__secondary:hover {
+    border-color: #000000;
     background-color: #F7F7F7;
 }
 
 .button__secondary:active {
+    border-color: #000000;
     background-color: #E9ECED;
     color: #000000;
 }

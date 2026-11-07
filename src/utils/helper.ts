@@ -10,3 +10,7 @@ export function capitalize(str: string): string {
   if (!str) return str;
   return str.toLowerCase().charAt(0).toUpperCase() + str.slice(1);
 }
+
+export const splitUsername = (email: string): string => {
+  return capitalize(email.split('@')[0] || email);
+};

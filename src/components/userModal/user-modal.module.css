@@ -1,0 +1,54 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-top: 120px;
+    padding-right: calc(50% - 596px);
+    background: transparent;
+}
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: min(100%, 266px);
+    padding: 30px;
+    border-radius: 30px;
+    background: #fff;
+    box-shadow: 0 4px 67px -12px #00000021;
+}
+
+.title {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.description {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #999999;
+    margin-bottom: 24px;
+}
+
+.buttons__block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 100%;
+}
+
+.buttons__link {
+    display: flex;
+    flex-direction: column;
+}

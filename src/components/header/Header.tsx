@@ -9,6 +9,8 @@ import Button from '@/components/button/Button';
 import { useInitAuth } from '@/hooks/useInitAuth';
 import classNames from 'classnames';
 import { usePathname } from 'next/navigation';
+import UserModal from '@/components/userModal/UserModal';
+import { splitUsername } from '@/utils/helper';
 
 export default function Header() {
   useInitAuth();
@@ -46,9 +48,14 @@ export default function Header() {
               className={styles.user__name}
               onClick={() => setShowUser(!showUser)}
             >
-              {user?.email || 'username'}
+              {splitUsername(user?.email || 'username')}
             </a>
-            {showUser ? <div /> : null}
+
+            <UserModal
+              isOpen={showUser}
+              onClose={() => setShowUser(!showUser)}
+              user={user}
+            />
           </div>
         ) : (
           <Link href={signInHref}>
