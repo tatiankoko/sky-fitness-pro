@@ -16,6 +16,7 @@ export default function Header() {
   const { isAuth, user } = useAppSelector((state) => state.user);
   const [showUser, setShowUser] = useState(false);
   const pathname = usePathname();
+
   const returnTo =
     pathname === '/main' || /^\/main\/course\/[^/]+$/.test(pathname)
       ? pathname

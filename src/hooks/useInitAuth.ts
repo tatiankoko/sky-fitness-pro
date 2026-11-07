@@ -15,6 +15,6 @@ export const useInitAuth = () => {
 
     dispatch(setUser(user));
     dispatch(setAccessToken(accessToken));
-    /*dispatch(setIsAuth());*/
+    dispatch(setIsAuth());
   }, [dispatch]);
 };

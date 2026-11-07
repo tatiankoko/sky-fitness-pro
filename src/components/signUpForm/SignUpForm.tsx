@@ -9,6 +9,7 @@ import { AxiosError } from 'axios';
 import { useAppDispatch } from '@/store/store';
 import { setAccessToken } from '@/store/features/authSlice';
 import Button from '@/components/button/Button';
+import { useRouter } from 'next/navigation';
 
 export default function SignUpForm({ returnTo }: { returnTo?: string }) {
   const dispatch = useAppDispatch();
@@ -17,6 +18,11 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const signUpHref = returnTo
+    ? `/main/signin?returnTo=${encodeURIComponent(returnTo)}`
+    : '/main/signin';
 
   const onChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -47,6 +53,12 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
     registerUser({ email, password })
       .then((token) => {
         dispatch(setAccessToken(token.token || ''));
+
+        if (returnTo) {
+          router.replace(signUpHref);
+        } else {
+          router.back();
+        }
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
@@ -66,11 +78,9 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
 
   return (
     <>
-      <Link href="/main">
-        <div className={styles.logo__container}>
-          <Image src="/img/logo.png" alt="logo" width={223} height={36} />
-        </div>
-      </Link>
+      <div className={styles.logo__container}>
+        <Image src="/img/logo.png" alt="logo" width={223} height={36} />
+      </div>
 
       <form className={styles.form}>
         <input
@@ -105,14 +115,7 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
         </Button>
 
         <Button primary={false} disabled={loading}>
-          <Link
-            href={
-              returnTo
-                ? `/main/signin?returnTo=${encodeURIComponent(returnTo)}`
-                : '/main/signin'
-            }
-            className={styles.button__link}
-          >
+          <Link href={signUpHref} className={styles.button__link}>
             Войти
           </Link>
         </Button>
