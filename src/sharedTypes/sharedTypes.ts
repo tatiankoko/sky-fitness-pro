@@ -17,7 +17,7 @@ export type CourseType = {
 
 export type userType = {
   email: string;
-  username: string;
+  password: string;
 };
 
 export enum CourseInfo {

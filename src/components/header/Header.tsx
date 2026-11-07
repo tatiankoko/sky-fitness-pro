@@ -8,14 +8,21 @@ import styles from './header.module.css';
 import Button from '@/components/button/Button';
 import { useInitAuth } from '@/hooks/useInitAuth';
 import classNames from 'classnames';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   useInitAuth();
 
   const { isAuth, user } = useAppSelector((state) => state.user);
   const [showUser, setShowUser] = useState(false);
-
-  const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
+  const pathname = usePathname();
+  const returnTo =
+    pathname === '/main' || /^\/main\/course\/[^/]+$/.test(pathname)
+      ? pathname
+      : null;
+  const signInHref = returnTo
+    ? `/main/signin?returnTo=${encodeURIComponent(returnTo)}`
+    : '/main/signin';
 
   return (
     <div className={classNames(styles.header__container, styles.center)}>
@@ -38,12 +45,14 @@ export default function Header() {
               className={styles.user__name}
               onClick={() => setShowUser(!showUser)}
             >
-              {user?.username || 'username'}
+              {user?.email || 'username'}
             </a>
             {showUser ? <div /> : null}
           </div>
         ) : (
-          <Button text={'Войти'} onClick={onClick} />
+          <Link href={signInHref}>
+            <Button text={'Войти'} />
+          </Link>
         )}
       </div>
     </div>
