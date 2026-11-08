@@ -8,7 +8,7 @@ export const useFetchMyCourses = () => {
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.user);
   const { allCourses, myCourses } = useAppSelector((state) => state.courses);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {

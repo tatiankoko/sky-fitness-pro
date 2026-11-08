@@ -17,7 +17,7 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const [errors, setErrors] = useState({
     email: false,

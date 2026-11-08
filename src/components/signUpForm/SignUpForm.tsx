@@ -15,7 +15,7 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const [errors, setErrors] = useState({
     email: false,

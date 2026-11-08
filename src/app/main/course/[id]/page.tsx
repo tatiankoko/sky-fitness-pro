@@ -4,11 +4,15 @@ import styles from './course.module.css';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { useParams } from 'next/navigation';
-import { getCourseById } from '@/services/course/courseApi';
+import {
+  addCourse,
+  getCourseById,
+  getMyCourses,
+} from '@/services/course/courseApi';
 import Button from '@/components/button/Button';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { setFetchIsLoading } from '@/store/features/courseSlice';
+import { addMyCourse } from '@/store/features/courseSlice';
 import { AxiosError } from 'axios';
 import { CourseType } from '@/sharedTypes/sharedTypes';
 import { baseSkeletonColor } from '@/utils/constants';
@@ -18,29 +22,35 @@ import { toast } from 'react-toastify';
 export default function Course() {
   const dispatch = useAppDispatch();
   const params = useParams<{ id: string }>();
-  const { allCourses, fetchIsLoading } = useAppSelector(
-    (state) => state.courses,
-  );
-  const { isAuth, accessToken } = useAppSelector((state) => state.user);
+  const { allCourses, myCourses } = useAppSelector((state) => state.courses);
+  const { accessToken } = useAppSelector((state) => state.user);
   const [course, setCourse] = useState<CourseType | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
 
   useEffect(() => {
-    if (allCourses.length > 0) {
+    if (!accessToken) return;
+
+    if (allCourses.length) {
       setCourse(allCourses.find((course) => course._id === params.id) || null);
+      setIsAdded(Boolean(myCourses.find((item) => item._id === params.id)));
       return;
     }
 
-    dispatch(setFetchIsLoading(true));
+    setLoading(true);
 
     getCourseById(params.id)
       .then((course) => {
         setCourse(course);
-        // dispatch(setCurrentCourse(course)); // todo
+        return getMyCourses(accessToken || '');
+      })
+      .then((courseIds) => {
+        setIsAdded(courseIds.selectedCourses.includes(params.id));
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
@@ -54,9 +64,9 @@ export default function Course() {
         }
       })
       .finally(() => {
-        dispatch(setFetchIsLoading(false));
+        setLoading(false);
       });
-  }, []);
+  }, [accessToken]);
 
   const findImageStyle = (
     courseType: CourseType | null,
@@ -127,7 +137,30 @@ export default function Course() {
   };
 
   const onAddCourse = () => {
-    if (!accessToken) return;
+    if (!accessToken || !course) return;
+
+    setLoading(true);
+
+    addCourse(accessToken || '', course._id)
+      .then(() => {
+        dispatch(addMyCourse(course));
+        setIsAdded(true);
+        toast.success('Курс успешно добавлен!');
+      })
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          if (error.response) {
+            setError(error.response.data);
+          } else if (error.request) {
+            setError('Произошла ошибка. Попробуйте позже');
+          } else {
+            setError('Неизвестная ошибка');
+          }
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   if (!course) {
@@ -136,7 +169,7 @@ export default function Course() {
 
   return (
     <div className={styles.course__container}>
-      {fetchIsLoading ? (
+      {loading ? (
         <div className={styles.fitting__container}>
           <Skeleton
             baseColor={baseSkeletonColor}
@@ -230,8 +263,12 @@ export default function Course() {
               </li>
             </ul>
 
-            <Button onClick={onAddCourse}>
-              {isAuth ? 'Добавить курс' : 'Войдите, чтобы добавить курс'}
+            <Button onClick={onAddCourse} disabled={isAdded}>
+              {accessToken
+                ? isAdded
+                  ? 'Курс добавлен'
+                  : 'Добавить курс'
+                : 'Войдите, чтобы добавить курс'}
             </Button>
           </div>
 
