@@ -10,13 +10,17 @@ import { setLogout } from '@/store/features/authSlice';
 import Link from 'next/link';
 import CourseCardSkeleton from '@/components/courseCardSkeleton/CourseCardSkeleton';
 import CourseCard from '@/components/courseCard/CourseCard';
+import { useFetchMyCourses } from '@/hooks/useFetchMyCourses';
+import { useFetchCourses } from '@/hooks/useFetchCourses';
 
 export default function Profile() {
   useRedirectMain();
+  useFetchCourses();
+  useFetchMyCourses();
 
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
-  const { allCourses, fetchIsLoading, fetchError } = useAppSelector(
+  const { myCourses, fetchIsLoading, fetchError } = useAppSelector(
     (state) => state.courses,
   );
 
@@ -54,6 +58,12 @@ export default function Profile() {
       <section className={styles.courses__block}>
         <h1 className={styles.title}>Мои курсы</h1>
 
+        {fetchIsLoading || myCourses.length > 0 ? null : (
+          <div className={styles.courses__notification}>
+            Пока нет приобретенных курсов
+          </div>
+        )}
+
         <div className={styles.courses__content}>
           {fetchIsLoading ? (
             <>
@@ -62,8 +72,13 @@ export default function Profile() {
               <CourseCardSkeleton />
             </>
           ) : (
-            allCourses.map((item) => (
-              <CourseCard course={item} onClick={onCourseCardClick} />
+            myCourses.map((item) => (
+              <CourseCard
+                key={item._id}
+                course={item}
+                isAdded={true}
+                onClickAction={onCourseCardClick}
+              />
             ))
           )}
         </div>

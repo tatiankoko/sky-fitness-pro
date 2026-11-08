@@ -4,17 +4,19 @@ import styles from './main.module.css';
 import { useAppSelector } from '@/store/store';
 import CourseCard from '@/components/courseCard/CourseCard';
 import Button from '@/components/button/Button';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import CourseCardSkeleton from '@/components/courseCardSkeleton/CourseCardSkeleton';
 import { useFetchCourses } from '@/hooks/useFetchCourses';
 import { toast } from 'react-toastify';
+import { useFetchMyCourses } from '@/hooks/useFetchMyCourses';
 
 export default function Main() {
   useFetchCourses();
+  useFetchMyCourses();
 
-  const { allCourses, fetchIsLoading, fetchError } = useAppSelector(
+  const { allCourses, myCourses, fetchIsLoading, fetchError } = useAppSelector(
     (state) => state.courses,
   );
   const mainRef = useRef<HTMLDivElement>(null);
@@ -63,9 +65,15 @@ export default function Main() {
             <CourseCardSkeleton />
           </>
         ) : (
-          allCourses.map((item) => (
-            <Link href={`/main/course/${item._id}`} key={item._id}>
-              <CourseCard course={item} />
+          allCourses.map((course) => (
+            <Link href={`/main/course/${course._id}`} key={course._id}>
+              <CourseCard
+                key={course._id}
+                course={course}
+                isAdded={Boolean(
+                  myCourses.find((item) => item._id === course._id),
+                )}
+              />
             </Link>
           ))
         )}

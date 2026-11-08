@@ -72,6 +72,14 @@
     margin-right: auto;
 }
 
+.courses__notification {
+    text-align: center;
+    color: color-mix(in oklab, #000000 60%, transparent);
+    font-size: 24px;
+    line-height: 28px;
+    padding: 40px;
+}
+
 .title {
     font-weight: 600;
     font-size: 40px;

@@ -21,7 +21,7 @@ export default function Course() {
   const { allCourses, fetchIsLoading } = useAppSelector(
     (state) => state.courses,
   );
-  const { isAuth } = useAppSelector((state) => state.user);
+  const { isAuth, accessToken } = useAppSelector((state) => state.user);
   const [course, setCourse] = useState<CourseType | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -126,7 +126,9 @@ export default function Course() {
     zIndex: 10,
   };
 
-  const onAddCourse = () => {};
+  const onAddCourse = () => {
+    if (!accessToken) return;
+  };
 
   if (!course) {
     return <></>;
