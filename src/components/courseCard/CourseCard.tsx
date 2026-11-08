@@ -10,16 +10,19 @@ import { useAppDispatch, useAppSelector } from '@/store/store';
 import { addCourse, removeCourse } from '@/services/course/courseApi';
 import { AxiosError } from 'axios';
 import { addMyCourse, removeMyCourse } from '@/store/features/courseSlice';
+import Button from '@/components/button/Button';
 
 type CourseCardProps = {
   course: CourseType;
   isAdded?: boolean;
+  showUserContent?: boolean;
   onClickAction?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
 export default function CourseCard({
   course,
   isAdded = false,
+  showUserContent = false,
   onClickAction,
 }: CourseCardProps) {
   const dispatch = useAppDispatch();
@@ -27,6 +30,7 @@ export default function CourseCard({
   const { myCourses } = useAppSelector((state) => state.courses);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [progress, setProgress] = useState(30);
 
   useEffect(() => {
     if (errorMsg) {
@@ -101,11 +105,22 @@ export default function CourseCard({
           <InfoItem type={CourseInfo.dailyDurationInMinutes} course={course} />
           <InfoItem type={CourseInfo.difficulty} course={course} />
         </div>
-      </div>
 
-      <div className={styles.progress__block}>
-        <h3 className={styles.progress__title}></h3>
-        <progress className={styles.progress__indicator}></progress>
+        {showUserContent ? (
+          <div className={styles.user__content}>
+            <div className={styles.progress__block}>
+              <h3 className={styles.progress__title}>Прогресс</h3>
+
+              <progress
+                className={styles.progress__indicator}
+                value={progress}
+                max={100}
+              ></progress>
+            </div>
+
+            <Button>Начать тренировки</Button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

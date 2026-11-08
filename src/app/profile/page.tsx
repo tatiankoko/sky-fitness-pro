@@ -77,6 +77,7 @@ export default function Profile() {
                 key={item._id}
                 course={item}
                 isAdded={true}
+                showUserContent={true}
                 onClickAction={onCourseCardClick}
               />
             ))
