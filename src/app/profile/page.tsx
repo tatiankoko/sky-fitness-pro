@@ -3,7 +3,7 @@
 import styles from './profile.module.css';
 import { useRedirectMain } from '@/hooks/useRedirectMain';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import { splitUsername } from '@/utils/helper';
 import { setLogout } from '@/store/features/authSlice';
@@ -12,17 +12,24 @@ import CourseCardSkeleton from '@/components/courseCardSkeleton/CourseCardSkelet
 import CourseCard from '@/components/courseCard/CourseCard';
 import { useFetchMyCourses } from '@/hooks/useFetchMyCourses';
 import { useFetchCourses } from '@/hooks/useFetchCourses';
+import WorkoutSelectionModal from '@/components/workoutSelectionModal/WorkoutSelectionModal';
+import { toast } from 'react-toastify';
 
 export default function Profile() {
   useRedirectMain();
   useFetchCourses();
-  useFetchMyCourses();
+  const { isLoading, errorMsg } = useFetchMyCourses();
 
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
   const { myCourses, fetchIsLoading, fetchError } = useAppSelector(
     (state) => state.courses,
   );
+  const [showSelection, setShowSelection] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (fetchError || errorMsg) toast.error(errorMsg || fetchError);
+  }, [fetchError, errorMsg]);
 
   const logout = () => {
     dispatch(setLogout());
@@ -58,14 +65,14 @@ export default function Profile() {
       <section className={styles.courses__block}>
         <h1 className={styles.title}>Мои курсы</h1>
 
-        {fetchIsLoading || myCourses.length > 0 ? null : (
+        {fetchIsLoading || isLoading || myCourses.length > 0 ? null : (
           <div className={styles.courses__notification}>
             Пока нет приобретенных курсов
           </div>
         )}
 
         <div className={styles.courses__content}>
-          {fetchIsLoading ? (
+          {fetchIsLoading || isLoading ? (
             <>
               <CourseCardSkeleton />
               <CourseCardSkeleton />
@@ -79,9 +86,15 @@ export default function Profile() {
                 isAdded={true}
                 showUserContent={true}
                 onClickAction={onCourseCardClick}
+                onWorkoutAction={() => setShowSelection(true)}
               />
             ))
           )}
+
+          <WorkoutSelectionModal
+            isOpen={showSelection}
+            onClose={() => setShowSelection(!showSelection)}
+          />
         </div>
       </section>
     </div>

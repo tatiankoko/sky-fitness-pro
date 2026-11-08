@@ -5,7 +5,6 @@ import Button from '@/components/button/Button';
 import Link from 'next/link';
 import { useAppDispatch } from '@/store/store';
 import { setLogout } from '@/store/features/authSlice';
-import classNames from 'classnames';
 
 interface userModalProps {
   isOpen: boolean;
@@ -24,10 +23,7 @@ export default function UserModal({ isOpen, onClose, user }: userModalProps) {
   };
 
   return (
-    <div
-      className={classNames(styles.overlay, styles.center)}
-      onClick={onClose}
-    >
+    <div className={styles.overlay} onClick={onClose}>
       <div
         className={styles.dialog}
         role="dialog"

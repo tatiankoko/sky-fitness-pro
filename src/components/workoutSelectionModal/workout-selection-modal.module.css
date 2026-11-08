@@ -1,0 +1,46 @@
+.workouts__list {
+    list-style-type: disc;
+    list-style-position: outside;
+    padding-right: 20px;
+    color: #000000;
+}
+
+.workouts__item {
+    list-style: none;
+}
+
+.workout__content {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    border: none;
+    border-bottom: 1px solid #C4C4C4;
+    padding: 10px 2px;
+}
+
+.workout__icon {
+    width: 20px;
+    height: 20px;
+}
+
+.workout__info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.workout__title {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.workout__description {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+}

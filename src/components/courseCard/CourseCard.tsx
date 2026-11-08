@@ -17,6 +17,9 @@ type CourseCardProps = {
   isAdded?: boolean;
   showUserContent?: boolean;
   onClickAction?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onWorkoutAction?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => void;
 };
 
 export default function CourseCard({
@@ -24,6 +27,7 @@ export default function CourseCard({
   isAdded = false,
   showUserContent = false,
   onClickAction,
+  onWorkoutAction,
 }: CourseCardProps) {
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.user);
@@ -118,7 +122,7 @@ export default function CourseCard({
               ></progress>
             </div>
 
-            <Button>Начать тренировки</Button>
+            <Button onClick={onWorkoutAction}>Начать тренировки</Button>
           </div>
         ) : null}
       </div>

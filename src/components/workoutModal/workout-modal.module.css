@@ -1,0 +1,38 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(0 0 0 / 45%);
+}
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    width: min(100%, 460px);
+    max-height: min(100%, 609px);
+    padding: 40px;
+    border-radius: 30px;
+    background: #fff;
+    box-shadow: 0 4px 67px -12px #00000021;
+}
+
+.title {
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+    text-align: center;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+}
