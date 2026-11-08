@@ -39,10 +39,10 @@ export default function Header() {
         />
       </Link>
       <div className={styles.auth__block}>
-        {isAuth ? (
+        {isAuth && user ? (
           <div className={styles.user__block}>
             <svg className={styles.user__icon}>
-              <use xlinkHref="/img/icon/sprite.svg#icon-profile"></use>
+              <use xlinkHref="/img/icon/sprite.svg#icon-user"></use>
             </svg>
             <a
               className={styles.user__name}

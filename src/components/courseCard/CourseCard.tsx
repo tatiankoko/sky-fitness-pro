@@ -6,7 +6,7 @@ import React from 'react';
 
 type CourseCardProps = {
   course: CourseType;
-  onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
 export default function CourseCard({ course, onClick }: CourseCardProps) {

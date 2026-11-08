@@ -13,8 +13,8 @@ export const useInitAuth = () => {
     const user: userType =
       JSON.parse(<string>localStorage.getItem('user')) || null;
 
-    dispatch(setUser(user));
+    if (user) dispatch(setUser(user));
     dispatch(setAccessToken(accessToken));
-    if (user) dispatch(setIsAuth());
+    dispatch(setIsAuth());
   }, [dispatch]);
 };

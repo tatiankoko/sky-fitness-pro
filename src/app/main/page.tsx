@@ -30,8 +30,6 @@ export default function Main() {
     });
   };
 
-  const onCourseCardClick = (): void => {};
-
   return (
     <div
       ref={mainRef}
@@ -67,7 +65,7 @@ export default function Main() {
         ) : (
           allCourses.map((item) => (
             <Link href={`/main/course/${item._id}`} key={item._id}>
-              <CourseCard course={item} onClick={onCourseCardClick} />
+              <CourseCard course={item} />
             </Link>
           ))
         )}

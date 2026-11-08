@@ -75,6 +75,11 @@
     display: flex;
     flex-wrap: wrap;
     gap: 39px;
+    justify-content: space-between;
+}
+
+.courses__block > *:last-child {
+    margin-right: auto;
 }
 
 .courses__up {
