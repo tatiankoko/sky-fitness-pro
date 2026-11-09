@@ -3,7 +3,7 @@ import { CourseType } from '@/sharedTypes/sharedTypes';
 import { courseProgressResponseType } from '@/services/course/courseApi';
 
 type courseStateType = {
-  currentCourse: CourseType | null | undefined;
+  currentCourse: CourseType | null;
   allCourses: CourseType[];
   myCourses: CourseType[];
   fetchError: null | string;
@@ -22,7 +22,7 @@ const courseSlice = createSlice({
   name: 'course',
   initialState: courseInitialState,
   reducers: {
-    setCurrentCourse: (state, action: PayloadAction<CourseType>) => {
+    setCurrentCourse: (state, action: PayloadAction<CourseType | null>) => {
       state.currentCourse = action.payload;
     },
     setAllCourses: (state, action: PayloadAction<CourseType[]>) => {

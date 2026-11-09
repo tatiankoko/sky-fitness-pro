@@ -1,6 +1,113 @@
 .progress__list {
+    list-style-type: disc;
+    list-style-position: outside;
+    /*display: flex;
+    flex-direction: column;*/
+    max-height: 360px;
+    overflow-y: auto;
+}
+.progress__list::-webkit-scrollbar {
+    width: 26px;               /* Ширина вертикального скроллбара */
+    height: 26px;              /* Высота горизонтального скроллбара */
+}
+
+.progress__list::-webkit-scrollbar-track {
+    background: #F7F7F7;
+    background-clip: content-box;
+    border-left: 20px solid transparent;
+}
+
+.progress__list::-webkit-scrollbar-thumb {
+    background: #000000;
+    background-clip: content-box;
+    border-left: 20px solid transparent;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.progress__item {
+    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding-right: 20px;
+    gap: 10px;
+    align-items: center;
+    border: none;
+    padding: 0 0 10px 2px;
 }
+
+.progress__item:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.progress__text {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.progress__input {
+    width: 100%;
+    border: 1px solid #D0CECE;
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+    outline: none;
+}
+
+.progress__input::-webkit-input-placeholder {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #D0CECE;
+}
+
+.progress__input:-ms-input-placeholder {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #D0CECE;
+}
+
+.progress__input::-ms-input-placeholder {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #D0CECE;
+}
+
+.progress__input::placeholder {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #D0CECE;
+}
+
+.progress__input::-webkit-outer-spin-button,
+.progress__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Для Firefox */
+.progress__input[type=number] {
+    -moz-appearance: textfield;
+}
+

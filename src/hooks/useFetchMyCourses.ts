@@ -15,7 +15,6 @@ export const useFetchMyCourses = () => {
     if (!accessToken || allCourses.length <= 0) return;
 
     setIsLoading(true);
-    setErrorMsg(null);
 
     getMyCourses(accessToken || '')
       .then((courseIds) => {

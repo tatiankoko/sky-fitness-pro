@@ -27,13 +27,13 @@ export type WorkoutType = {
   _id: string;
   name: string;
   video: string;
-  exercises: [
-    {
-      name: string;
-      quantity: number;
-      _id: string;
-    },
-  ];
+  exercises: Exercise[];
+};
+
+export type Exercise = {
+  name: string;
+  quantity: number;
+  _id: string;
 };
 
 export type userType = {

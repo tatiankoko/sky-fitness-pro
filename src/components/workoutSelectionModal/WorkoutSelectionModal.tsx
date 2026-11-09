@@ -69,7 +69,9 @@ export default function WorkoutSelectionModal({
       return;
     }
 
-    router.push(`/profile/${course?.nameEN}/workout/${selectedWorkout?._id}`);
+    router.push(
+      `/profile/${course?.nameEN}/${course?._id}/workout/${selectedWorkout?._id}`,
+    );
   };
 
   return (

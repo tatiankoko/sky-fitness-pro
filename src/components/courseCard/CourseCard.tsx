@@ -6,12 +6,10 @@ import { CourseInfo, CourseType } from '@/sharedTypes/sharedTypes';
 import InfoItem from '@/components/infoItem/InfoItem';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '@/store/store';
-import { addCourse, removeCourse } from '@/services/course/courseApi';
-import { AxiosError } from 'axios';
-import { addMyCourse, removeMyCourse } from '@/store/features/courseSlice';
+import { useAppSelector } from '@/store/store';
 import Button from '@/components/button/Button';
 import ProgressItem from '@/components/progressItem/ProgressItem';
+import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
 
 type CourseCardProps = {
   course: CourseType;
@@ -30,26 +28,26 @@ export default function CourseCard({
   onClickAction,
   onWorkoutAction,
 }: CourseCardProps) {
-  const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.user);
   const { myCourses } = useAppSelector((state) => state.courses);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(30);
+  const toggleAddCourse = useToggleAddCourseAction();
 
   useEffect(() => {
-    if (errorMsg) {
-      toast.error(errorMsg);
-      setErrorMsg(null);
+    if (error) {
+      toast.error(error);
+      setError(null);
     }
-  }, [errorMsg]);
+  }, [error]);
 
   const onToggleAddCourse = useCallback(
     (event: React.MouseEvent<HTMLOrSVGElement, MouseEvent>) => {
       event.preventDefault();
       event.stopPropagation();
 
-      if (isLoading) return;
+      if (loading) return;
 
       if (!accessToken) {
         toast.info('Авторизуйтесь, чтобы добавить курс');
@@ -57,30 +55,13 @@ export default function CourseCard({
       }
 
       const contains = myCourses.find((item) => item._id === course._id);
-      const actionApi = contains ? removeCourse : addCourse;
-      const actionSlice = contains ? removeMyCourse : addMyCourse;
-      console.log(contains ? 'remove course' : 'add course');
 
-      actionApi(accessToken || '', course._id)
-        .then((message) => {
-          console.log(message);
-          dispatch(actionSlice(course));
-          toast.success(`Курс успешно ${contains ? 'удален' : 'добавлен'}!`);
-        })
-        .catch((error) => {
-          if (error instanceof AxiosError) {
-            if (error.response) {
-              setErrorMsg(error.response.data);
-            } else if (error.request) {
-              setErrorMsg('Произошла ошибка. Попробуйте позже');
-            } else {
-              setErrorMsg('Неизвестная ошибка');
-            }
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      toggleAddCourse({
+        add: !contains,
+        course: course,
+        setIsLoading: setLoading,
+        setErrorMsg: setError,
+      });
     },
     [accessToken, myCourses],
   );

@@ -13,7 +13,7 @@ export default function WorkoutModal({
   onClose,
 }: workoutModalProps) {
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <form className={styles.overlay} onClick={onClose}>
       <section
         className={styles.dialog}
         role="dialog"
@@ -24,6 +24,6 @@ export default function WorkoutModal({
 
         <div className={styles.content}>{children}</div>
       </section>
-    </div>
+    </form>
   );
 }

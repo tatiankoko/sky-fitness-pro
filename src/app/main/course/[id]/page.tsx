@@ -2,25 +2,25 @@
 
 import styles from './course.module.css';
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/store';
+import { useAppSelector } from '@/store/store';
 import { useParams } from 'next/navigation';
-import {
-  addCourse,
-  getCourseById,
-  getMyCourses,
-} from '@/services/course/courseApi';
+import { getCourseById, getMyCourses } from '@/services/course/courseApi';
 import Button from '@/components/button/Button';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { addMyCourse } from '@/store/features/courseSlice';
 import { AxiosError } from 'axios';
-import { CourseType } from '@/sharedTypes/sharedTypes';
 import { baseSkeletonColor } from '@/utils/constants';
 import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
+import {
+  courseImageStyleParams,
+  courseImageCss,
+  courseImageSrc,
+} from '@/app/main/course/[id]/courseImageConstants';
+import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
+import { CourseType } from '@/sharedTypes/sharedTypes';
 
 export default function Course() {
-  const dispatch = useAppDispatch();
   const params = useParams<{ id: string }>();
   const { allCourses, myCourses } = useAppSelector((state) => state.courses);
   const { accessToken } = useAppSelector((state) => state.user);
@@ -28,6 +28,7 @@ export default function Course() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isAdded, setIsAdded] = useState(false);
+  const toggleAddCourse = useToggleAddCourseAction();
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -37,9 +38,13 @@ export default function Course() {
     if (!accessToken) return;
 
     if (allCourses.length) {
-      setCourse(allCourses.find((course) => course._id === params.id) || null);
-      setIsAdded(Boolean(myCourses.find((item) => item._id === params.id)));
-      return;
+      const foundCourse = allCourses.find((course) => course._id === params.id);
+
+      if (foundCourse) {
+        setCourse(foundCourse);
+        setIsAdded(!!myCourses.find((item) => item._id === params.id));
+        return;
+      }
     }
 
     setLoading(true);
@@ -68,99 +73,19 @@ export default function Course() {
       });
   }, [accessToken]);
 
-  const findImageStyle = (
-    courseType: CourseType | null,
-  ): ImageStyleType | undefined => {
-    return imageColors.find((pair) => pair.key === courseType?.order);
-  };
-
-  interface ImageStyleType {
-    key: number;
-    color: string;
-    bottom: string;
-    right: string;
-    width: number;
-    height: number;
-  }
-
-  const imageColors: ImageStyleType[] = [
-    {
-      key: 1,
-      color: '#FFC700',
-      bottom: '-4px',
-      right: '90px',
-      width: 360,
-      height: 400,
-    },
-    {
-      key: 2,
-      color: '#2491D2',
-      bottom: '-20px',
-      right: '0',
-      width: 360,
-      height: 325,
-    },
-    {
-      key: 3,
-      color: '#F7A012',
-      bottom: '-20px',
-      right: '70px',
-      width: 360,
-      height: 325,
-    },
-    {
-      key: 4,
-      color: '#FF7E65',
-      bottom: '50px',
-      right: '70px',
-      width: 460,
-      height: 400,
-    },
-    {
-      key: 5,
-      color: '#7D458C',
-      bottom: '-40px',
-      right: '-110px',
-      width: 779,
-      height: 400,
-    },
-  ];
-
-  const imageStyle: React.CSSProperties = {
-    width: course?.order === 4 ? '150%' : course?.order === 1 ? '95%' : '100%',
-    objectFit: 'cover',
-    objectPosition: 'bottom',
-    position: 'absolute',
-    bottom: findImageStyle(course)?.bottom,
-    right: findImageStyle(course)?.right,
-    zIndex: 10,
-  };
-
   const onAddCourse = () => {
     if (!accessToken || !course) return;
 
-    setLoading(true);
+    toggleAddCourse({
+      add: true,
+      course: course,
+      setIsLoading: setLoading,
+      setErrorMsg: setError,
+    });
 
-    addCourse(accessToken || '', course._id)
-      .then(() => {
-        dispatch(addMyCourse(course));
-        setIsAdded(true);
-        toast.success('Курс успешно добавлен!');
-      })
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setError(error.response.data);
-          } else if (error.request) {
-            setError('Произошла ошибка. Попробуйте позже');
-          } else {
-            setError('Неизвестная ошибка');
-          }
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (!error) {
+      setIsAdded(true);
+    }
   };
 
   if (!course) {
@@ -183,7 +108,7 @@ export default function Course() {
       <div
         className={styles.header__container}
         style={{
-          backgroundColor: findImageStyle(course)?.color,
+          backgroundColor: courseImageStyleParams(course)?.color,
         }}
       >
         <div className={styles.title__block}>
@@ -193,17 +118,17 @@ export default function Course() {
         <div
           className={styles.image__block}
           style={{
-            width: `${findImageStyle(course)?.width}px`,
+            width: `${courseImageStyleParams(course)?.width}px`,
             overflow: `${course?.order === 5 || course?.order === 4 ? 'hidden' : 'visible'}`,
           }}
         >
           <Image
-            width={findImageStyle(course)?.width}
-            height={findImageStyle(course)?.height}
-            src={`/img/course_${course?.order}${course?.order === 4 || course?.order === 5 ? '_full.jpg' : '.png'}`}
+            width={courseImageStyleParams(course)?.width}
+            height={courseImageStyleParams(course)?.height}
+            src={courseImageSrc(course)}
             alt={`изображение курса ${course?.nameRU}`}
             loading="eager"
-            style={imageStyle}
+            style={courseImageCss(course)}
           ></Image>
         </div>
       </div>

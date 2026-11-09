@@ -70,9 +70,7 @@ export default function Main() {
               <CourseCard
                 key={course._id}
                 course={course}
-                isAdded={Boolean(
-                  myCourses.find((item) => item._id === course._id),
-                )}
+                isAdded={!!myCourses.find((item) => item._id === course._id)}
               />
             </Link>
           ))

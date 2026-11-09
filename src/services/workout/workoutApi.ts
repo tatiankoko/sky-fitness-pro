@@ -63,3 +63,28 @@ export const getWorkoutById = async (
       return response.data;
     });
 };
+
+/*WorkoutProgressType*/
+
+export const saveExerciseProgress = async (
+  access: string,
+  courseId: string,
+  workoutId: string,
+  progressData: number[],
+) => {
+  return await axios
+    .patch(
+      BASE_URL + `/courses/${courseId}/workouts/${workoutId}`,
+      { progressData: progressData },
+      {
+        headers: {
+          'content-type': '',
+          Authorization: `Bearer ${access}`,
+        },
+      },
+    )
+    .then((response) => {
+      console.log('PATCH response ', response);
+      return response.data;
+    });
+};

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AxiosError } from 'axios';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { WorkoutType } from '@/sharedTypes/sharedTypes';
+import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
 import { getWorkoutById } from '@/services/workout/workoutApi';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
@@ -15,22 +15,50 @@ import { baseSkeletonColor } from '@/utils/constants';
 import VideoPlayer from '@/components/videoPlayer/VideoPlayer';
 import { setSelectedWorkout } from '@/store/features/workoutSlice';
 import ProgressItem from '@/components/progressItem/ProgressItem';
+import { getCourseById } from '@/services/course/courseApi';
 
 export default function Workout() {
   const dispatch = useAppDispatch();
-  const params = useParams<{ id: string; course: string }>();
+  const params = useParams<{ id: string; course: string; courseId: string }>();
   const { allWorkouts } = useAppSelector((state) => state.workouts);
   const { accessToken } = useAppSelector((state) => state.user);
+
   const [showFillProgress, setShowFillProgress] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentWorkout, setCurrentWorkout] = useState<WorkoutType | null>(
     null,
   );
+  const [currentCourse, setCurrentCourse] = useState<CourseType | null>(null);
 
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    setLoading(true);
+
+    getCourseById(params.id)
+      .then((course) => {
+        setCurrentCourse(course);
+      })
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          if (error.response) {
+            setError(error.response.data);
+          } else if (error.request) {
+            setError('Произошла ошибка. Попробуйте позже');
+          } else {
+            setError('Неизвестная ошибка');
+          }
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [accessToken]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -97,6 +125,7 @@ export default function Workout() {
         <div className={styles.progress__block}>
           {currentWorkout?.exercises.map((exercise) => (
             <ProgressItem
+              key={exercise._id}
               title={exercise.name}
               progress={0}
               max={exercise.quantity}
@@ -104,12 +133,17 @@ export default function Workout() {
           ))}
         </div>
 
-        <Button disabled={loading}>Заполнить свой прогресс</Button>
+        <div className={styles.progress__button}>
+          <Button disabled={loading} onClick={() => setShowFillProgress(true)}>
+            Заполнить свой прогресс
+          </Button>
+        </div>
       </div>
 
       <WorkoutProgressModal
+        exercises={currentWorkout?.exercises || null}
         isOpen={showFillProgress}
-        onClose={() => setShowFillProgress}
+        onClose={() => setShowFillProgress(!showFillProgress)}
       />
     </div>
   );
