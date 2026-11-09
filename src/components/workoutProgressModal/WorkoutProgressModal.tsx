@@ -1,69 +1,84 @@
 import styles from './workout-progress-modal.module.css';
 import Button from '@/components/button/Button';
 import WorkoutModal from '@/components/workoutModal/WorkoutModal';
-import { Exercise } from '@/sharedTypes/sharedTypes';
-import React, { ChangeEvent, useCallback, useState } from 'react';
-import { authUser } from '@/services/auth/authApi';
-import { setAccessToken, setUser } from '@/store/features/authSlice';
+import { WorkoutType } from '@/sharedTypes/sharedTypes';
+import React, { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
-import { saveExerciseProgress } from '@/services/workout/workoutApi';
+import { saveWorkoutProgress } from '@/services/workout/workoutApi';
+import { useAppSelector } from '@/store/store';
+import { toast } from 'react-toastify';
 
 interface workoutProgressModalProps {
   isOpen: boolean;
   onClose: () => void;
-  exercises: Exercise[] | null;
+  courseId: string;
+  workout: WorkoutType | null;
+  workoutProgress: number[];
+  setWorkoutProgress: (workoutProgress: number[]) => void;
 }
 
 export default function WorkoutProgressModal({
   isOpen,
   onClose,
-  exercises,
+  courseId,
+  workout,
+  workoutProgress,
+  setWorkoutProgress,
 }: workoutProgressModalProps) {
+  const accessToken = useAppSelector((state) => state.user.accessToken);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [progressValues, setProgressValues] = useState<number[]>(() =>
+    Array.from({ length: workout?.exercises.length || 0 }, () => 0),
+  );
+
+  useEffect(() => {
+    if (errorMessage) toast.error(errorMessage);
+  }, [errorMessage]);
+
+  useEffect(() => {
+    if (workoutProgress.length > 0) {
+      setProgressValues(workoutProgress || []);
+    }
+  }, [workoutProgress]);
 
   if (!isOpen) return null;
 
-  /*const progressArray: number[] = useCallback(()=>{
-    return Array.from({ length: exercises.length }, () => 0);
-  }, [exercises]);*/
+  const updateProgressValueAt = (index: number, newValue: number) => {
+    if (workout && index < workout.exercises.length && index >= 0) {
+      let enteredValue =
+        newValue > workout.exercises[index].quantity
+          ? workout.exercises[index].quantity
+          : newValue;
 
-  const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
-    /*setPassword(event.target.value);
-    clearErrors();*/
+      setProgressValues((prev) => {
+        const next = [...prev];
+        next[index] = enteredValue;
+        return next;
+      });
+    }
   };
 
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
-    setErrorMessage('');
 
+    setErrorMessage('');
     setLoading(true);
 
-    /*saveExerciseProgress({ email, password })
-      .then((token) => {
-        dispatch(setUser({ email: email, password: password }));
-        dispatch(setAccessToken(token.token || ''));
-
-        if (returnTo) {
-          router.replace(returnTo);
-        } else {
-          router.back();
-        }
+    saveWorkoutProgress({
+      access: accessToken || '',
+      courseId: courseId,
+      workoutId: workout?._id || '',
+      progressData: progressValues,
+    })
+      .then(() => {
+        setWorkoutProgress(progressValues);
+        onClose();
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
           if (error.response) {
             setErrorMessage(error.response.data.message);
-
-            const errorMessage: string = error.response.data.message;
-
-            if (errorMessage.includes('email')) {
-              setErrors({ email: true, password: false });
-            } else if (errorMessage.includes('пароль')) {
-              setErrors({ email: false, password: true });
-            } else {
-              setErrors({ email: true, password: true });
-            }
           } else if (error.request) {
             setErrorMessage('Произошла ошибка. Попробуйте позже');
           } else {
@@ -73,30 +88,42 @@ export default function WorkoutProgressModal({
       })
       .finally(() => {
         setLoading(false);
-      });*/
+      });
   };
 
   return (
     <WorkoutModal title={'Мой прогресс'} onClose={onClose}>
       <ul className={styles.progress__list}>
-        {exercises?.map((exercise) => (
+        {workout?.exercises.map((exercise, index) => (
           <li key={exercise._id} className={styles.progress__item}>
             <p
               className={styles.progress__text}
             >{`Сколько раз вы сделали ${exercise.name.toLowerCase()}?`}</p>
 
             <input
-              type="number"
+              type="text"
+              inputMode="numeric" // Открывает цифровую клавиатуру на смартфонах
+              pattern="[0-9]*"
               name="quantity"
+              min={0}
+              max={exercise.quantity}
+              value={progressValues[index]}
               className={styles.progress__input}
               placeholder={'0'}
-              onChange={(event) => onChangeInput(event)}
+              onChange={(e) =>
+                updateProgressValueAt(
+                  index,
+                  Number(e.target.value.replace(/\D/g, '')) || 0,
+                )
+              }
             />
           </li>
         ))}
       </ul>
 
-      <Button onClick={onSubmit}>Сохранить</Button>
+      <Button onClick={onSubmit} disabled={loading}>
+        Сохранить
+      </Button>
     </WorkoutModal>
   );
 }

@@ -1,37 +1,7 @@
 import axios from 'axios';
 import { BASE_URL } from '@/services/constants';
-import { WorkoutType } from '@/sharedTypes/sharedTypes';
+import { WorkoutProgressType, WorkoutType } from '@/sharedTypes/sharedTypes';
 
-/*
-{
-        "_id": "a1rqtt",
-        "name": "Урок 2. Основные движения",
-        "video": "https://www.youtube.com/embed/gJPs7b8SpVw",
-        "exercises": [],
-        "__v": 0
-    },
-    {
-        "_id": "e9ghsb",
-        "name": "Урок 1. Основы",
-        "video": "https://www.youtube.com/embed/oK2mdodtPY4",
-        "exercises": [],
-        "__v": 0
-    },
-    {
-        "_id": "mstcbg",
-        "name": "Урок 3. Новые движения",
-        "video": "https://www.youtube.com/embed/PGAQfXIAY7k",
-        "exercises": [],
-        "__v": 0
-    },
-    {
-        "_id": "t3cpno",
-        "name": "Урок 4. Продвинутые движения",
-        "video": "https://www.youtube.com/embed/zuBLSarZuyk",
-        "exercises": [],
-        "__v": 0
-    }
- */
 export const getWorkouts = async (
   access: string,
   courseId: string,
@@ -64,14 +34,43 @@ export const getWorkoutById = async (
     });
 };
 
-/*WorkoutProgressType*/
+interface workoutProgressProps {
+  access: string;
+  courseId: string;
+  workoutId: string;
+}
 
-export const saveExerciseProgress = async (
-  access: string,
-  courseId: string,
-  workoutId: string,
-  progressData: number[],
-) => {
+export const getWorkoutProgress = async ({
+  access,
+  courseId,
+  workoutId,
+}: workoutProgressProps): Promise<WorkoutProgressType> => {
+  return await axios
+    .get(
+      BASE_URL +
+        `/users/me/progress?courseId=${courseId}&workoutId=${workoutId}`,
+      {
+        headers: {
+          'content-type': '',
+          Authorization: `Bearer ${access}`,
+        },
+      },
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
+
+interface saveWorkoutProgressProps extends workoutProgressProps {
+  progressData: number[];
+}
+
+export const saveWorkoutProgress = async ({
+  access,
+  courseId,
+  workoutId,
+  progressData,
+}: saveWorkoutProgressProps) => {
   return await axios
     .patch(
       BASE_URL + `/courses/${courseId}/workouts/${workoutId}`,
@@ -84,7 +83,6 @@ export const saveExerciseProgress = async (
       },
     )
     .then((response) => {
-      console.log('PATCH response ', response);
       return response.data;
     });
 };

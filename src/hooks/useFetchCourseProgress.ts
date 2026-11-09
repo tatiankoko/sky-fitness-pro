@@ -20,7 +20,7 @@ export const useFetchCourseProgress = () => {
     setErrorMsg(null);
 
     myCourses.map((course: CourseType) => {
-      getCourseProgress(accessToken || '', course._id)
+      getCourseProgress(accessToken, course._id)
         .then((workouts) => {
           dispatch(addCourseProgress(workouts));
         })

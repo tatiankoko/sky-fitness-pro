@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { WorkoutType } from '@/sharedTypes/sharedTypes';
 
 type workoutStateType = {
-  selectedWorkout: WorkoutType | null | undefined;
+  selectedWorkout: WorkoutType | null;
   allWorkouts: WorkoutType[];
 };
 

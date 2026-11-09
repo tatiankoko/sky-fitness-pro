@@ -6,19 +6,20 @@ import WorkoutProgressModal from '@/components/workoutProgressModal/WorkoutProgr
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AxiosError } from 'axios';
-import { useAppDispatch, useAppSelector } from '@/store/store';
+import { useAppSelector } from '@/store/store';
 import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
-import { getWorkoutById } from '@/services/workout/workoutApi';
+import {
+  getWorkoutById,
+  getWorkoutProgress,
+} from '@/services/workout/workoutApi';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
 import { baseSkeletonColor } from '@/utils/constants';
 import VideoPlayer from '@/components/videoPlayer/VideoPlayer';
-import { setSelectedWorkout } from '@/store/features/workoutSlice';
 import ProgressItem from '@/components/progressItem/ProgressItem';
 import { getCourseById } from '@/services/course/courseApi';
 
 export default function Workout() {
-  const dispatch = useAppDispatch();
   const params = useParams<{ id: string; course: string; courseId: string }>();
   const { allWorkouts } = useAppSelector((state) => state.workouts);
   const { accessToken } = useAppSelector((state) => state.user);
@@ -29,6 +30,7 @@ export default function Workout() {
   const [currentWorkout, setCurrentWorkout] = useState<WorkoutType | null>(
     null,
   );
+  const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
   const [currentCourse, setCurrentCourse] = useState<CourseType | null>(null);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function Workout() {
 
     setLoading(true);
 
-    getCourseById(params.id)
+    getCourseById(params.courseId)
       .then((course) => {
         setCurrentCourse(course);
       })
@@ -63,10 +65,12 @@ export default function Workout() {
   useEffect(() => {
     if (!accessToken) return;
 
-    if (allWorkouts.length) {
-      setCurrentWorkout(
-        allWorkouts.find((workout) => workout._id === params.id) || null,
-      );
+    const found = allWorkouts.length
+      ? allWorkouts.find((workout) => workout._id === params.id)
+      : null;
+
+    if (found) {
+      setCurrentWorkout(found);
       return;
     }
 
@@ -75,7 +79,16 @@ export default function Workout() {
     getWorkoutById(accessToken, params.id)
       .then((result) => {
         setCurrentWorkout(result);
-        dispatch(setSelectedWorkout(result));
+
+        return getWorkoutProgress({
+          access: accessToken,
+          courseId: params.courseId,
+          workoutId: result._id,
+        });
+      })
+      .then((workoutProgress) => {
+        console.log('workoutProgress ', workoutProgress);
+        setWorkoutProgress(workoutProgress.progressData);
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
@@ -99,7 +112,9 @@ export default function Workout() {
 
   return (
     <div className={styles.workout__container}>
-      <h1 className={styles.workout__title}>{params.course}</h1>
+      <h1 className={styles.workout__title}>
+        {currentCourse?.nameRU || params.course}
+      </h1>
 
       {loading ? (
         <Skeleton
@@ -121,27 +136,40 @@ export default function Workout() {
 
       <div className={styles.training__block}>
         <h2 className={styles.training__title}>Упражнения тренировки</h2>
-
         <div className={styles.progress__block}>
-          {currentWorkout?.exercises.map((exercise) => (
-            <ProgressItem
-              key={exercise._id}
-              title={exercise.name}
-              progress={0}
-              max={exercise.quantity}
-            />
-          ))}
+          {loading ? (
+            <>
+              <Skeleton baseColor={baseSkeletonColor} width={320} height={36} />
+              <Skeleton baseColor={baseSkeletonColor} width={320} height={36} />
+              <Skeleton baseColor={baseSkeletonColor} width={320} height={36} />
+            </>
+          ) : (
+            currentWorkout?.exercises.map((exercise, index) => (
+              <ProgressItem
+                key={exercise._id}
+                title={exercise.name}
+                progress={workoutProgress[index] || 0}
+                max={exercise.quantity}
+              />
+            ))
+          )}
         </div>
 
         <div className={styles.progress__button}>
           <Button disabled={loading} onClick={() => setShowFillProgress(true)}>
-            Заполнить свой прогресс
+            {workoutProgress.length == 0 &&
+            !workoutProgress.some((value) => value !== 0)
+              ? 'Заполнить свой прогресс'
+              : 'Обновить свой прогресс'}
           </Button>
         </div>
       </div>
 
       <WorkoutProgressModal
-        exercises={currentWorkout?.exercises || null}
+        courseId={currentCourse?._id || params.courseId}
+        workout={currentWorkout}
+        workoutProgress={workoutProgress}
+        setWorkoutProgress={setWorkoutProgress}
         isOpen={showFillProgress}
         onClose={() => setShowFillProgress(!showFillProgress)}
       />
