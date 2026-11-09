@@ -31,11 +31,11 @@ export default function WorkoutSelectionModal({
   );
   const router = useRouter();
 
-  if (!isOpen || !course) return null;
-
   useEffect(() => {
     if (errorMsg) toast.error(errorMsg);
   }, [errorMsg]);
+
+  if (!isOpen || !course) return null;
 
   const getName = (name: string): string => {
     const names = name.split(' / ');
