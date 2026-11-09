@@ -1,25 +1,24 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { WorkoutType } from '@/sharedTypes/sharedTypes';
 
 type workoutStateType = {
-  _id: string;
-  name: string;
-  video: string;
-  exercises: string[];
+  allWorkouts: WorkoutType[];
 };
 
 const workoutInitialState: workoutStateType = {
-  _id: '',
-  name: '',
-  video: '',
-  exercises: [],
+  allWorkouts: [],
 };
 
 const workoutSlice = createSlice({
   name: 'workout',
   initialState: workoutInitialState,
-  reducers: {},
+  reducers: {
+    setAllWorkouts: (state, action: PayloadAction<WorkoutType[]>) => {
+      state.allWorkouts = action.payload;
+    },
+  },
 });
 
-export const {} = workoutSlice.actions;
+export const { setAllWorkouts } = workoutSlice.actions;
 
 export const workoutSliceReducer = workoutSlice.reducer;

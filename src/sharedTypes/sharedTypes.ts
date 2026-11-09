@@ -13,6 +13,27 @@ export type CourseType = {
     to: number;
   };
   workouts: string[];
+  courseCompleted: boolean;
+  workoutsProgress: WorkoutProgressType[];
+};
+
+export type WorkoutProgressType = {
+  workoutId: string;
+  workoutCompleted: boolean;
+  progressData: number[];
+};
+
+export type WorkoutType = {
+  _id: string;
+  name: string;
+  video: string;
+  exercises: [
+    {
+      name: string;
+      quantity: number;
+      _id: string;
+    },
+  ];
 };
 
 export type userType = {

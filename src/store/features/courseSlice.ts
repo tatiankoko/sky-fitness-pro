@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CourseType } from '@/sharedTypes/sharedTypes';
+import { courseProgressResponseType } from '@/services/course/courseApi';
 
 type courseStateType = {
   currentCourse: CourseType | null | undefined;
@@ -38,6 +39,26 @@ const courseSlice = createSlice({
         (item) => item._id !== action.payload._id,
       );
     },
+    addCourseProgress: (
+      state,
+      action: PayloadAction<courseProgressResponseType>,
+    ) => {
+      const myCourse = state.myCourses.find(
+        (course) => course._id === action.payload._id,
+      );
+
+      if (!myCourse) return;
+
+      myCourse.courseCompleted = action.payload.courseCompleted;
+      myCourse.workoutsProgress = action.payload.workoutsProgress;
+
+      state.myCourses = [
+        ...[...state.myCourses].filter(
+          (item) => item._id !== action.payload._id,
+        ),
+        myCourse,
+      ];
+    },
     setFetchError: (state, action: PayloadAction<string>) => {
       state.fetchError = action.payload;
     },
@@ -53,6 +74,7 @@ export const {
   setMyCourses,
   addMyCourse,
   removeMyCourse,
+  addCourseProgress,
   setFetchError,
   setFetchIsLoading,
 } = courseSlice.actions;

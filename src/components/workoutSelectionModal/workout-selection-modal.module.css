@@ -1,26 +1,71 @@
 .workouts__list {
     list-style-type: disc;
     list-style-position: outside;
-    padding-right: 20px;
+    /*padding-right: 20px;*/
+    /*scroll-padding-right: 20px;*/
     color: #000000;
+    max-height: 360px;        /* Ограничиваем высоту списка */
+    overflow-y: auto;         /* Показываем вертикальный скроллбар только при необходимости */
+    /*scrollbar-gutter: stable;*/
+    /*scrollbar-width: thin;             /* Толщина: auto | thin | none */
+    /*scrollbar-color: #000000 #F7F7F7;  /* [Цвет бегунка] [Цвет дорожки] */
+}
+.workouts__list::-webkit-scrollbar {
+    width: 26px;               /* Ширина вертикального скроллбара */
+    height: 26px;              /* Высота горизонтального скроллбара */
+}
+
+.workouts__list::-webkit-scrollbar-track {
+    /*box-shadow: inset 0 0 10px 10px #F7F7F7;
+    border-left: solid 20px transparent;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;*/
+
+    background: #F7F7F7;
+    background-clip: content-box;
+    border-left: 20px solid transparent;
+}
+
+.workouts__list::-webkit-scrollbar-thumb {
+    /*box-shadow: inset 0 0 10px 10px #000000;
+    border-left: solid 20px transparent;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;*/
+
+    background: #000000;
+    background-clip: content-box;
+    border-left: 20px solid transparent;
+}
+
+
+::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 .workouts__item {
     list-style: none;
 }
+.workouts__item:not(:last-child) {
+    margin-bottom: 9px;
+}
 
 .workout__content {
     display: flex;
-    gap: 15px;
+    gap: 10px;
     align-items: center;
     border: none;
     border-bottom: 1px solid #C4C4C4;
-    padding: 10px 2px;
+    padding: 0 0 9px 2px;
+
 }
 
 .workout__icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
 }
 
 .workout__info {

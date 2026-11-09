@@ -3,7 +3,7 @@
 import styles from './profile.module.css';
 import { useRedirectMain } from '@/hooks/useRedirectMain';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/button/Button';
 import { splitUsername } from '@/utils/helper';
 import { setLogout } from '@/store/features/authSlice';
@@ -14,28 +14,45 @@ import { useFetchMyCourses } from '@/hooks/useFetchMyCourses';
 import { useFetchCourses } from '@/hooks/useFetchCourses';
 import WorkoutSelectionModal from '@/components/workoutSelectionModal/WorkoutSelectionModal';
 import { toast } from 'react-toastify';
+import { CourseType } from '@/sharedTypes/sharedTypes';
 
 export default function Profile() {
-  useRedirectMain();
-  useFetchCourses();
-  const { isLoading, errorMsg } = useFetchMyCourses();
-
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
   const { myCourses, fetchIsLoading, fetchError } = useAppSelector(
     (state) => state.courses,
   );
   const [showSelection, setShowSelection] = useState<boolean>(false);
+  const [selectedCourse, setSelectedCourse] = useState<CourseType | null>(null);
+
+  useRedirectMain();
+  useFetchCourses();
+  const { isLoading, errorMsg } = useFetchMyCourses();
+  /*useFetchWorkouts();*/
 
   useEffect(() => {
     if (fetchError || errorMsg) toast.error(errorMsg || fetchError);
   }, [fetchError, errorMsg]);
 
+  /*useFetchCourseProgress();*/
+
+  const onWorkoutSelectionChange = useCallback(
+    (selectedCourse: CourseType) => {
+      /*useFetchWorkouts(selectedCourse._id);*/
+      setSelectedCourse(selectedCourse);
+      setShowSelection(true);
+    },
+    [showSelection, selectedCourse],
+  );
+
+  const onCloseWorkoutSelection = () => {
+    setShowSelection(!showSelection);
+    setSelectedCourse(null);
+  };
+
   const logout = () => {
     dispatch(setLogout());
   };
-
-  const onCourseCardClick = (): void => {};
 
   return (
     <div className={styles.profile__container}>
@@ -85,17 +102,17 @@ export default function Profile() {
                 course={item}
                 isAdded={true}
                 showUserContent={true}
-                onClickAction={onCourseCardClick}
-                onWorkoutAction={() => setShowSelection(true)}
+                onWorkoutAction={() => onWorkoutSelectionChange(item)}
               />
             ))
           )}
-
-          <WorkoutSelectionModal
-            isOpen={showSelection}
-            onClose={() => setShowSelection(!showSelection)}
-          />
         </div>
+
+        <WorkoutSelectionModal
+          isOpen={showSelection}
+          course={selectedCourse}
+          onClose={() => onCloseWorkoutSelection()}
+        />
       </section>
     </div>
   );
