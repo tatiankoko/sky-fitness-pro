@@ -4,10 +4,14 @@ import styles from './workout-selection-modal.module.css';
 import WorkoutModal from '@/components/workoutModal/WorkoutModal';
 import Button from '@/components/button/Button';
 import { useAppSelector } from '@/store/store';
-import { CourseType } from '@/sharedTypes/sharedTypes';
+import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
 import { useFetchWorkouts } from '@/hooks/useFetchWorkouts';
 import Skeleton from 'react-loading-skeleton';
 import { baseSkeletonColor } from '@/utils/constants';
+import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 interface workoutSelectionModalProps {
   isOpen: boolean;
@@ -20,10 +24,18 @@ export default function WorkoutSelectionModal({
   course,
   onClose,
 }: workoutSelectionModalProps) {
-  const { isLoading } = useFetchWorkouts(course?._id, isOpen);
+  const { isLoading, errorMsg } = useFetchWorkouts(course?._id, isOpen);
   const { allWorkouts } = useAppSelector((state) => state.workouts);
+  const [selectedWorkout, setSelectedWorkout] = useState<WorkoutType | null>(
+    null,
+  );
+  const router = useRouter();
 
   if (!isOpen || !course) return null;
+
+  useEffect(() => {
+    if (errorMsg) toast.error(errorMsg);
+  }, [errorMsg]);
 
   const getName = (name: string): string => {
     const names = name.split(' / ');
@@ -50,6 +62,14 @@ export default function WorkoutSelectionModal({
       : names.length > 1
         ? names[1]
         : name;
+  };
+
+  const onStartWorkoutClick = () => {
+    if (!selectedWorkout) {
+      return;
+    }
+
+    router.push(`/profile/${course?.nameEN}/workout/${selectedWorkout?._id}`);
   };
 
   return (
@@ -79,7 +99,13 @@ export default function WorkoutSelectionModal({
         ) : (
           allWorkouts.map((workout) => {
             return (
-              <li className={styles.workouts__item} key={workout._id}>
+              <li
+                className={classNames(styles.workouts__item, {
+                  [styles.selected]: selectedWorkout?._id === workout._id,
+                })}
+                key={workout._id}
+                onClick={() => setSelectedWorkout(workout)}
+              >
                 <div className={styles.workout__content}>
                   <svg className={styles.workout__icon}>
                     <use xlinkHref={`/img/icon/sprite.svg#icon-check`} />
@@ -99,7 +125,12 @@ export default function WorkoutSelectionModal({
           })
         )}
       </ul>
-      <Button>Начать</Button>
+
+      {/*<div className={styles.form__error}>{errorMsg}</div>*/}
+
+      <Button disabled={selectedWorkout === null} onClick={onStartWorkoutClick}>
+        Начать
+      </Button>
     </WorkoutModal>
   );
 }

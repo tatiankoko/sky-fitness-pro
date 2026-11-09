@@ -1,0 +1,50 @@
+.workout__container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 40px;
+    margin: 60px 0;
+    overflow-y: auto;
+    padding-left: calc(50% - 580px);
+    padding-right: calc(50% - 580px);
+}
+.workout__container::-webkit-scrollbar {
+    width: 0;
+}
+
+.workout__title {
+    font-weight: 500;
+    font-size: 60px;
+    line-height: 100%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.video__block {
+    width: 100%;
+    height: 639px;
+    border-radius: 30px;
+}
+
+.training__block {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: 0 4px 67px -12px #00000021;
+}
+
+.training__title {
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.progress__block {
+    margin-bottom: 20px;
+}

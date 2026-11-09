@@ -48,9 +48,14 @@
 
 .workouts__item {
     list-style: none;
+    cursor: pointer;
 }
 .workouts__item:not(:last-child) {
     margin-bottom: 9px;
+}
+
+.selected {
+    background: #E9ECED;
 }
 
 .workout__content {
@@ -88,4 +93,15 @@
     line-height: 110.00000000000001%;
     letter-spacing: 0;
     color: #000000;
+}
+
+.form__error {
+    display: flex;
+    flex-direction: column;
+/*    gap: 5px;*/
+    font-size: 14px;
+    font-weight: 400;
+    color: #DB0030;
+    /*margin-bottom: 24px;*/
+    text-align: center;
 }
