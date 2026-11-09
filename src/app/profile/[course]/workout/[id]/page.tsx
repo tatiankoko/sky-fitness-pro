@@ -6,15 +6,18 @@ import WorkoutProgressModal from '@/components/workoutProgressModal/WorkoutProgr
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AxiosError } from 'axios';
-import { useAppSelector } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { WorkoutType } from '@/sharedTypes/sharedTypes';
 import { getWorkoutById } from '@/services/workout/workoutApi';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
 import { baseSkeletonColor } from '@/utils/constants';
 import VideoPlayer from '@/components/videoPlayer/VideoPlayer';
+import { setSelectedWorkout } from '@/store/features/workoutSlice';
+import ProgressItem from '@/components/progressItem/ProgressItem';
 
 export default function Workout() {
+  const dispatch = useAppDispatch();
   const params = useParams<{ id: string; course: string }>();
   const { allWorkouts } = useAppSelector((state) => state.workouts);
   const { accessToken } = useAppSelector((state) => state.user);
@@ -44,6 +47,7 @@ export default function Workout() {
     getWorkoutById(accessToken, params.id)
       .then((result) => {
         setCurrentWorkout(result);
+        dispatch(setSelectedWorkout(result));
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
@@ -61,31 +65,46 @@ export default function Workout() {
       });
   }, [accessToken]);
 
+  const handleError = (error: any) => {
+    toast.error('Ошибка плеера:', error);
+  };
+
   return (
     <div className={styles.workout__container}>
       <h1 className={styles.workout__title}>{params.course}</h1>
 
-      <div className={styles.video__block}>
-        {currentWorkout ? (
-          <VideoPlayer videoUrl={currentWorkout.video}></VideoPlayer>
-        ) : null}
-      </div>
+      {loading ? (
+        <Skeleton
+          baseColor={baseSkeletonColor}
+          width={1160}
+          height={639}
+          borderRadius={30}
+        />
+      ) : (
+        <div className={styles.video__block}>
+          {currentWorkout ? (
+            <VideoPlayer
+              videoUrl={currentWorkout.video}
+              handleError={handleError}
+            ></VideoPlayer>
+          ) : null}
+        </div>
+      )}
 
       <div className={styles.training__block}>
         <h2 className={styles.training__title}>Упражнения тренировки</h2>
 
-        {loading ? (
-          <Skeleton
-            baseColor={baseSkeletonColor}
-            width={1160}
-            height={639}
-            borderRadius={30}
-          />
-        ) : (
-          <div className={styles.progress__block}></div>
-        )}
+        <div className={styles.progress__block}>
+          {currentWorkout?.exercises.map((exercise) => (
+            <ProgressItem
+              title={exercise.name}
+              progress={0}
+              max={exercise.quantity}
+            />
+          ))}
+        </div>
 
-        <Button>Заполнить свой прогресс</Button>
+        <Button disabled={loading}>Заполнить свой прогресс</Button>
       </div>
 
       <WorkoutProgressModal

@@ -4,9 +4,17 @@ import Image from 'next/image';
 
 interface VideoPlayerProps {
   videoUrl: string;
+  handleError: (err: any) => void;
 }
 
-export default function VideoPlayer({ videoUrl }: VideoPlayerProps) {
+export default function VideoPlayer({
+  videoUrl,
+  handleError,
+}: VideoPlayerProps) {
+  if (!videoUrl) {
+    return;
+  }
+
   const thumbnailUrl = () => {
     if (!videoUrl) {
       return '';
@@ -37,6 +45,7 @@ export default function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           alt="кнопка воспроизведения видео"
           width={156}
           height={156}
+          loading={'eager'}
         />
       }
       config={{
@@ -44,6 +53,7 @@ export default function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           color: 'white',
         },
       }}
+      onError={handleError}
     />
   );
 }

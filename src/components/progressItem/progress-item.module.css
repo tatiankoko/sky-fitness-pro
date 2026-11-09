@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.title {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110.00000000000001%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.indicator {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border: none;
+    border-radius: 50px;
+    background-color: #F7F7F7;
+    overflow: hidden;
+}
+
+.indicator::-webkit-progress-bar {
+    background-color: #F7F7F7;
+    border-radius: 50px;
+}
+
+.indicator::-moz-progress-bar {
+    background-color: #F7F7F7;
+    border-radius: 50px;
+}
+
+.indicator::-webkit-progress-value {
+    background-color: #00C1FF;
+    border-radius: 50px;
+    transition: width 0.3s ease;
+}

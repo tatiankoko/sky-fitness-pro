@@ -11,6 +11,7 @@ import { addCourse, removeCourse } from '@/services/course/courseApi';
 import { AxiosError } from 'axios';
 import { addMyCourse, removeMyCourse } from '@/store/features/courseSlice';
 import Button from '@/components/button/Button';
+import ProgressItem from '@/components/progressItem/ProgressItem';
 
 type CourseCardProps = {
   course: CourseType;
@@ -112,16 +113,7 @@ export default function CourseCard({
 
         {showUserContent ? (
           <div className={styles.user__content}>
-            <div className={styles.progress__block}>
-              <h3 className={styles.progress__title}>Прогресс</h3>
-
-              <progress
-                className={styles.progress__indicator}
-                value={progress}
-                max={100}
-              ></progress>
-            </div>
-
+            <ProgressItem title={'Прогресс'} progress={progress} max={100} />
             <Button onClick={onWorkoutAction}>Начать тренировки</Button>
           </div>
         ) : null}
