@@ -3,7 +3,7 @@
 import styles from './workout.module.css';
 import Button from '@/components/button/Button';
 import WorkoutProgressModal from '@/components/workoutProgressModal/WorkoutProgressModal';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AxiosError } from 'axios';
 import { useAppSelector } from '@/store/store';
@@ -12,9 +12,10 @@ import { getWorkoutById } from '@/services/workout/workoutApi';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
 import { baseSkeletonColor } from '@/utils/constants';
+import VideoPlayer from '@/components/videoPlayer/VideoPlayer';
 
 export default function Workout() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ id: string; course: string }>();
   const { allWorkouts } = useAppSelector((state) => state.workouts);
   const { accessToken } = useAppSelector((state) => state.user);
   const [showFillProgress, setShowFillProgress] = useState<boolean>(false);
@@ -23,7 +24,6 @@ export default function Workout() {
   const [currentWorkout, setCurrentWorkout] = useState<WorkoutType | null>(
     null,
   );
-  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -63,12 +63,16 @@ export default function Workout() {
 
   return (
     <div className={styles.workout__container}>
-      <h1 className={styles.workout__title}>{currentWorkout?.name}</h1>
+      <h1 className={styles.workout__title}>{params.course}</h1>
 
-      <div className={styles.video__block}></div>
+      <div className={styles.video__block}>
+        {currentWorkout ? (
+          <VideoPlayer videoUrl={currentWorkout.video}></VideoPlayer>
+        ) : null}
+      </div>
 
       <div className={styles.training__block}>
-        <h2 className={styles.training__title}>{currentWorkout?.name}</h2>
+        <h2 className={styles.training__title}>Упражнения тренировки</h2>
 
         {loading ? (
           <Skeleton
@@ -78,9 +82,7 @@ export default function Workout() {
             borderRadius={30}
           />
         ) : (
-          <div className={styles.progress__block}>
-            {/*<video src={}></video>*/}
-          </div>
+          <div className={styles.progress__block}></div>
         )}
 
         <Button>Заполнить свой прогресс</Button>
