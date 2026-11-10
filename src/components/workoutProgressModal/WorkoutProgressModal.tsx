@@ -7,6 +7,7 @@ import { AxiosError } from 'axios';
 import { saveWorkoutProgress } from '@/services/workout/workoutApi';
 import { useAppSelector } from '@/store/store';
 import { toast } from 'react-toastify';
+import WorkoutSuccessModal from '@/components/workoutSuccessModal/WorkoutSuccessModal';
 
 interface workoutProgressModalProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ export default function WorkoutProgressModal({
   const [progressValues, setProgressValues] = useState<number[]>(() =>
     Array.from({ length: workout?.exercises.length || 0 }, () => 0),
   );
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (errorMessage) toast.error(errorMessage);
@@ -73,7 +75,7 @@ export default function WorkoutProgressModal({
     })
       .then(() => {
         setWorkoutProgress(progressValues);
-        onClose();
+        setShowSuccess(true);
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
@@ -91,7 +93,9 @@ export default function WorkoutProgressModal({
       });
   };
 
-  return (
+  return showSuccess ? (
+    <WorkoutSuccessModal isOpen={showSuccess} onClose={onClose} />
+  ) : (
     <WorkoutModal title={'Мой прогресс'} onClose={onClose}>
       <ul className={styles.progress__list}>
         {workout?.exercises.map((exercise, index) => (
