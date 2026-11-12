@@ -5,13 +5,9 @@ import WorkoutModal from '@/components/workoutModal/WorkoutModal';
 import Button from '@/components/button/Button';
 import { useAppSelector } from '@/store/store';
 import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
-import { useFetchWorkouts } from '@/hooks/useFetchWorkouts';
-import Skeleton from 'react-loading-skeleton';
-import { baseSkeletonColor } from '@/utils/constants';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
 
 interface workoutSelectionModalProps {
   isOpen: boolean;
@@ -24,16 +20,20 @@ export default function WorkoutSelectionModal({
   course,
   onClose,
 }: workoutSelectionModalProps) {
-  const { isLoading, errorMsg } = useFetchWorkouts(course?._id, isOpen);
   const { allWorkouts } = useAppSelector((state) => state.workouts);
+  const { myCoursesProgress } = useAppSelector((state) => state.courses);
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutType | null>(
     null,
   );
   const router = useRouter();
 
-  useEffect(() => {
-    if (errorMsg) toast.error(errorMsg);
-  }, [errorMsg]);
+  const courseProgress = myCoursesProgress.find(
+    (progress) => progress.courseId === course?._id,
+  );
+
+  const courseWorkouts = allWorkouts?.find(
+    (item) => item.courseId === course?._id,
+  )?.workouts;
 
   if (!isOpen || !course) return null;
 
@@ -77,58 +77,44 @@ export default function WorkoutSelectionModal({
   return (
     <WorkoutModal title={'Выберите тренировку'} onClose={onClose}>
       <ul className={styles.workouts__list}>
-        {isLoading ? (
-          <>
-            <li className={styles.workouts__item}>
+        {courseWorkouts?.map((workout) => {
+          return (
+            <li
+              className={classNames(styles.workouts__item, {
+                [styles.selected]: selectedWorkout?._id === workout._id,
+              })}
+              key={workout._id}
+              onClick={() => setSelectedWorkout(workout)}
+            >
               <div className={styles.workout__content}>
-                <Skeleton
-                  baseColor={baseSkeletonColor}
-                  width={354}
-                  height={64}
-                />
-              </div>
-            </li>
-            <li className={styles.workouts__item}>
-              <div className={styles.workout__content}>
-                <Skeleton
-                  baseColor={baseSkeletonColor}
-                  width={354}
-                  height={64}
-                />
-              </div>
-            </li>
-          </>
-        ) : (
-          allWorkouts.map((workout) => {
-            return (
-              <li
-                className={classNames(styles.workouts__item, {
-                  [styles.selected]: selectedWorkout?._id === workout._id,
-                })}
-                key={workout._id}
-                onClick={() => setSelectedWorkout(workout)}
-              >
-                <div className={styles.workout__content}>
-                  <svg className={styles.workout__icon}>
-                    <use xlinkHref={`/img/icon/sprite.svg#icon-check`} />
-                  </svg>
+                <svg className={styles.workout__icon}>
+                  <use
+                    xlinkHref={`/img/icon/sprite.svg#icon-${
+                      courseProgress?.courseCompleted ||
+                      courseProgress?.workoutsProgress?.some(
+                        (item) =>
+                          item.workoutId === workout._id &&
+                          item.workoutCompleted,
+                      )
+                        ? 'check'
+                        : 'no-check'
+                    }`}
+                  />
+                </svg>
 
-                  <div className={styles.workout__info}>
-                    <h3 className={styles.workout__title}>
-                      {getName(workout.name)}
-                    </h3>
-                    <p className={styles.workout__description}>
-                      {getDescription(workout.name)}
-                    </p>
-                  </div>
+                <div className={styles.workout__info}>
+                  <h3 className={styles.workout__title}>
+                    {getName(workout.name)}
+                  </h3>
+                  <p className={styles.workout__description}>
+                    {getDescription(workout.name)}
+                  </p>
                 </div>
-              </li>
-            );
-          })
-        )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
-
-      {/*<div className={styles.form__error}>{errorMsg}</div>*/}
 
       <Button disabled={selectedWorkout === null} onClick={onStartWorkoutClick}>
         Начать

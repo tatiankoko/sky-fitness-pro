@@ -4,14 +4,11 @@ import styles from './courseCard.module.css';
 import Image from 'next/image';
 import { CourseInfo, CourseType } from '@/sharedTypes/sharedTypes';
 import InfoItem from '@/components/infoItem/InfoItem';
-import React, { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import React, { useCallback, useState } from 'react';
 import { useAppSelector } from '@/store/store';
-import Button from '@/components/button/Button';
-import ProgressItem from '@/components/progressItem/ProgressItem';
 import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
-import { useFetchCourseProgress } from '@/hooks/useFetchCourseProgress';
-import { useFetchWorkouts } from '@/hooks/useFetchWorkouts';
+import { toast } from 'react-toastify';
+import CourseProgressContent from '@/components/courseProgressContent/CourseProgressContent';
 
 type CourseCardProps = {
   course: CourseType;
@@ -35,40 +32,12 @@ export default function CourseCard({
   const [loading, setLoading] = useState<boolean>(false);
   const toggleAddCourse = useToggleAddCourseAction();
 
-  const {
-    isLoading: isCourseProgressLoading,
-    errorMsg: courseProgressError,
-    courseProgress,
-  } = useFetchCourseProgress(course._id);
-
-  const {
-    isLoading: areWorkoutsLoading,
-    errorMsg: workoutsError,
-    workouts,
-  } = useFetchWorkouts(course._id);
-
-  const isCardLoading =
-    loading || isCourseProgressLoading || areWorkoutsLoading;
-
-  const progress = !workouts.length
-    ? 0
-    : courseProgress?.courseCompleted
-      ? workouts.length
-      : (courseProgress?.workoutsProgress?.filter(
-          (workout) => workout.workoutCompleted,
-        ).length ?? 0);
-
-  useEffect(() => {
-    if (courseProgressError) toast.error(courseProgressError);
-    if (workoutsError) toast.error(workoutsError);
-  }, [courseProgressError, workoutsError]);
-
   const onToggleAddCourse = useCallback(
     (event: React.MouseEvent<HTMLOrSVGElement, MouseEvent>) => {
       event.preventDefault();
       event.stopPropagation();
 
-      if (isCardLoading) return;
+      if (loading) return;
 
       if (!accessToken) {
         toast.info('Авторизуйтесь, чтобы добавить курс');
@@ -84,7 +53,7 @@ export default function CourseCard({
         setErrorMsg: toast.error,
       });
     },
-    [accessToken, myCourses, isCardLoading, course, toggleAddCourse],
+    [accessToken, myCourses, loading, course, toggleAddCourse],
   );
 
   return (
@@ -114,14 +83,11 @@ export default function CourseCard({
         </div>
 
         {showUserContent ? (
-          <div className={styles.user__content}>
-            <ProgressItem
-              title={'Прогресс'}
-              progress={progress}
-              max={workouts.length}
-            />
-            <Button onClick={onWorkoutAction}>Начать тренировки</Button>
-          </div>
+          <CourseProgressContent
+            course={course}
+            isActionLoading={loading}
+            onWorkoutAction={onWorkoutAction}
+          />
         ) : null}
       </div>
     </div>

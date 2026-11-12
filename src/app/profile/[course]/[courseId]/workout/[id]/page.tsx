@@ -66,7 +66,9 @@ export default function Workout() {
     if (!accessToken) return;
 
     const found = allWorkouts.length
-      ? allWorkouts.find((workout) => workout._id === params.id)
+      ? allWorkouts
+          .find((courseWorkout) => courseWorkout.courseId === params.courseId)
+          ?.workouts.find((workout) => workout._id === params.id)
       : null;
 
     if (found) {

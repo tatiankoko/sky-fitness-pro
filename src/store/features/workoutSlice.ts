@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { WorkoutType } from '@/sharedTypes/sharedTypes';
+import { CourseWorkoutType, WorkoutType } from '@/sharedTypes/sharedTypes';
 
 type workoutStateType = {
   selectedWorkout: WorkoutType | null;
-  allWorkouts: WorkoutType[];
+  allWorkouts: CourseWorkoutType[];
 };
 
 const workoutInitialState: workoutStateType = {
@@ -15,8 +15,8 @@ const workoutSlice = createSlice({
   name: 'workout',
   initialState: workoutInitialState,
   reducers: {
-    setAllWorkouts: (state, action: PayloadAction<WorkoutType[]>) => {
-      state.allWorkouts = action.payload;
+    addWorkout: (state, action: PayloadAction<CourseWorkoutType>) => {
+      state.allWorkouts = [...state.allWorkouts, action.payload];
     },
     setSelectedWorkout: (state, action: PayloadAction<WorkoutType>) => {
       state.selectedWorkout = action.payload;
@@ -24,6 +24,6 @@ const workoutSlice = createSlice({
   },
 });
 
-export const { setAllWorkouts, setSelectedWorkout } = workoutSlice.actions;
+export const { addWorkout, setSelectedWorkout } = workoutSlice.actions;
 
 export const workoutSliceReducer = workoutSlice.reducer;

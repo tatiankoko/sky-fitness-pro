@@ -46,9 +46,3 @@
     gap: 6px;
     width: 100%;
 }
-
-.user__content {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}

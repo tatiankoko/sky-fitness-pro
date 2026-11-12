@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { AxiosError } from 'axios';
 import { getWorkouts } from '@/services/workout/workoutApi';
-import { setAllWorkouts } from '@/store/features/workoutSlice';
+import { addWorkout } from '@/store/features/workoutSlice';
 import { WorkoutType } from '@/sharedTypes/sharedTypes';
 
 export const useFetchWorkouts = (courseId?: string, enabled = true) => {
@@ -24,7 +24,7 @@ export const useFetchWorkouts = (courseId?: string, enabled = true) => {
     getWorkouts(accessToken, courseId)
       .then((workoutsList) => {
         setWorkouts(workoutsList);
-        dispatch(setAllWorkouts(workoutsList));
+        dispatch(addWorkout({ courseId: courseId, workouts: workoutsList }));
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
