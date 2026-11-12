@@ -28,13 +28,10 @@ export default function Profile() {
   useRedirectMain();
   useFetchCourses();
   const { isLoading, errorMsg } = useFetchMyCourses();
-  /*useFetchWorkouts();*/
 
   useEffect(() => {
     if (fetchError || errorMsg) toast.error(errorMsg || fetchError);
   }, [fetchError, errorMsg]);
-
-  /*useFetchCourseProgress();*/
 
   const onWorkoutSelectionChange = useCallback(
     (selectedCourse: CourseType) => {

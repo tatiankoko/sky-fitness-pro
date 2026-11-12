@@ -12,7 +12,7 @@ export default function ProgressItem({
   max = 100,
 }: progressItemProps) {
   const percent = () => {
-    return (progress * 100) / max;
+    return Math.round((progress * 100) / max);
   };
 
   return (

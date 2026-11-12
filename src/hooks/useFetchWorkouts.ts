@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/store/store';
 import { AxiosError } from 'axios';
 import { getWorkouts } from '@/services/workout/workoutApi';
 import { setAllWorkouts } from '@/store/features/workoutSlice';
+import { WorkoutType } from '@/sharedTypes/sharedTypes';
 
 export const useFetchWorkouts = (courseId?: string, enabled = true) => {
   const dispatch = useAppDispatch();
@@ -12,6 +13,7 @@ export const useFetchWorkouts = (courseId?: string, enabled = true) => {
   const { myCourses } = useAppSelector((state) => state.courses);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [workouts, setWorkouts] = useState<WorkoutType[]>([]);
 
   useEffect(() => {
     if (!enabled || !courseId || !accessToken || myCourses.length <= 0) return;
@@ -20,8 +22,9 @@ export const useFetchWorkouts = (courseId?: string, enabled = true) => {
     setErrorMsg(null);
 
     getWorkouts(accessToken, courseId)
-      .then((workouts) => {
-        dispatch(setAllWorkouts(workouts));
+      .then((workoutsList) => {
+        setWorkouts(workoutsList);
+        dispatch(setAllWorkouts(workoutsList));
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
@@ -42,5 +45,6 @@ export const useFetchWorkouts = (courseId?: string, enabled = true) => {
   return {
     isLoading,
     errorMsg,
+    workouts,
   };
 };

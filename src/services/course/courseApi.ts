@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from '@/services/constants';
-import { CourseType, WorkoutProgressType } from '@/sharedTypes/sharedTypes';
+import { CourseProgressType, CourseType } from '@/sharedTypes/sharedTypes';
 
 export const getAllCourses = async (): Promise<CourseType[]> => {
   return await axios.get(BASE_URL + '/courses').then((response) => {
@@ -58,16 +58,10 @@ export const removeCourse = async (accessToken: string, courseId: string) => {
   });
 };
 
-export type courseProgressResponseType = {
-  _id: string;
-  courseCompleted: boolean;
-  workoutsProgress: WorkoutProgressType[];
-};
-
 export const getCourseProgress = async (
   access: string,
   courseId: string,
-): Promise<courseProgressResponseType> => {
+): Promise<CourseProgressType> => {
   return await axios
     .get(BASE_URL + `/users/me/progress?courseId=${courseId}`, {
       headers: {
@@ -75,7 +69,6 @@ export const getCourseProgress = async (
       },
     })
     .then((response) => {
-      console.log(response);
-      return response.data.user;
+      return response.data;
     });
 };
