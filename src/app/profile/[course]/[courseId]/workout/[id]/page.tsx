@@ -123,16 +123,14 @@ export default function Workout() {
           height={639}
           borderRadius={30}
         />
-      ) : (
+      ) : currentWorkout ? (
         <div className={styles.video__block}>
-          {currentWorkout ? (
-            <VideoPlayer
-              videoUrl={currentWorkout.video}
-              handleError={handleError}
-            ></VideoPlayer>
-          ) : null}
+          <VideoPlayer
+            videoUrl={currentWorkout.video}
+            handleError={handleError}
+          ></VideoPlayer>
         </div>
-      )}
+      ) : null}
 
       <div className={styles.training__block}>
         <h2 className={styles.training__title}>Упражнения тренировки</h2>
@@ -156,7 +154,10 @@ export default function Workout() {
         </div>
 
         <div className={styles.progress__button}>
-          <Button disabled={loading} onClick={() => setShowFillProgress(true)}>
+          <Button
+            disabled={loading || !workoutProgress || !currentWorkout}
+            onClick={() => setShowFillProgress(true)}
+          >
             {workoutProgress.length == 0 &&
             !workoutProgress.some((value) => value !== 0)
               ? 'Заполнить свой прогресс'

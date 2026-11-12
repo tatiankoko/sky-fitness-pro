@@ -1,5 +1,4 @@
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import styles from '@/components/courseCard/courseCard.module.css';
 import { baseSkeletonColor } from '@/utils/constants';
 

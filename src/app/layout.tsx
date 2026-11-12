@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 import ReduxProvider from '@/store/ReduxProvider';
 import Header from '@/components/header/Header';
 import { Bounce, ToastContainer } from 'react-toastify';
