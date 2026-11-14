@@ -14,14 +14,14 @@ export const getCourseById = async (id: string): Promise<CourseType> => {
   });
 };
 
-export type myCoursesResponseType = {
-  courseProgress: [];
+export type MyCoursesResponseType = {
+  courseProgress: CourseProgressType[];
   selectedCourses: string[];
 };
 
 export const getMyCourses = async (
   access: string,
-): Promise<myCoursesResponseType> => {
+): Promise<MyCoursesResponseType> => {
   return await axios
     .get(BASE_URL + '/users/me', {
       headers: {

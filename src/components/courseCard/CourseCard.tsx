@@ -2,7 +2,11 @@
 
 import styles from './courseCard.module.css';
 import Image from 'next/image';
-import { CourseInfo, CourseType } from '@/sharedTypes/sharedTypes';
+import {
+  CourseInfo,
+  CourseProgressType,
+  CourseType,
+} from '@/sharedTypes/sharedTypes';
 import InfoItem from '@/components/infoItem/InfoItem';
 import React, { useCallback, useState } from 'react';
 import { useAppSelector } from '@/store/store';
@@ -12,6 +16,7 @@ import CourseProgressContent from '@/components/courseProgressContent/CourseProg
 
 type CourseCardProps = {
   course: CourseType;
+  courseProgress?: CourseProgressType;
   isAdded?: boolean;
   showUserContent?: boolean;
   onClickAction?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -22,6 +27,7 @@ type CourseCardProps = {
 
 export default function CourseCard({
   course,
+  courseProgress,
   isAdded = false,
   showUserContent = false,
   onClickAction,
@@ -85,6 +91,7 @@ export default function CourseCard({
         {showUserContent ? (
           <CourseProgressContent
             course={course}
+            courseProgress={courseProgress}
             isActionLoading={loading}
             onWorkoutAction={onWorkoutAction}
           />
