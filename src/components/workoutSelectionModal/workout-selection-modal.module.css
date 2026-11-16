@@ -58,6 +58,14 @@
     background: #E9ECED;
 }
 
+.workouts__notification {
+    list-style: none;
+    text-align: center;
+    color: color-mix(in oklab, #000000 60%, transparent);
+    font-size: 24px;
+    line-height: 28px;
+}
+
 .workout__content {
     display: flex;
     gap: 10px;

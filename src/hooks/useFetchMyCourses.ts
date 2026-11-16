@@ -1,50 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { getMyCourses } from '@/services/course/courseApi';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { setMyCourses } from '@/store/features/courseSlice';
-import { AxiosError } from 'axios';
+import {
+  setMyCoursesFetchError,
+  setMyCoursesResponse,
+  startMyCoursesFetch,
+} from '@/store/features/courseSlice';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { setLogout } from '@/store/features/authSlice';
+import { isInvalidToken } from '@/utils/helper';
 
 export const useFetchMyCourses = () => {
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.user);
-  const { allCourses, myCourses } = useAppSelector((state) => state.courses);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const {
+    myCourses,
+    fetchMyCoursesIsLoading,
+    fetchMyCoursesError,
+    myCoursesRequested,
+  } = useAppSelector((state) => state.courses);
 
   useEffect(() => {
-    if (!accessToken || allCourses.length <= 0) return;
+    if (
+      !accessToken ||
+      fetchMyCoursesIsLoading ||
+      fetchMyCoursesError ||
+      myCoursesRequested
+    ) {
+      return;
+    }
 
-    setIsLoading(true);
+    dispatch(startMyCoursesFetch());
 
-    getMyCourses(accessToken || '')
-      .then((courseIds) => {
-        dispatch(
-          setMyCourses(
-            allCourses.filter((course) =>
-              courseIds.selectedCourses.includes(course._id),
-            ),
-          ),
-        );
-      })
+    getMyCourses(accessToken)
+      .then((response) => dispatch(setMyCoursesResponse(response)))
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMsg(error.response.data);
-          } else if (error.request) {
-            setErrorMsg('Произошла ошибка. Попробуйте позже');
-          } else {
-            setErrorMsg('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          dispatch(setMyCoursesFetchError(getApiErrorMessage(error)));
         }
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [allCourses, accessToken]);
+      .finally(() => {});
+  }, [accessToken, myCoursesRequested, dispatch]);
 
   return {
-    isLoading,
-    errorMsg,
+    isLoading: fetchMyCoursesIsLoading,
+    errorMsg: fetchMyCoursesError,
     myCourses,
   };
 };

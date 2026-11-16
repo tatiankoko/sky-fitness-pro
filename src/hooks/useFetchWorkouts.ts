@@ -1,50 +1,81 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { AxiosError } from 'axios';
 import { getWorkouts } from '@/services/workout/workoutApi';
-import { addWorkout } from '@/store/features/workoutSlice';
+import {
+  addWorkout,
+  setWorkoutFetchError,
+  startWorkoutFetch,
+} from '@/store/features/workoutSlice';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 import { WorkoutType } from '@/sharedTypes/sharedTypes';
+import { setLogout } from '@/store/features/authSlice';
+import { isInvalidToken } from '@/utils/helper';
 
 export const useFetchWorkouts = (courseId?: string, enabled = true) => {
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.user);
-  const { myCourses } = useAppSelector((state) => state.courses);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [workouts, setWorkouts] = useState<WorkoutType[]>([]);
+  const {
+    allWorkouts,
+    allWorkoutsRequested,
+    fetchErrorByCourse,
+    fetchIsLoadingByCourse,
+  } = useAppSelector((state) => state.workouts);
+  const attemptedCourse = useRef<string | null>(null);
+  const workoutRequests = useRef<Map<string, Promise<WorkoutType[]>>>(
+    new Map<string, Promise<WorkoutType[]>>(),
+  );
 
   useEffect(() => {
-    if (!enabled || !courseId || !accessToken || myCourses.length <= 0) return;
+    if (!enabled || !courseId || !accessToken) {
+      attemptedCourse.current = null;
+      return;
+    }
 
-    setIsLoading(true);
-    setErrorMsg(null);
+    if (
+      fetchIsLoadingByCourse[courseId] === null ||
+      fetchErrorByCourse[courseId] === null ||
+      allWorkoutsRequested[courseId] === null
+    ) {
+      return;
+    }
 
-    getWorkouts(accessToken, courseId)
-      .then((workoutsList) => {
-        setWorkouts(workoutsList);
-        dispatch(addWorkout({ courseId: courseId, workouts: workoutsList }));
-      })
+    attemptedCourse.current = courseId;
+
+    dispatch(startWorkoutFetch({ courseId }));
+
+    const key = `${accessToken}:${courseId}`;
+    let request = workoutRequests.current.get(key);
+    if (!request) {
+      request = getWorkouts(accessToken, courseId);
+      workoutRequests.current.set(key, request);
+    }
+
+    request
+      .then((workouts) => dispatch(addWorkout({ courseId, workouts })))
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMsg(error.response.data);
-          } else if (error.request) {
-            setErrorMsg('Произошла ошибка. Попробуйте позже');
-          } else {
-            setErrorMsg('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          dispatch(
+            setWorkoutFetchError({
+              courseId,
+              error: getApiErrorMessage(error),
+            }),
+          );
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        if (workoutRequests.current.get(key) === request)
+          workoutRequests.current.delete(key);
       });
-  }, [myCourses, accessToken, courseId, enabled, dispatch]);
+  }, [accessToken, courseId, dispatch, enabled]);
 
   return {
-    isLoading,
-    errorMsg,
-    workouts,
+    isLoading: courseId ? (fetchIsLoadingByCourse[courseId] ?? null) : false,
+    errorMsg: courseId ? (fetchErrorByCourse[courseId] ?? null) : null,
+    workouts:
+      allWorkouts.find((item) => item.courseId === courseId)?.workouts ?? [],
   };
 };

@@ -16,14 +16,17 @@ export default function Main() {
   useFetchCourses();
   useFetchMyCourses();
 
-  const { allCourses, myCourses, fetchIsLoading, fetchError } = useAppSelector(
-    (state) => state.courses,
-  );
+  const {
+    allCourses,
+    myCourses,
+    fetchAllCoursesIsLoading,
+    fetchAllCoursesError,
+  } = useAppSelector((state) => state.courses);
   const mainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (fetchError) toast.error(fetchError);
-  }, [fetchError]);
+    if (fetchAllCoursesError) toast.error(fetchAllCoursesError);
+  }, [fetchAllCoursesError]);
 
   const onButtonUpClick = (): void => {
     mainRef.current?.scrollTo({
@@ -56,7 +59,7 @@ export default function Main() {
       </div>
 
       <div className={styles.courses__block}>
-        {fetchIsLoading ? (
+        {fetchAllCoursesIsLoading ? (
           <>
             <CourseCardSkeleton />
             <CourseCardSkeleton />

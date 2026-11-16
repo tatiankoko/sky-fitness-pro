@@ -3,7 +3,7 @@
 import styles from './profile.module.css';
 import { useRedirectMain } from '@/hooks/useRedirectMain';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Button from '@/components/button/Button';
 import { splitUsername } from '@/utils/helper';
 import { setLogout } from '@/store/features/authSlice';
@@ -19,28 +19,38 @@ import { CourseType } from '@/sharedTypes/sharedTypes';
 export default function Profile() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
-  const { myCourses, fetchIsLoading, fetchError } = useAppSelector(
-    (state) => state.courses,
-  );
+  const {
+    myCourses,
+    myCoursesProgress,
+    fetchAllCoursesIsLoading,
+    fetchAllCoursesError,
+  } = useAppSelector((state) => state.courses);
   const [showSelection, setShowSelection] = useState<boolean>(false);
   const [selectedCourse, setSelectedCourse] = useState<CourseType | null>(null);
+  const courseProgressById = useMemo(
+    () =>
+      new Map(
+        myCoursesProgress.map((courseProgress) => [
+          courseProgress.courseId,
+          courseProgress,
+        ]),
+      ),
+    [myCoursesProgress],
+  );
 
   useRedirectMain();
   useFetchCourses();
   const { isLoading, errorMsg } = useFetchMyCourses();
 
   useEffect(() => {
-    if (fetchError || errorMsg) toast.error(errorMsg || fetchError);
-  }, [fetchError, errorMsg]);
+    if (fetchAllCoursesError || errorMsg)
+      toast.error(errorMsg || fetchAllCoursesError);
+  }, [fetchAllCoursesError, errorMsg]);
 
-  const onWorkoutSelectionChange = useCallback(
-    (selectedCourse: CourseType) => {
-      /*useFetchWorkouts(selectedCourse._id);*/
-      setSelectedCourse(selectedCourse);
-      setShowSelection(true);
-    },
-    [showSelection, selectedCourse],
-  );
+  const onWorkoutSelectionChange = useCallback((selectedCourse: CourseType) => {
+    setSelectedCourse(selectedCourse);
+    setShowSelection(true);
+  }, []);
 
   const onCloseWorkoutSelection = () => {
     setShowSelection(!showSelection);
@@ -79,14 +89,16 @@ export default function Profile() {
       <section className={styles.courses__block}>
         <h1 className={styles.title}>Мои курсы</h1>
 
-        {fetchIsLoading || isLoading || myCourses.length > 0 ? null : (
+        {fetchAllCoursesIsLoading ||
+        isLoading ||
+        myCourses.length > 0 ? null : (
           <div className={styles.courses__notification}>
             Пока нет приобретенных курсов
           </div>
         )}
 
         <div className={styles.courses__content}>
-          {fetchIsLoading || isLoading ? (
+          {fetchAllCoursesIsLoading || isLoading ? (
             <>
               <CourseCardSkeleton />
               <CourseCardSkeleton />
@@ -97,6 +109,7 @@ export default function Profile() {
               <CourseCard
                 key={item._id}
                 course={item}
+                courseProgress={courseProgressById.get(item._id)}
                 isAdded={true}
                 showUserContent={true}
                 onWorkoutAction={() => onWorkoutSelectionChange(item)}

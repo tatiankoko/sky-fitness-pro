@@ -18,29 +18,36 @@ import { baseSkeletonColor } from '@/utils/constants';
 import VideoPlayer from '@/components/videoPlayer/VideoPlayer';
 import ProgressItem from '@/components/progressItem/ProgressItem';
 import { getCourseById } from '@/services/course/courseApi';
+import { useRedirectMain } from '@/hooks/useRedirectMain';
 
 export default function Workout() {
   const params = useParams<{ id: string; course: string; courseId: string }>();
   const { allWorkouts } = useAppSelector((state) => state.workouts);
   const { accessToken } = useAppSelector((state) => state.user);
+  const cachedWorkout = allWorkouts
+    .find((courseWorkout) => courseWorkout.courseId === params.courseId)
+    ?.workouts.find((workout) => workout._id === params.id);
 
   const [showFillProgress, setShowFillProgress] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [currentWorkout, setCurrentWorkout] = useState<WorkoutType | null>(
-    null,
-  );
+  const [loading, setLoading] = useState<boolean>(true);
+  const [fetchedWorkout, setFetchedWorkout] = useState<{
+    id: string;
+    workout: WorkoutType;
+  } | null>(null);
   const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
   const [currentCourse, setCurrentCourse] = useState<CourseType | null>(null);
+  const currentWorkout =
+    cachedWorkout ??
+    (fetchedWorkout?.id === params.id ? fetchedWorkout.workout : null);
 
+  useRedirectMain();
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
 
   useEffect(() => {
     if (!accessToken) return;
-
-    setLoading(true);
 
     getCourseById(params.courseId)
       .then((course) => {
@@ -60,37 +67,14 @@ export default function Workout() {
       .finally(() => {
         setLoading(false);
       });
-  }, [accessToken]);
+  }, [accessToken, params.courseId]);
 
   useEffect(() => {
-    if (!accessToken) return;
-
-    const found = allWorkouts.length
-      ? allWorkouts
-          .find((courseWorkout) => courseWorkout.courseId === params.courseId)
-          ?.workouts.find((workout) => workout._id === params.id)
-      : null;
-
-    if (found) {
-      setCurrentWorkout(found);
-      return;
-    }
-
-    setLoading(true);
+    if (!accessToken || cachedWorkout) return;
 
     getWorkoutById(accessToken, params.id)
       .then((result) => {
-        setCurrentWorkout(result);
-
-        return getWorkoutProgress({
-          access: accessToken,
-          courseId: params.courseId,
-          workoutId: result._id,
-        });
-      })
-      .then((workoutProgress) => {
-        console.log('workoutProgress ', workoutProgress);
-        setWorkoutProgress(workoutProgress.progressData);
+        setFetchedWorkout({ id: params.id, workout: result });
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
@@ -106,10 +90,37 @@ export default function Workout() {
       .finally(() => {
         setLoading(false);
       });
-  }, [accessToken]);
+  }, [accessToken, allWorkouts, cachedWorkout, params.id]);
 
-  const handleError = (error: any) => {
-    toast.error('Ошибка плеера:', error);
+  useEffect(() => {
+    if (!accessToken || !currentWorkout) return;
+
+    getWorkoutProgress({
+      access: accessToken,
+      courseId: params.courseId,
+      workoutId: currentWorkout._id,
+    })
+      .then((progress) => {
+        setWorkoutProgress(progress.progressData);
+      })
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          if (error.response) {
+            setError(error.response.data);
+          } else if (error.request) {
+            setError('Произошла ошибка. Попробуйте позже');
+          } else {
+            setError('Неизвестная ошибка');
+          }
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [accessToken, currentWorkout, params.courseId]);
+
+  const handleError = (error: unknown) => {
+    toast.error(error instanceof Error ? error.message : 'Ошибка плеера');
   };
 
   return (
@@ -148,7 +159,7 @@ export default function Workout() {
               <ProgressItem
                 key={exercise._id}
                 title={exercise.name}
-                progress={workoutProgress[index] || 0}
+                progress={/*workoutProgress[index] ?? */ 0} // todo fix it
                 max={exercise.quantity}
               />
             ))
@@ -160,7 +171,7 @@ export default function Workout() {
             disabled={loading || !workoutProgress || !currentWorkout}
             onClick={() => setShowFillProgress(true)}
           >
-            {workoutProgress.length == 0 &&
+            {workoutProgress?.length == 0 && // todo fix it
             !workoutProgress.some((value) => value !== 0)
               ? 'Заполнить свой прогресс'
               : 'Обновить свой прогресс'}
@@ -168,14 +179,16 @@ export default function Workout() {
         </div>
       </div>
 
-      <WorkoutProgressModal
-        courseId={currentCourse?._id || params.courseId}
-        workout={currentWorkout}
-        workoutProgress={workoutProgress}
-        setWorkoutProgress={setWorkoutProgress}
-        isOpen={showFillProgress}
-        onClose={() => setShowFillProgress(!showFillProgress)}
-      />
+      {showFillProgress ? (
+        <WorkoutProgressModal
+          courseId={currentCourse?._id || params.courseId}
+          workout={currentWorkout}
+          workoutProgress={workoutProgress}
+          setWorkoutProgress={setWorkoutProgress}
+          isOpen={showFillProgress}
+          onClose={() => setShowFillProgress(false)}
+        />
+      ) : null}
     </div>
   );
 }

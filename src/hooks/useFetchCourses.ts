@@ -1,36 +1,52 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getAllCourses } from '@/services/course/courseApi';
-import { useAppDispatch } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import {
+  startCoursesFetch,
   setAllCourses,
-  setFetchError,
-  setFetchIsLoading,
+  setCoursesFetchError,
 } from '@/store/features/courseSlice';
-import { AxiosError } from 'axios';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { CourseType } from '@/sharedTypes/sharedTypes';
 
 export const useFetchCourses = () => {
   const dispatch = useAppDispatch();
+  const {
+    allCourses,
+    fetchAllCoursesIsLoading,
+    fetchAllCoursesError,
+    allCoursesRequested,
+  } = useAppSelector((state) => state.courses);
+  const coursesRequest = useRef<Promise<CourseType[]> | null>(null);
 
   useEffect(() => {
-    dispatch(setFetchIsLoading(true));
+    if (
+      fetchAllCoursesIsLoading ||
+      fetchAllCoursesError ||
+      allCoursesRequested
+    ) {
+      return;
+    }
 
-    getAllCourses()
-      .then((courses) => {
-        dispatch(setAllCourses(courses));
-      })
+    if (allCourses.length) {
+      dispatch(setAllCourses(allCourses));
+      return;
+    }
+
+    dispatch(startCoursesFetch());
+
+    const request =
+      coursesRequest.current ?? (coursesRequest.current = getAllCourses());
+
+    request
+      .then((courses) => dispatch(setAllCourses(courses)))
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            dispatch(setFetchError(error.response.data));
-          } else if (error.request) {
-            dispatch(setFetchError('Произошла ошибка. Попробуйте позже'));
-          } else {
-            dispatch(setFetchError('Неизвестная ошибка'));
-          }
-        }
+        dispatch(setCoursesFetchError(getApiErrorMessage(error)));
       })
       .finally(() => {
-        dispatch(setFetchIsLoading(false));
+        if (coursesRequest.current === request) {
+          coursesRequest.current = null;
+        }
       });
   }, []);
 };

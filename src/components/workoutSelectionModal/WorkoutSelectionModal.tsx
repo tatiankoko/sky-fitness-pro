@@ -42,7 +42,7 @@ export default function WorkoutSelectionModal({
   const { myCoursesProgress } = useAppSelector((state) => state.courses);
   const { isLoading, errorMsg } = useFetchWorkouts(
     course?._id,
-    isOpen && Boolean(course),
+    isOpen && !!course,
   );
   const [selection, setSelection] = useState<{
     courseId: string;
@@ -93,9 +93,13 @@ export default function WorkoutSelectionModal({
     <WorkoutModal title={'Выберите тренировку'} onClose={onClose}>
       <ul className={styles.workouts__list}>
         {isLoading && courseWorkouts.length === 0 ? (
-          <li>Загрузка тренировок...</li>
+          <li className={styles.workouts__notification}>
+            Загрузка тренировок...
+          </li>
         ) : courseWorkouts.length === 0 ? (
-          <li>Тренировки не найдены</li>
+          <li className={styles.workouts__notification}>
+            Тренировки не найдены
+          </li>
         ) : (
           courseWorkouts.map((workout) => (
             <li

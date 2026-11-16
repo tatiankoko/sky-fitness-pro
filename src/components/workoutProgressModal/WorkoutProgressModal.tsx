@@ -5,7 +5,8 @@ import { WorkoutType } from '@/sharedTypes/sharedTypes';
 import React, { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { saveWorkoutProgress } from '@/services/workout/workoutApi';
-import { useAppSelector } from '@/store/store';
+import { invalidateMyCourses } from '@/store/features/courseSlice';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { toast } from 'react-toastify';
 import WorkoutSuccessModal from '@/components/workoutSuccessModal/WorkoutSuccessModal';
 
@@ -26,11 +27,14 @@ export default function WorkoutProgressModal({
   workoutProgress,
   setWorkoutProgress,
 }: workoutProgressModalProps) {
+  const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.user.accessToken);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
   const [progressValues, setProgressValues] = useState<number[]>(() =>
-    Array.from({ length: workout?.exercises.length || 0 }, () => 0),
+    workoutProgress.length > 0
+      ? [...workoutProgress]
+      : Array.from({ length: workout?.exercises.length || 0 }, () => 0),
   );
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
@@ -38,17 +42,11 @@ export default function WorkoutProgressModal({
     if (errorMessage) toast.error(errorMessage);
   }, [errorMessage]);
 
-  useEffect(() => {
-    if (workoutProgress.length > 0) {
-      setProgressValues(workoutProgress || []);
-    }
-  }, [workoutProgress]);
-
   if (!isOpen) return null;
 
   const updateProgressValueAt = (index: number, newValue: number) => {
     if (workout && index < workout.exercises.length && index >= 0) {
-      let enteredValue =
+      const enteredValue =
         newValue > workout.exercises[index].quantity
           ? workout.exercises[index].quantity
           : newValue;
@@ -75,6 +73,7 @@ export default function WorkoutProgressModal({
     })
       .then(() => {
         setWorkoutProgress(progressValues);
+        dispatch(invalidateMyCourses());
         setShowSuccess(true);
       })
       .catch((error) => {
@@ -111,7 +110,7 @@ export default function WorkoutProgressModal({
               name="quantity"
               min={0}
               max={exercise.quantity}
-              value={progressValues[index]}
+              value={progressValues[index] ?? 0}
               className={styles.progress__input}
               placeholder={'0'}
               onChange={(e) =>
