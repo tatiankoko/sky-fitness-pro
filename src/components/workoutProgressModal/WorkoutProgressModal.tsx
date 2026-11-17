@@ -3,12 +3,15 @@ import Button from '@/components/button/Button';
 import WorkoutModal from '@/components/workoutModal/WorkoutModal';
 import { WorkoutType } from '@/sharedTypes/sharedTypes';
 import React, { useEffect, useState } from 'react';
-import { AxiosError } from 'axios';
 import { saveWorkoutProgress } from '@/services/workout/workoutApi';
 import { invalidateMyCourses } from '@/store/features/courseSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { toast } from 'react-toastify';
 import WorkoutSuccessModal from '@/components/workoutSuccessModal/WorkoutSuccessModal';
+import { isInvalidToken } from '@/utils/helper';
+import { setLogout } from '@/store/features/authSlice';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { useRedirectMain } from '@/hooks/useRedirectMain';
 
 interface workoutProgressModalProps {
   isOpen: boolean;
@@ -37,6 +40,8 @@ export default function WorkoutProgressModal({
       : Array.from({ length: workout?.exercises.length || 0 }, () => 0),
   );
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
+
+  useRedirectMain();
 
   useEffect(() => {
     if (errorMessage) toast.error(errorMessage);
@@ -77,14 +82,10 @@ export default function WorkoutProgressModal({
         setShowSuccess(true);
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
-          } else if (error.request) {
-            setErrorMessage('Произошла ошибка. Попробуйте позже');
-          } else {
-            setErrorMessage('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          setErrorMessage(getApiErrorMessage(error));
         }
       })
       .finally(() => {

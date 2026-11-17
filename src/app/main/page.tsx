@@ -18,7 +18,7 @@ export default function Main() {
 
   const {
     allCourses,
-    myCourses,
+    selectedCourseIds,
     fetchAllCoursesIsLoading,
     fetchAllCoursesError,
   } = useAppSelector((state) => state.courses);
@@ -71,9 +71,8 @@ export default function Main() {
           allCourses.map((course) => (
             <Link href={`/main/course/${course._id}`} key={course._id}>
               <CourseCard
-                key={course._id}
                 course={course}
-                isAdded={!!myCourses.find((item) => item._id === course._id)}
+                isAdded={selectedCourseIds.includes(course._id)}
               />
             </Link>
           ))

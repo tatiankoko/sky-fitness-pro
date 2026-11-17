@@ -34,7 +34,7 @@ export default function CourseCard({
   onWorkoutAction,
 }: CourseCardProps) {
   const { accessToken } = useAppSelector((state) => state.user);
-  const { myCourses } = useAppSelector((state) => state.courses);
+  const { selectedCourseIds } = useAppSelector((state) => state.courses);
   const [loading, setLoading] = useState<boolean>(false);
   const toggleAddCourse = useToggleAddCourseAction();
 
@@ -50,7 +50,7 @@ export default function CourseCard({
         return;
       }
 
-      const contains = myCourses.find((item) => item._id === course._id);
+      const contains = selectedCourseIds.includes(course._id);
 
       toggleAddCourse({
         add: !contains,
@@ -59,7 +59,7 @@ export default function CourseCard({
         setErrorMsg: toast.error,
       });
     },
-    [accessToken, myCourses, loading, course, toggleAddCourse],
+    [accessToken, selectedCourseIds, loading, course, toggleAddCourse],
   );
 
   return (

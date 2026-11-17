@@ -13,9 +13,9 @@ interface userModalProps {
 }
 
 export default function UserModal({ isOpen, onClose, user }: userModalProps) {
-  if (!isOpen) return null;
-
   const dispatch = useAppDispatch();
+
+  if (!isOpen) return null;
 
   const logout = () => {
     dispatch(setLogout());

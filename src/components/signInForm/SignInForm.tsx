@@ -5,12 +5,12 @@ import Link from 'next/link';
 import styles from './signin.module.css';
 import React, { ChangeEvent, useState } from 'react';
 import { authUser } from '@/services/auth/authApi';
-import { AxiosError } from 'axios';
 import { useAppDispatch } from '@/store/store';
 import { setAccessToken, setIsAuth, setUser } from '@/store/features/authSlice';
 import Button from '@/components/button/Button';
 import { useRouter } from 'next/navigation';
 import classNames from 'classnames';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 
 export default function SignInForm({ returnTo }: { returnTo?: string }) {
   const dispatch = useAppDispatch();
@@ -64,24 +64,16 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
         }
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
+        const errorMessage: string = getApiErrorMessage(error);
 
-            const errorMessage: string = error.response.data.message;
+        setErrorMessage(errorMessage);
 
-            if (errorMessage.includes('email')) {
-              setErrors({ email: true, password: false });
-            } else if (errorMessage.includes('пароль')) {
-              setErrors({ email: false, password: true });
-            } else {
-              setErrors({ email: true, password: true });
-            }
-          } else if (error.request) {
-            setErrorMessage('Произошла ошибка. Попробуйте позже');
-          } else {
-            setErrorMessage('Неизвестная ошибка');
-          }
+        if (errorMessage.includes('email')) {
+          setErrors({ email: true, password: false });
+        } else if (errorMessage.includes('пароль')) {
+          setErrors({ email: false, password: true });
+        } else {
+          setErrors({ email: true, password: true });
         }
       })
       .finally(() => {

@@ -12,7 +12,7 @@ export default function VideoPlayer({
   handleError,
 }: VideoPlayerProps) {
   if (!videoUrl) {
-    return;
+    return null;
   }
 
   const thumbnailUrl = () => {

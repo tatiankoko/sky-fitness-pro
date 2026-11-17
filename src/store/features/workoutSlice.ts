@@ -4,14 +4,12 @@ import { setAccessToken, setLogout } from '@/store/features/authSlice';
 
 type workoutStateType = {
   allWorkouts: CourseWorkoutType[];
-  allWorkoutsRequested: Record<string, boolean>;
   fetchErrorByCourse: Record<string, string | null>;
   fetchIsLoadingByCourse: Record<string, boolean>;
 };
 
 const initialState: workoutStateType = {
   allWorkouts: [],
-  allWorkoutsRequested: {},
   fetchErrorByCourse: {},
   fetchIsLoadingByCourse: {},
 };
@@ -34,7 +32,6 @@ const workoutSlice = createSlice({
         state.allWorkouts[index] = action.payload;
       }
 
-      state.allWorkoutsRequested[action.payload.courseId] = true;
       state.fetchIsLoadingByCourse[action.payload.courseId] = false;
       state.fetchErrorByCourse[action.payload.courseId] = null;
     },

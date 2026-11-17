@@ -40,8 +40,7 @@ export const useFetchMyCourses = () => {
         } else {
           dispatch(setMyCoursesFetchError(getApiErrorMessage(error)));
         }
-      })
-      .finally(() => {});
+      });
   }, [accessToken, myCoursesRequested, dispatch]);
 
   return {

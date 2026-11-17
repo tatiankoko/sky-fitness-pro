@@ -5,10 +5,10 @@ import Image from 'next/image';
 import styles from '@/components/signInForm/signin.module.css';
 import React, { ChangeEvent, useState } from 'react';
 import { registerUser } from '@/services/auth/authApi';
-import { AxiosError } from 'axios';
 import Button from '@/components/button/Button';
 import { useRouter } from 'next/navigation';
 import classNames from 'classnames';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 
 export default function SignUpForm({ returnTo }: { returnTo?: string }) {
   const [email, setEmail] = useState('');
@@ -80,38 +80,30 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
         }
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
+        const errorMessage: string = getApiErrorMessage(error);
 
-            const errorMessage: string = error.response.data.message;
+        setErrorMessage(errorMessage);
 
-            if (errorMessage.includes('email')) {
-              setErrors({
-                email: true,
-                password: false,
-                confirmPassword: false,
-              });
-            } else if (errorMessage.includes('пароль')) {
-              setErrors({
-                email: false,
-                password: true,
-                confirmPassword: false,
-              });
-            } else if (errorMessage.includes('пароли')) {
-              setErrors({
-                email: false,
-                password: false,
-                confirmPassword: true,
-              });
-            } else {
-              setErrors({ email: true, password: true, confirmPassword: true });
-            }
-          } else if (error.request) {
-            setErrorMessage('Произошла ошибка. Попробуйте позже');
-          } else {
-            setErrorMessage('Неизвестная ошибка');
-          }
+        if (errorMessage.includes('email')) {
+          setErrors({
+            email: true,
+            password: false,
+            confirmPassword: false,
+          });
+        } else if (errorMessage.includes('пароль')) {
+          setErrors({
+            email: false,
+            password: true,
+            confirmPassword: false,
+          });
+        } else if (errorMessage.includes('пароли')) {
+          setErrors({
+            email: false,
+            password: false,
+            confirmPassword: true,
+          });
+        } else {
+          setErrors({ email: true, password: true, confirmPassword: true });
         }
       })
       .finally(() => {

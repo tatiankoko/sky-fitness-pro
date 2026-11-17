@@ -16,32 +16,23 @@ import { isInvalidToken } from '@/utils/helper';
 export const useFetchWorkouts = (courseId?: string, enabled = true) => {
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.user);
-  const {
-    allWorkouts,
-    allWorkoutsRequested,
-    fetchErrorByCourse,
-    fetchIsLoadingByCourse,
-  } = useAppSelector((state) => state.workouts);
-  const attemptedCourse = useRef<string | null>(null);
+  const { allWorkouts, fetchErrorByCourse, fetchIsLoadingByCourse } =
+    useAppSelector((state) => state.workouts);
   const workoutRequests = useRef<Map<string, Promise<WorkoutType[]>>>(
     new Map<string, Promise<WorkoutType[]>>(),
   );
 
   useEffect(() => {
     if (!enabled || !courseId || !accessToken) {
-      attemptedCourse.current = null;
       return;
     }
 
     if (
       fetchIsLoadingByCourse[courseId] === null ||
-      fetchErrorByCourse[courseId] === null ||
-      allWorkoutsRequested[courseId] === null
+      fetchErrorByCourse[courseId] === null
     ) {
       return;
     }
-
-    attemptedCourse.current = courseId;
 
     dispatch(startWorkoutFetch({ courseId }));
 

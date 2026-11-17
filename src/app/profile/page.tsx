@@ -53,7 +53,7 @@ export default function Profile() {
   }, []);
 
   const onCloseWorkoutSelection = () => {
-    setShowSelection(!showSelection);
+    setShowSelection(false);
     setSelectedCourse(null);
   };
 

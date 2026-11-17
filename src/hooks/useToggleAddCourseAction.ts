@@ -3,10 +3,12 @@
 import { addCourse, removeCourse } from '@/services/course/courseApi';
 import { addMyCourse, removeMyCourse } from '@/store/features/courseSlice';
 import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { CourseType } from '@/sharedTypes/sharedTypes';
 import { useCallback } from 'react';
+import { isInvalidToken } from '@/utils/helper';
+import { setLogout } from '@/store/features/authSlice';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 
 interface toggleAddCourseProps {
   add: boolean;
@@ -27,20 +29,15 @@ export const useToggleAddCourseAction = () => {
       setIsLoading(true);
 
       actionApi(accessToken || '', course._id)
-        .then((message) => {
-          console.log(message);
+        .then(() => {
           dispatch(actionSlice(course));
           toast.success(`Курс успешно ${add ? 'добавлен' : 'удален'}!`);
         })
         .catch((error) => {
-          if (error instanceof AxiosError) {
-            if (error.response) {
-              setErrorMsg(error.response.data);
-            } else if (error.request) {
-              setErrorMsg('Произошла ошибка. Попробуйте позже');
-            } else {
-              setErrorMsg('Неизвестная ошибка');
-            }
+          if (isInvalidToken(error)) {
+            dispatch(setLogout());
+          } else {
+            setErrorMsg(getApiErrorMessage(error));
           }
         })
         .finally(() => {

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { AxiosError } from 'axios';
 import { getCourseProgress } from '@/services/course/courseApi';
 import { addMyCourseProgress } from '@/store/features/courseSlice';
 import { CourseProgressType } from '@/sharedTypes/sharedTypes';
+import { isInvalidToken } from '@/utils/helper';
+import { setLogout } from '@/store/features/authSlice';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 
 export const useFetchCourseProgress = (courseId: string) => {
   const dispatch = useAppDispatch();
@@ -25,20 +27,16 @@ export const useFetchCourseProgress = (courseId: string) => {
         dispatch(addMyCourseProgress(courseProgress));
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMsg(error.response.data);
-          } else if (error.request) {
-            setErrorMsg('Произошла ошибка. Попробуйте позже');
-          } else {
-            setErrorMsg('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          setErrorMsg(getApiErrorMessage(error));
         }
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, [accessToken]);
+  }, [accessToken, courseId]);
 
   return {
     isLoading,
