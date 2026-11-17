@@ -5,7 +5,6 @@ import { setAccessToken, setLogout } from '@/store/features/authSlice';
 
 type courseStateType = {
   allCourses: CourseType[];
-  allCoursesRequested: boolean;
   myCourses: CourseType[];
   selectedCourseIds: string[];
   myCoursesProgress: CourseProgressType[];
@@ -18,7 +17,6 @@ type courseStateType = {
 
 const initialState: courseStateType = {
   allCourses: [],
-  allCoursesRequested: false,
   myCourses: [],
   selectedCourseIds: [],
   myCoursesProgress: [],
@@ -46,7 +44,6 @@ const courseSlice = createSlice({
     },
     setAllCourses: (state, action: PayloadAction<CourseType[]>) => {
       state.allCourses = action.payload;
-      state.allCoursesRequested = true;
       state.fetchAllCoursesIsLoading = false;
       state.fetchAllCoursesError = null;
       syncMyCourses(state);

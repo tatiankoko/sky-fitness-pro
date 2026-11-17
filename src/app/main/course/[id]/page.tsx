@@ -2,13 +2,12 @@
 
 import styles from './course.module.css';
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '@/store/store';
-import { useParams } from 'next/navigation';
-import { getCourseById, getMyCourses } from '@/services/course/courseApi';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { useParams, useRouter } from 'next/navigation';
+import { getCourseById } from '@/services/course/courseApi';
 import Button from '@/components/button/Button';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { AxiosError } from 'axios';
 import { baseSkeletonColor } from '@/utils/constants';
 import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
@@ -19,32 +18,33 @@ import {
 } from '@/app/main/course/[id]/courseImageConstants';
 import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
 import { CourseType } from '@/sharedTypes/sharedTypes';
+import { isInvalidToken } from '@/utils/helper';
+import { setLogout } from '@/store/features/authSlice';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { useFetchMyCourses } from '@/hooks/useFetchMyCourses';
 
 export default function Course() {
   const params = useParams<{ id: string }>();
-  const { allCourses, myCourses } = useAppSelector((state) => state.courses);
+  const dispatch = useAppDispatch();
+  const { allCourses, selectedCourseIds } = useAppSelector(
+    (state) => state.courses,
+  );
   const { accessToken } = useAppSelector((state) => state.user);
-  const [course, setCourse] = useState<CourseType | null>(null);
+
+  const cachedCourse = allCourses.find((course) => course._id === params.id);
+
+  const [course, setCourse] = useState<CourseType | null>(cachedCourse ?? null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isAdded, setIsAdded] = useState(false);
+  const [isAdded, setIsAdded] = useState<boolean>(
+    selectedCourseIds.includes(params.id),
+  );
   const toggleAddCourse = useToggleAddCourseAction();
+  const router = useRouter();
 
   useEffect(() => {
-    if (error) toast.error(error);
-  }, [error]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-
-    if (allCourses.length) {
-      const foundCourse = allCourses.find((course) => course._id === params.id);
-
-      if (foundCourse) {
-        setCourse(foundCourse);
-        setIsAdded(!!myCourses.find((item) => item._id === params.id));
-        return;
-      }
+    if (cachedCourse || !params.id) {
+      return;
     }
 
     setLoading(true);
@@ -52,29 +52,36 @@ export default function Course() {
     getCourseById(params.id)
       .then((course) => {
         setCourse(course);
-        return getMyCourses(accessToken || '');
-      })
-      .then((courseIds) => {
-        setIsAdded(courseIds.selectedCourses.includes(params.id));
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setError(error.response.data);
-          } else if (error.request) {
-            setError('Произошла ошибка. Попробуйте позже');
-          } else {
-            setError('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          setError(getApiErrorMessage(error));
         }
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [accessToken]);
+  }, [cachedCourse, params.id]);
+
+  const { isLoading, errorMsg } = useFetchMyCourses();
+
+  useEffect(() => {
+    setIsAdded(selectedCourseIds.includes(params.id));
+  }, [course, selectedCourseIds]);
+
+  useEffect(() => {
+    if (error || errorMsg) toast.error(error || errorMsg);
+  }, [error]);
 
   const onAddCourse = () => {
-    if (!accessToken || !course) return;
+    if (!accessToken) {
+      router.push('/main/signin');
+      return;
+    }
+
+    if (!course) return;
 
     toggleAddCourse({
       add: true,
@@ -94,7 +101,7 @@ export default function Course() {
 
   return (
     <div className={styles.course__container}>
-      {loading ? (
+      {loading || isLoading ? (
         <div className={styles.fitting__container}>
           <Skeleton
             baseColor={baseSkeletonColor}

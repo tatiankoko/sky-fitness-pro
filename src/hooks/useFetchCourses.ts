@@ -11,20 +11,12 @@ import { CourseType } from '@/sharedTypes/sharedTypes';
 
 export const useFetchCourses = () => {
   const dispatch = useAppDispatch();
-  const {
-    allCourses,
-    fetchAllCoursesIsLoading,
-    fetchAllCoursesError,
-    allCoursesRequested,
-  } = useAppSelector((state) => state.courses);
+  const { allCourses, fetchAllCoursesIsLoading, fetchAllCoursesError } =
+    useAppSelector((state) => state.courses);
   const coursesRequest = useRef<Promise<CourseType[]> | null>(null);
 
   useEffect(() => {
-    if (
-      fetchAllCoursesIsLoading ||
-      fetchAllCoursesError ||
-      allCoursesRequested
-    ) {
+    if (fetchAllCoursesIsLoading || fetchAllCoursesError) {
       return;
     }
 

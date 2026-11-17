@@ -5,8 +5,7 @@ import Button from '@/components/button/Button';
 import WorkoutProgressModal from '@/components/workoutProgressModal/WorkoutProgressModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { AxiosError } from 'axios';
-import { useAppSelector } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
 import {
   getWorkoutById,
@@ -19,11 +18,20 @@ import VideoPlayer from '@/components/videoPlayer/VideoPlayer';
 import ProgressItem from '@/components/progressItem/ProgressItem';
 import { getCourseById } from '@/services/course/courseApi';
 import { useRedirectMain } from '@/hooks/useRedirectMain';
+import { isInvalidToken } from '@/utils/helper';
+import { setLogout } from '@/store/features/authSlice';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 
 export default function Workout() {
   const params = useParams<{ id: string; course: string; courseId: string }>();
+  const dispatch = useAppDispatch();
   const { allWorkouts } = useAppSelector((state) => state.workouts);
+  const { myCourses } = useAppSelector((state) => state.courses);
   const { accessToken } = useAppSelector((state) => state.user);
+
+  const cachedCourse = myCourses.find(
+    (course) => course._id === params.courseId,
+  );
   const cachedWorkout = allWorkouts
     .find((courseWorkout) => courseWorkout.courseId === params.courseId)
     ?.workouts.find((workout) => workout._id === params.id);
@@ -31,60 +39,55 @@ export default function Workout() {
   const [showFillProgress, setShowFillProgress] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [fetchedWorkout, setFetchedWorkout] = useState<{
-    id: string;
-    workout: WorkoutType;
-  } | null>(null);
+  const [fetchedWorkout, setFetchedWorkout] = useState<WorkoutType | null>(
+    cachedWorkout ?? null,
+  );
   const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
-  const [currentCourse, setCurrentCourse] = useState<CourseType | null>(null);
-  const currentWorkout =
-    cachedWorkout ??
-    (fetchedWorkout?.id === params.id ? fetchedWorkout.workout : null);
+  const [currentCourse, setCurrentCourse] = useState<CourseType | null>(
+    cachedCourse ?? null,
+  );
 
   useRedirectMain();
+
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken || cachedCourse) return;
+
+    setLoading(true);
 
     getCourseById(params.courseId)
       .then((course) => {
         setCurrentCourse(course);
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setError(error.response.data);
-          } else if (error.request) {
-            setError('Произошла ошибка. Попробуйте позже');
-          } else {
-            setError('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          setError(getApiErrorMessage(error));
         }
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [accessToken, params.courseId]);
+  }, [accessToken, cachedCourse, params.courseId]);
 
   useEffect(() => {
     if (!accessToken || cachedWorkout) return;
 
+    setLoading(true);
+
     getWorkoutById(accessToken, params.id)
       .then((result) => {
-        setFetchedWorkout({ id: params.id, workout: result });
+        setFetchedWorkout(result);
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setError(error.response.data);
-          } else if (error.request) {
-            setError('Произошла ошибка. Попробуйте позже');
-          } else {
-            setError('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          setError(getApiErrorMessage(error));
         }
       })
       .finally(() => {
@@ -93,31 +96,29 @@ export default function Workout() {
   }, [accessToken, allWorkouts, cachedWorkout, params.id]);
 
   useEffect(() => {
-    if (!accessToken || !currentWorkout) return;
+    if (!accessToken || !fetchedWorkout) return;
+
+    setLoading(true);
 
     getWorkoutProgress({
       access: accessToken,
       courseId: params.courseId,
-      workoutId: currentWorkout._id,
+      workoutId: params.id,
     })
       .then((progress) => {
-        setWorkoutProgress(progress.progressData);
+        if (progress.progressData) setWorkoutProgress(progress.progressData);
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setError(error.response.data);
-          } else if (error.request) {
-            setError('Произошла ошибка. Попробуйте позже');
-          } else {
-            setError('Неизвестная ошибка');
-          }
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          setError(getApiErrorMessage(error));
         }
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [accessToken, currentWorkout, params.courseId]);
+  }, [accessToken, fetchedWorkout, params.courseId, params.id]);
 
   const handleError = (error: unknown) => {
     toast.error(error instanceof Error ? error.message : 'Ошибка плеера');
@@ -136,10 +137,10 @@ export default function Workout() {
           height={639}
           borderRadius={30}
         />
-      ) : currentWorkout ? (
+      ) : fetchedWorkout ? (
         <div className={styles.video__block}>
           <VideoPlayer
-            videoUrl={currentWorkout.video}
+            videoUrl={fetchedWorkout.video}
             handleError={handleError}
           ></VideoPlayer>
         </div>
@@ -155,11 +156,11 @@ export default function Workout() {
               <Skeleton baseColor={baseSkeletonColor} width={320} height={36} />
             </>
           ) : (
-            currentWorkout?.exercises.map((exercise, index) => (
+            fetchedWorkout?.exercises.map((exercise, index) => (
               <ProgressItem
                 key={exercise._id}
                 title={exercise.name}
-                progress={/*workoutProgress[index] ?? */ 0} // todo fix it
+                progress={workoutProgress?.[index] ?? 0} // todo fix it
                 max={exercise.quantity}
               />
             ))
@@ -168,7 +169,7 @@ export default function Workout() {
 
         <div className={styles.progress__button}>
           <Button
-            disabled={loading || !workoutProgress || !currentWorkout}
+            disabled={loading || !workoutProgress || !fetchedWorkout}
             onClick={() => setShowFillProgress(true)}
           >
             {workoutProgress?.length == 0 && // todo fix it
@@ -182,7 +183,7 @@ export default function Workout() {
       {showFillProgress ? (
         <WorkoutProgressModal
           courseId={currentCourse?._id || params.courseId}
-          workout={currentWorkout}
+          workout={fetchedWorkout}
           workoutProgress={workoutProgress}
           setWorkoutProgress={setWorkoutProgress}
           isOpen={showFillProgress}
