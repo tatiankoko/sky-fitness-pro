@@ -3,7 +3,10 @@ import { AxiosError } from 'axios';
 export function getApiErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
     if (error.response) {
-      return error.response.data.message;
+      const responseData = error.response.data;
+      return typeof responseData === 'string'
+        ? responseData
+        : (responseData?.message ?? 'Произошла ошибка. Попробуйте позже');
     } else if (error.request) {
       return 'Произошла ошибка. Попробуйте позже';
     } else {

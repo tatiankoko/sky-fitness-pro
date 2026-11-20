@@ -3,7 +3,7 @@
 import styles from './workout.module.css';
 import Button from '@/components/button/Button';
 import WorkoutProgressModal from '@/components/workoutProgressModal/WorkoutProgressModal';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
@@ -29,22 +29,24 @@ export default function Workout() {
   const { myCourses } = useAppSelector((state) => state.courses);
   const { accessToken } = useAppSelector((state) => state.user);
 
-  const cachedCourse = myCourses.find(
-    (course) => course._id === params.courseId,
+  const cachedCourse = useRef<CourseType | null>(
+    myCourses.find((course) => course._id === params.courseId),
   );
-  const cachedWorkout = allWorkouts
-    .find((courseWorkout) => courseWorkout.courseId === params.courseId)
-    ?.workouts.find((workout) => workout._id === params.id);
+  const cachedWorkout = useRef<WorkoutType | null>(
+    allWorkouts
+      .find((courseWorkout) => courseWorkout.courseId === params.courseId)
+      ?.workouts.find((workout) => workout._id === params.id),
+  );
 
   const [showFillProgress, setShowFillProgress] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [fetchedWorkout, setFetchedWorkout] = useState<WorkoutType | null>(
-    cachedWorkout ?? null,
+    cachedWorkout.current ?? null,
   );
   const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
   const [currentCourse, setCurrentCourse] = useState<CourseType | null>(
-    cachedCourse ?? null,
+    cachedCourse.current ?? null,
   );
 
   useRedirectMain();
@@ -54,7 +56,7 @@ export default function Workout() {
   }, [error]);
 
   useEffect(() => {
-    if (!accessToken || cachedCourse) return;
+    if (!accessToken || cachedCourse.current) return;
 
     setLoading(true);
 
@@ -72,7 +74,7 @@ export default function Workout() {
       .finally(() => {
         setLoading(false);
       });
-  }, [accessToken, cachedCourse, params.courseId]);
+  }, [accessToken, cachedCourse.current, params.courseId]);
 
   useEffect(() => {
     if (!accessToken || cachedWorkout) return;
