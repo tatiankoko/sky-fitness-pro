@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import SignUpForm from '../../../components/signUpForm/SignUpForm';
 
 interface SignUpPageProps {
@@ -12,10 +11,6 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
     (returnTo === '/main' || /^\/main\/course\/[^/]+$/.test(returnTo))
       ? returnTo
       : undefined;
-
-  if (validReturnTo) {
-    redirect(validReturnTo);
-  }
 
   return <SignUpForm returnTo={validReturnTo} />;
 }

@@ -28,8 +28,9 @@ export const useFetchWorkouts = (courseId?: string, enabled = true) => {
     }
 
     if (
-      fetchIsLoadingByCourse[courseId] === null ||
-      fetchErrorByCourse[courseId] === null
+      fetchIsLoadingByCourse[courseId] ||
+      fetchErrorByCourse[courseId] ||
+      allWorkouts.some((item) => item.courseId === courseId)
     ) {
       return;
     }
