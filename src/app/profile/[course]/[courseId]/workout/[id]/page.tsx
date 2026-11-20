@@ -38,7 +38,6 @@ export default function Workout() {
 
   const [showFillProgress, setShowFillProgress] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const [fetchedWorkout, setFetchedWorkout] = useState<WorkoutType | null>(
     cachedWorkout ?? null,
   );
@@ -46,6 +45,7 @@ export default function Workout() {
   const [currentCourse, setCurrentCourse] = useState<CourseType | null>(
     cachedCourse ?? null,
   );
+  const loading = !error && (!currentCourse || !fetchedWorkout);
 
   useRedirectMain();
 
@@ -55,8 +55,6 @@ export default function Workout() {
 
   useEffect(() => {
     if (!accessToken || cachedCourse) return;
-
-    setLoading(true);
 
     getCourseById(params.courseId)
       .then((course) => {
@@ -68,16 +66,11 @@ export default function Workout() {
         } else {
           setError(getApiErrorMessage(error));
         }
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, [accessToken, cachedCourse, params.courseId]);
 
   useEffect(() => {
     if (!accessToken || cachedWorkout) return;
-
-    setLoading(true);
 
     getWorkoutById(accessToken, params.id)
       .then((result) => {
@@ -89,16 +82,11 @@ export default function Workout() {
         } else {
           setError(getApiErrorMessage(error));
         }
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, [accessToken, allWorkouts, cachedWorkout, params.id]);
 
   useEffect(() => {
     if (!accessToken || !fetchedWorkout) return;
-
-    setLoading(true);
 
     getWorkoutProgress({
       access: accessToken,
@@ -114,9 +102,6 @@ export default function Workout() {
         } else {
           setError(getApiErrorMessage(error));
         }
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, [accessToken, fetchedWorkout, params.courseId, params.id]);
 
