@@ -17,6 +17,15 @@ export const splitUsername = (email: string): string => {
   return capitalize(email.split('@')[0] || email);
 };
 
+export function getValidReturnTo(
+  returnTo: string | string[] | undefined,
+): string | undefined {
+  return typeof returnTo === 'string' &&
+    (returnTo === '/main' || /^\/main\/course\/[^/]+$/.test(returnTo))
+    ? returnTo
+    : undefined;
+}
+
 export const isInvalidToken = (error: unknown): boolean => {
   return !!(
     error &&

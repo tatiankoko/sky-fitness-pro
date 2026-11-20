@@ -1,4 +1,5 @@
 import SignInForm from '../../../components/signInForm/SignInForm';
+import { getValidReturnTo } from '@/utils/helper';
 
 interface SignInPageProps {
   searchParams: Promise<{ returnTo?: string | string[] }>;
@@ -7,11 +8,7 @@ interface SignInPageProps {
 export default async function SignInPage({ searchParams }: SignInPageProps) {
   const { returnTo } = await searchParams;
 
-  const validReturnTo =
-    typeof returnTo === 'string' &&
-    (returnTo === '/main' || /^\/main\/course\/[^/]+$/.test(returnTo))
-      ? returnTo
-      : undefined;
+  const validReturnTo = getValidReturnTo(returnTo);
 
   return <SignInForm returnTo={validReturnTo} />;
 }

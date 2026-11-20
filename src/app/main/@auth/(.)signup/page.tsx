@@ -1,5 +1,6 @@
 import AuthModal from '../../../../components/authModal/AuthModal';
 import SignUpForm from '../../../../components/signUpForm/SignUpForm';
+import { getValidReturnTo } from '@/utils/helper';
 
 interface SignUpModalProps {
   searchParams: Promise<{ returnTo?: string | string[] }>;
@@ -7,11 +8,7 @@ interface SignUpModalProps {
 
 export default async function SignUpModal({ searchParams }: SignUpModalProps) {
   const { returnTo } = await searchParams;
-  const validReturnTo =
-    typeof returnTo === 'string' &&
-    (returnTo === '/main' || /^\/main\/course\/[^/]+$/.test(returnTo))
-      ? returnTo
-      : undefined;
+  const validReturnTo = getValidReturnTo(returnTo);
 
   return (
     <AuthModal title="Регистрация" returnTo={validReturnTo}>
