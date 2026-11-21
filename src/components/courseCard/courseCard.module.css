@@ -54,9 +54,13 @@
         width: 343px;
     }
 
+    .image__block {
+        height: 325px;
+    }
+
     .image__block img {
         width: 100%;
-        height: auto;
+        height: 100%;
     }
 }
 

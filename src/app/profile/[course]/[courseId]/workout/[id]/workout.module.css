@@ -23,14 +23,16 @@
 
 .video__block {
     width: 100%;
-    min-height: 639px;
-    height: 639px;
+    aspect-ratio: 1160 / 639;
+    height: auto;
+    min-height: 189px;
+    max-height: 639px;
     border-radius: 30px;
     background-color: #ffffff;
     position: relative;
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: none;
     box-shadow: 0 4px 67px -12px #00000021;
     overflow: hidden;
 }
@@ -73,5 +75,44 @@
     .workout__container {
         padding-left: calc(50% - 396px);
         padding-right: calc(50% - 396px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .workout__container {
+        margin-bottom: 0;
+    }
+
+    .progress__block {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+
+      /*  margin-bottom: 20px;*/
+    }
+}
+
+@media screen and (max-width: 495px) {
+    .workout__container {
+        gap: 40px;
+        margin-top: 40px;
+        margin-bottom: 0;
+        padding-bottom: 40px;
+    }
+
+    .workout__title {
+        font-weight: 500;
+        font-size: 24px;
+    }
+
+    .video__block {
+        flex: none;
+        min-height: 189px;
+        height: 189px;
+    }
+
+    .progress__button {
+        width: 100%;
     }
 }
