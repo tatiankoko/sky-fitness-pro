@@ -11,13 +11,11 @@ export default function ProgressItem({
   progress = 0,
   max = 100,
 }: progressItemProps) {
-  const percent = () => {
-    return max > 0 ? Math.round((progress * 100) / max) : 0;
-  };
+  const percent = max > 0 ? Math.round((progress * 100) / max) : 0;
 
   return (
     <div className={styles.container}>
-      <h3 className={styles.title}>{`${title} ${percent()}%`}</h3>
+      <h3 className={styles.title}>{`${title} ${percent}%`}</h3>
 
       <progress
         className={styles.indicator}

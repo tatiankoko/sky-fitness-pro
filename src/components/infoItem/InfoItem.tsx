@@ -12,22 +12,25 @@ type infoItemProps = {
 };
 
 export default function InfoItem({ type, course }: infoItemProps) {
-  const icon =
-    type === CourseInfo.durationInDays
-      ? 'calendar'
-      : type === CourseInfo.dailyDurationInMinutes
-        ? 'clock'
-        : 'difficulty';
+  const infoByType: Record<CourseInfo, { icon: string; text: string }> = {
+    [CourseInfo.durationInDays]: {
+      icon: 'calendar',
+      text: getDurationInDaysPanel(course?.durationInDays),
+    },
+    [CourseInfo.dailyDurationInMinutes]: {
+      icon: 'clock',
+      text: getDailyDurationInMinutesPanel(
+        course?.dailyDurationInMinutes.from,
+        course?.dailyDurationInMinutes.to,
+      ),
+    },
+    [CourseInfo.difficulty]: {
+      icon: 'difficulty',
+      text: capitalize(course?.difficulty),
+    },
+  };
 
-  const text =
-    type === CourseInfo.durationInDays
-      ? getDurationInDaysPanel(course?.durationInDays)
-      : type === CourseInfo.dailyDurationInMinutes
-        ? getDailyDurationInMinutesPanel(
-            course?.dailyDurationInMinutes.from,
-            course?.dailyDurationInMinutes.to,
-          )
-        : capitalize(course?.difficulty);
+  const { icon, text } = infoByType[type];
 
   return (
     <div className={styles.course__info}>
