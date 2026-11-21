@@ -1,4 +1,5 @@
 import styles from './workout-modal.module.css';
+import Modal from '@/components/modal/Modal';
 import { ReactNode } from 'react';
 
 interface workoutModalProps {
@@ -13,17 +14,15 @@ export default function WorkoutModal({
   onClose,
 }: workoutModalProps) {
   return (
-    <form className={styles.overlay} onClick={onClose}>
-      <section
-        className={styles.dialog}
-        role="dialog"
-        aria-modal="true"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <h2 className={styles.title}>{title}</h2>
+    <Modal
+      overlayClassName={styles.overlay}
+      dialogClassName={styles.dialog}
+      onClose={onClose}
+      ariaLabel={title}
+    >
+      <h2 className={styles.title}>{title}</h2>
 
-        <div className={styles.content}>{children}</div>
-      </section>
-    </form>
+      <div className={styles.content}>{children}</div>
+    </Modal>
   );
 }

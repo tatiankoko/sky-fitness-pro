@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import Modal from '@/components/modal/Modal';
 import styles from './auth-modal.module.css';
 
 interface AuthModalProps {
@@ -27,16 +28,13 @@ export default function AuthModal({
   };
 
   return (
-    <div className={styles.overlay} onClick={close}>
-      <section
-        className={styles.dialog}
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        onClick={(event) => event.stopPropagation()}
-      >
-        {children}
-      </section>
-    </div>
+    <Modal
+      overlayClassName={styles.overlay}
+      dialogClassName={styles.dialog}
+      onClose={close}
+      ariaLabel={title}
+    >
+      {children}
+    </Modal>
   );
 }
