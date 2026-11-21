@@ -284,7 +284,7 @@
 @media screen and (max-width: 495px) {
     .course__container {
         gap: 40px;
-        margin: 40px 0;
+        margin: 40px 0 0 0;
     }
 
     .header__container {
