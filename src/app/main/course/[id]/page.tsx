@@ -36,9 +36,7 @@ export default function Course() {
   const [course, setCourse] = useState<CourseType | null>(cachedCourse ?? null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isAdded, setIsAdded] = useState<boolean>(
-    selectedCourseIds.includes(params.id),
-  );
+  const isAdded = selectedCourseIds.includes(params.id);
   const toggleAddCourse = useToggleAddCourseAction();
   const router = useRouter();
 
@@ -68,10 +66,6 @@ export default function Course() {
   const { isLoading, errorMsg } = useFetchMyCourses();
 
   useEffect(() => {
-    setIsAdded(selectedCourseIds.includes(params.id));
-  }, [course, selectedCourseIds]);
-
-  useEffect(() => {
     if (error || errorMsg) toast.error(error || errorMsg);
   }, [error]);
 
@@ -89,10 +83,6 @@ export default function Course() {
       setIsLoading: setLoading,
       setErrorMsg: setError,
     });
-
-    if (!error) {
-      setIsAdded(true);
-    }
   };
 
   if (!course) {

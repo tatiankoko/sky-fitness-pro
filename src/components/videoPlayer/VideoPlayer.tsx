@@ -2,9 +2,16 @@ import React from 'react';
 import ReactPlayer from 'react-player';
 import Image from 'next/image';
 
+const playerStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  backgroundColor: 'white',
+};
+
 interface VideoPlayerProps {
   videoUrl: string;
-  handleError: (err: any) => void;
+  handleError: React.ReactEventHandler<HTMLVideoElement>;
 }
 
 export default function VideoPlayer({
@@ -16,9 +23,6 @@ export default function VideoPlayer({
   }
 
   const thumbnailUrl = () => {
-    if (!videoUrl) {
-      return '';
-    }
     const ids = videoUrl.split('/');
     const videoId = ids[ids.length - 1];
 
@@ -33,12 +37,7 @@ export default function VideoPlayer({
       controls
       width="100%"
       height="100%"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        backgroundColor: 'white',
-      }}
+      style={playerStyle}
       playIcon={
         <Image
           src="/img/video-play.png"
