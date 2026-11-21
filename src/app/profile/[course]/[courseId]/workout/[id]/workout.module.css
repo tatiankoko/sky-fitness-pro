@@ -68,3 +68,10 @@
     display: flex;
     flex-direction: column;
 }
+
+@media screen and (max-width: 1190px) {
+    .workout__container {
+        padding-left: calc(50% - 396px);
+        padding-right: calc(50% - 396px);
+    }
+}

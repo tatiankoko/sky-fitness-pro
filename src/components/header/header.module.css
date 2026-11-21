@@ -82,12 +82,19 @@
     }
 
     .user__block{
-        gap: 12px;
+        gap: 0;
     }
 
     .user__icon{
         width: 30px;
         height: 30px;
+    }
+}
+
+@media screen and (max-width: 1190px) {
+    .header__container {
+        padding-left: calc(50% - 396px);
+        padding-right: calc(50% - 396px);
     }
 }
 

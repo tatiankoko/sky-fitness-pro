@@ -124,3 +124,10 @@
     flex-wrap: wrap;
     gap: 39px;
 }
+
+@media screen and (max-width: 1190px) {
+    .profile__container {
+        padding-left: calc(50% - 396px);
+        padding-right: calc(50% - 396px);
+    }
+}
