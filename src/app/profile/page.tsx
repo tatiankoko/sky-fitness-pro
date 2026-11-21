@@ -3,7 +3,13 @@
 import styles from './profile.module.css';
 import { useRedirectMain } from '@/hooks/useRedirectMain';
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Button from '@/components/button/Button';
 import { splitUsername } from '@/utils/helper';
 import { setLogout } from '@/store/features/authSlice';
@@ -37,6 +43,7 @@ export default function Profile() {
       ),
     [myCoursesProgress],
   );
+  const mainRef = useRef<HTMLDivElement>(null);
 
   useRedirectMain();
   useFetchCourses();
@@ -59,6 +66,13 @@ export default function Profile() {
 
   const logout = () => {
     dispatch(setLogout());
+  };
+
+  const onButtonUpClick = (): void => {
+    mainRef.current?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   return (
@@ -124,6 +138,10 @@ export default function Profile() {
           onClose={() => onCloseWorkoutSelection()}
         />
       </section>
+
+      <div className={styles.courses__up}>
+        <Button onClick={onButtonUpClick}>Наверх ↑</Button>
+      </div>
     </div>
   );
 }
