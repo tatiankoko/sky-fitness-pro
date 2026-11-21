@@ -13,8 +13,9 @@ import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
 import {
   courseImageStyleParams,
-  courseImageCss,
   courseImageSrc,
+  courseImageSrcMobile,
+  COURSE_IMAGE_HEIGHT,
 } from '@/app/main/course/[id]/courseImageConstants';
 import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
 import { CourseType } from '@/sharedTypes/sharedTypes';
@@ -112,21 +113,24 @@ export default function Course() {
           <h1 className={styles.title__text}>{course.nameRU}</h1>
         </div>
 
-        <div
-          className={styles.image__block}
-          style={{
-            width: `${courseImageStyleParams(course)?.width}px`,
-            overflow: `${course?.order === 5 || course?.order === 4 ? 'hidden' : 'visible'}`,
-          }}
-        >
-          <Image
-            width={courseImageStyleParams(course)?.width}
-            height={courseImageStyleParams(course)?.height}
-            src={courseImageSrc(course)}
-            alt={`изображение курса ${course?.nameRU}`}
-            loading="eager"
-            style={courseImageCss(course)}
-          ></Image>
+        <div className={styles.image__block}>
+          <picture>
+            <source
+              media="(max-width: 495px)"
+              srcSet={courseImageSrcMobile(course)}
+            />
+            <Image
+              width={courseImageStyleParams(course)?.width}
+              height={COURSE_IMAGE_HEIGHT}
+              src={courseImageSrc(course)}
+              alt={`изображение курса ${course?.nameRU}`}
+              loading="eager"
+              style={{
+                flexShrink: 0,
+                marginRight: courseImageStyleParams(course)?.marginRight,
+              }}
+            ></Image>
+          </picture>
         </div>
       </div>
 
