@@ -3,83 +3,34 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './signin.module.css';
-import React, { ChangeEvent, useState } from 'react';
 import { authUser } from '@/services/auth/authApi';
 import { useAppDispatch } from '@/store/store';
 import { setAccessToken, setIsAuth, setUser } from '@/store/features/authSlice';
 import Button from '@/components/button/Button';
 import { useRouter } from 'next/navigation';
 import classNames from 'classnames';
-import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 export default function SignInForm({ returnTo }: { returnTo?: string }) {
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-  const [errors, setErrors] = useState({
-    email: false,
-    password: false,
+
+  const { errors, errorMessage, loading, onChange, onSubmit } = useAuthForm({
+    fields: ['email', 'password'],
+    submit: async ({ email, password }) => {
+      const token = await authUser({ email, password });
+
+      dispatch(setUser({ email: email, password: password }));
+      dispatch(setAccessToken(token.token || ''));
+      dispatch(setIsAuth());
+
+      if (returnTo) {
+        router.replace(returnTo);
+      } else {
+        router.back();
+      }
+    },
   });
-
-  const clearErrors = () => {
-    setErrors({ email: false, password: false });
-    setErrorMessage('');
-  };
-
-  const onChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-    clearErrors();
-  };
-
-  const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-    clearErrors();
-  };
-
-  const onSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-    setErrorMessage('');
-    clearErrors();
-
-    if (!email.trim() || !password.trim()) {
-      setErrors({ email: !email.trim(), password: !password.trim() });
-      return setErrorMessage('Заполните все поля');
-    }
-
-    setLoading(true);
-
-    authUser({ email, password })
-      .then((token) => {
-        dispatch(setUser({ email: email, password: password }));
-        dispatch(setAccessToken(token.token || ''));
-        dispatch(setIsAuth());
-
-        if (returnTo) {
-          router.replace(returnTo);
-        } else {
-          router.back();
-        }
-      })
-      .catch((error) => {
-        const errorMessage: string = getApiErrorMessage(error);
-
-        setErrorMessage(errorMessage);
-
-        if (errorMessage.includes('email')) {
-          setErrors({ email: true, password: false });
-        } else if (errorMessage.includes('пароль')) {
-          setErrors({ email: false, password: true });
-        } else {
-          setErrors({ email: true, password: true });
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
 
   return (
     <>
@@ -95,7 +46,7 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
           type="text"
           name="login"
           placeholder="Логин"
-          onChange={onChangeEmail}
+          onChange={onChange('email')}
           autoComplete="on"
         />
         <input
@@ -105,7 +56,7 @@ export default function SignInForm({ returnTo }: { returnTo?: string }) {
           type="password"
           name="password"
           placeholder="Пароль"
-          onChange={onChangePassword}
+          onChange={onChange('password')}
           autoComplete="on"
         />
 

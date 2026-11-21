@@ -3,113 +3,38 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '@/components/signInForm/signin.module.css';
-import React, { ChangeEvent, useState } from 'react';
 import { registerUser } from '@/services/auth/authApi';
 import Button from '@/components/button/Button';
 import { useRouter } from 'next/navigation';
 import classNames from 'classnames';
-import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 export default function SignUpForm({ returnTo }: { returnTo?: string }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-  const [errors, setErrors] = useState({
-    email: false,
-    password: false,
-    confirmPassword: false,
-  });
 
   const signUpHref = returnTo
     ? `/main/signin?returnTo=${encodeURIComponent(returnTo)}`
     : '/main/signin';
 
-  const clearErrors = () => {
-    setErrors({ email: false, password: false, confirmPassword: false });
-  };
+  const { errors, errorMessage, loading, onChange, onSubmit } = useAuthForm({
+    fields: ['email', 'password', 'confirmPassword'],
+    validate: ({ password, confirmPassword }) =>
+      password !== confirmPassword
+        ? {
+            fields: ['password', 'confirmPassword'],
+            message: 'Пароли не совпадают',
+          }
+        : null,
+    submit: async ({ email, password }) => {
+      await registerUser({ email, password });
 
-  const onChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-    clearErrors();
-  };
-
-  const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-    clearErrors();
-  };
-
-  const onChangeConfirmPassword = (event: ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(event.target.value);
-    clearErrors();
-  };
-
-  const onSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-    setErrorMessage('');
-    clearErrors();
-
-    if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
-      setErrors({
-        email: !email.trim(),
-        password: !password.trim(),
-        confirmPassword: !confirmPassword.trim(),
-      });
-      return setErrorMessage('Заполните все поля');
-    }
-
-    if (password !== confirmPassword) {
-      setErrors({
-        email: false,
-        password: true,
-        confirmPassword: true,
-      });
-      return setErrorMessage('Пароли не совпадают');
-    }
-
-    setLoading(true);
-
-    registerUser({ email, password })
-      .then(() => {
-        if (returnTo) {
-          router.replace(signUpHref);
-        } else {
-          router.back();
-        }
-      })
-      .catch((error) => {
-        const errorMessage: string = getApiErrorMessage(error);
-
-        setErrorMessage(errorMessage);
-
-        if (errorMessage.includes('email')) {
-          setErrors({
-            email: true,
-            password: false,
-            confirmPassword: false,
-          });
-        } else if (errorMessage.includes('пароль')) {
-          setErrors({
-            email: false,
-            password: true,
-            confirmPassword: false,
-          });
-        } else if (errorMessage.includes('пароли')) {
-          setErrors({
-            email: false,
-            password: false,
-            confirmPassword: true,
-          });
-        } else {
-          setErrors({ email: true, password: true, confirmPassword: true });
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+      if (returnTo) {
+        router.replace(signUpHref);
+      } else {
+        router.back();
+      }
+    },
+  });
 
   return (
     <>
@@ -125,7 +50,7 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
           type="text"
           name="login"
           placeholder="Эл. почта"
-          onChange={onChangeEmail}
+          onChange={onChange('email')}
           autoComplete="on"
         />
         <input
@@ -135,7 +60,7 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
           type="password"
           name="password"
           placeholder="Пароль"
-          onChange={onChangePassword}
+          onChange={onChange('password')}
           autoComplete="off"
         />
         <input
@@ -145,7 +70,7 @@ export default function SignUpForm({ returnTo }: { returnTo?: string }) {
           type="password"
           name="password"
           placeholder="Повторите пароль"
-          onChange={onChangeConfirmPassword}
+          onChange={onChange('confirmPassword')}
           autoComplete="off"
         />
 
