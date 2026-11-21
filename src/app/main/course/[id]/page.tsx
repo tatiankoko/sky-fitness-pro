@@ -162,15 +162,24 @@ export default function Course() {
 
       <div className={styles.addCourse__container}>
         {/* Image — вся ширина на mobile/tablet, скрыт в desktop */}
-        <div className="block lg:hidden w-full overflow-hidden">
-          <div className="w-full h-[336px] sm:h-[450px] md:h-[500px] bg-teal-700/60"></div>
+        <div className={styles.addCourse__imageMobile}>
+          <Image
+            width={375}
+            height={456}
+            src={'/img/crouching_man_group_lg.png'}
+            alt={
+              'мужчина в зелёной рубашке-поло и тёмно-синих шортах сидит на корточках'
+            }
+            loading="eager"
+          />
         </div>
 
         {/* Белый блок с тенью */}
         <div className={styles.addCourse__block}>
           <div className={styles.addCourse__info}>
             <h2 className={styles.addCourse__title}>
-              Начните путь к&nbsp;новому телу
+              Начните путь
+              <br /> к новому телу
             </h2>
 
             <ul className={styles.addCourse__list}>

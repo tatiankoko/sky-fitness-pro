@@ -68,7 +68,14 @@
 }
 
 .auth__button {
-    height: 36px !important;
+    height: 36px;
+}
+
+@media screen and (max-width: 1190px) {
+    .header__container {
+        padding-left: calc(50% - 396px);
+        padding-right: calc(50% - 396px);
+    }
 }
 
 @media screen and (max-width: 495px) {
@@ -88,13 +95,6 @@
     .user__icon{
         width: 30px;
         height: 30px;
-    }
-}
-
-@media screen and (max-width: 1190px) {
-    .header__container {
-        padding-left: calc(50% - 396px);
-        padding-right: calc(50% - 396px);
     }
 }
 
