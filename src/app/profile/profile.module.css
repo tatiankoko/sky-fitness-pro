@@ -125,7 +125,7 @@
     align-items: center;
     position: absolute;
     z-index: 3;
-    bottom: 40px;
+    bottom: 0;
     right: 0;
 }
 
