@@ -4,7 +4,8 @@
     overflow: hidden;
     background-color: #FFFFFF;
     border-radius: 30px;
-    width: 360px;
+    min-width: 343px;
+    max-width: 360px;
     box-shadow: 0 4px 67px -12px #00000021;
     cursor: pointer;
 }
@@ -46,6 +47,17 @@
     flex-wrap: wrap;
     gap: 6px;
     width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .wrapper {
+        width: 343px;
+    }
+
+    .image__block img {
+        width: 100%;
+        height: auto;
+    }
 }
 
 @media screen and (max-width: 495px) {

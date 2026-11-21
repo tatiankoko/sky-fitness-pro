@@ -6,6 +6,8 @@
     gap: 60px;
     margin: 60px 0;
     overflow-y: auto;
+    padding-left: calc(50% - 580px);
+    padding-right: calc(50% - 580px);
 }
 .course__container::-webkit-scrollbar {
     width: 0;
@@ -305,7 +307,16 @@
     }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1190px) {
+    .course__container{
+        padding-left: calc(50% - 396px);
+        padding-right: calc(50% - 396px);
+    }
+
+    .fitting__block {
+        flex-wrap: wrap;
+    }
+
     .directions__block {
         gap: 24px;
     }
