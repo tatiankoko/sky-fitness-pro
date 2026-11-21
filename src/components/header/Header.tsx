@@ -28,7 +28,7 @@ export default function Header() {
     : '/main/signin';
 
   return (
-    <div className={classNames(styles.header__container, styles.center)}>
+    <div className={classNames(styles.header__container)}>
       <Link href="/">
         <Image
           src="/img/logo.png"
@@ -48,7 +48,9 @@ export default function Header() {
               className={styles.user__name}
               onClick={() => setShowUser(!showUser)}
             >
-              {splitUsername(user?.email || 'username')}
+              <span className={styles.user__nameText}>
+                {splitUsername(user?.email || 'username')}
+              </span>
             </a>
 
             <UserModal
@@ -58,8 +60,8 @@ export default function Header() {
             />
           </div>
         ) : (
-          <Link href={signInHref}>
-            <Button>Войти</Button>
+          <Link href={signInHref} className={styles.auth__button}>
+            <Button compact>Войти</Button>
           </Link>
         )}
       </div>

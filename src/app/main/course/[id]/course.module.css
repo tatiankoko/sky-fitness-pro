@@ -203,6 +203,12 @@
 }
 
 @media screen and (max-width: 495px) {
+    .course__container {
+        gap: 40px;
+        margin: 40px 0;
+        overflow-y: auto;
+    }
+
     .header__container {
         flex: 0 0 389px;
         max-height: 389px;
@@ -228,8 +234,26 @@
         margin-right: 0 !important;
     }
 
+    .block__title {
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 110%;
+    }
+
     .directions__container {
         padding-inline: 4px;
+    }
+
+    .fitting__block {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+    .fitting__text {
+        font-size: 18px;
+        line-height: 110%;
     }
 
     .addCourse__container {

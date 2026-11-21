@@ -1,8 +1,3 @@
-.center {
-    padding-left: calc(50% - 580px);
-    padding-right: calc(50% - 580px);
-}
-
 .header__container {
     display: flex;
     flex-direction: row;
@@ -12,6 +7,8 @@
     position: relative;
     width: 100%;
     height: 52px;
+    padding-left: calc(50% - 580px);
+    padding-right: calc(50% - 580px);
 }
 
 .auth__block{
@@ -70,5 +67,27 @@
     border-bottom-color: #000000;
 }
 
+.auth__button {
+    height: 36px !important;
+}
 
+@media screen and (max-width: 495px) {
+    .header__container {
+        height: 36px;
+        padding: 0;
+    }
+
+    .user__nameText {
+        display: none;
+    }
+
+    .user__block{
+        gap: 12px;
+    }
+
+    .user__icon{
+        width: 30px;
+        height: 30px;
+    }
+}
 

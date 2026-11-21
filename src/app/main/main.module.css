@@ -8,7 +8,7 @@
     flex-direction: column;
     flex: 1;
     min-height: 0;
-    margin: 0 16px;
+    margin: 0;
 }
 
 .page__description {
@@ -90,4 +90,34 @@
     z-index: 3;
     bottom: 0;
     right: calc(100% / 2 - 52px);
+}
+
+@media screen and (max-width: 495px) {
+    .page__description {
+        display: none;
+    }
+
+    .main__container {
+        margin: 40px 0;
+        gap: 34px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .subtitle__wrapper {
+        display: none;
+    }
+
+    .header__title {
+        font-size: 32px;
+        line-height: 110%;
+    }
+
+    .header__title br {
+        display: none;
+    }
+
+    .courses__block {
+        gap: 24px;
+    }
 }

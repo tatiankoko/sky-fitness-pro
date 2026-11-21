@@ -12,6 +12,7 @@
 .image__block {
     border-radius: 30px;
     position: relative;
+    overflow: hidden;
 }
 
 .image__button {
@@ -45,4 +46,10 @@
     flex-wrap: wrap;
     gap: 6px;
     width: 100%;
+}
+
+@media screen and (max-width: 495px) {
+    .course__title {
+        font-size: 24px;
+    }
 }

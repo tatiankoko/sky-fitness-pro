@@ -43,7 +43,7 @@ export default function Main() {
       <div className={styles.header__block}>
         <h1 className={styles.header__title}>
           Начните заниматься спортом
-          <br />и улучшите качество жизни
+          <br /> и улучшите качество жизни
         </h1>
 
         <div className={styles.subtitle__wrapper}>
