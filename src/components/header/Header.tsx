@@ -15,7 +15,7 @@ import { splitUsername } from '@/utils/helper';
 export default function Header() {
   useInitAuth();
 
-  const { isAuth, user } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user);
   const [showUser, setShowUser] = useState(false);
   const pathname = usePathname();
 
@@ -39,7 +39,7 @@ export default function Header() {
         />
       </Link>
       <div className={styles.auth__block}>
-        {isAuth && user ? (
+        {user ? (
           <div className={styles.user__block}>
             <svg className={styles.user__icon}>
               <use xlinkHref="/img/icon/sprite.svg#icon-user"></use>

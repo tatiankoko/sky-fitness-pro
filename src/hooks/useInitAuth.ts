@@ -2,7 +2,11 @@
 
 import { useAppDispatch } from '@/store/store';
 import { useEffect } from 'react';
-import { setAccessToken, setUser, setIsAuth } from '@/store/features/authSlice';
+import {
+  setAccessToken,
+  setUser,
+  setAuthInitialized,
+} from '@/store/features/authSlice';
 import { userType } from '@/sharedTypes/sharedTypes';
 
 export const useInitAuth = () => {
@@ -15,6 +19,6 @@ export const useInitAuth = () => {
 
     if (user) dispatch(setUser(user));
     dispatch(setAccessToken(accessToken));
-    dispatch(setIsAuth());
+    dispatch(setAuthInitialized());
   }, [dispatch]);
 };

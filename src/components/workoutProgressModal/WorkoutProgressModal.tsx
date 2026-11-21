@@ -11,7 +11,6 @@ import WorkoutSuccessModal from '@/components/workoutSuccessModal/WorkoutSuccess
 import { isInvalidToken } from '@/utils/helper';
 import { setLogout } from '@/store/features/authSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
-import { useRedirectMain } from '@/hooks/useRedirectMain';
 
 interface workoutProgressModalProps {
   isOpen: boolean;
@@ -40,8 +39,6 @@ export default function WorkoutProgressModal({
       : Array.from({ length: workout?.exercises.length || 0 }, () => 0),
   );
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
-
-  useRedirectMain();
 
   useEffect(() => {
     if (errorMessage) toast.error(errorMessage);

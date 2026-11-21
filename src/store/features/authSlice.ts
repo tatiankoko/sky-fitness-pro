@@ -4,13 +4,13 @@ import { userType } from '@/sharedTypes/sharedTypes';
 type authStateType = {
   user: userType | null;
   accessToken: string | null;
-  isAuth: boolean;
+  authInitialized: boolean; // localStorage прочитан
 };
 
 const initialState: authStateType = {
   user: null,
   accessToken: null,
-  isAuth: false,
+  authInitialized: false,
 };
 
 const authSlice = createSlice({
@@ -25,13 +25,12 @@ const authSlice = createSlice({
       state.accessToken = action.payload;
       localStorage.setItem('accessToken', action.payload);
     },
-    setIsAuth(state) {
-      state.isAuth = true;
+    setAuthInitialized(state) {
+      state.authInitialized = true;
     },
     setLogout(state) {
       state.user = null;
       state.accessToken = null;
-      state.isAuth = false;
 
       localStorage.removeItem('user');
       localStorage.removeItem('accessToken');
@@ -39,11 +38,7 @@ const authSlice = createSlice({
   },
 });
 
-export const {
-  setUser,
-  setAccessToken,
-  setIsAuth,
-  setLogout,
-} = authSlice.actions;
+export const { setUser, setAccessToken, setAuthInitialized, setLogout } =
+  authSlice.actions;
 
 export const authSliceReducer = authSlice.reducer;
