@@ -7,6 +7,10 @@
     min-width: 343px;
     max-width: 360px;
     box-shadow: 0 4px 67px -12px #00000021;
+    cursor: default;
+}
+
+.wrapper_clickable {
     cursor: pointer;
 }
 

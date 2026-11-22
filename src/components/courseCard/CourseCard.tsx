@@ -9,6 +9,7 @@ import {
 } from '@/sharedTypes/sharedTypes';
 import InfoItem from '@/components/infoItem/InfoItem';
 import React, { useCallback, useState } from 'react';
+import classNames from 'classnames';
 import { useAppSelector } from '@/store/store';
 import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
 import { toast } from 'react-toastify';
@@ -63,7 +64,12 @@ export default function CourseCard({
   );
 
   return (
-    <div className={styles.wrapper} onClick={onClickAction}>
+    <div
+      className={classNames(styles.wrapper, {
+        [styles.wrapper_clickable]: !showUserContent,
+      })}
+      onClick={onClickAction}
+    >
       <div className={styles.image__block}>
         <Image
           width={360}
