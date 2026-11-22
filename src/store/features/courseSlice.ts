@@ -89,30 +89,10 @@ const courseSlice = createSlice({
         (id) => id !== action.payload._id,
       );
     },
-    setMyCoursesProgress: (
-      // todo check
-      state,
-      action: PayloadAction<CourseProgressType[]>,
-    ) => {
-      state.myCoursesProgress = action.payload;
-    },
     invalidateMyCourses: (state) => {
       // todo check
       state.myCoursesRequested = false;
       state.fetchMyCoursesIsLoading = false;
-    },
-    addMyCourseProgress: (state, action: PayloadAction<CourseProgressType>) => {
-      const index = state.myCoursesProgress.findIndex(
-        (progress) => progress.courseId === action.payload.courseId,
-      );
-      if (index === -1) state.myCoursesProgress.push(action.payload);
-      else state.myCoursesProgress[index] = action.payload;
-    },
-    setFetchError: (state, action: PayloadAction<string>) => {
-      state.fetchAllCoursesError = action.payload;
-    },
-    setFetchIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.fetchAllCoursesIsLoading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -146,11 +126,7 @@ export const {
   /*setMyCourses,*/
   addMyCourse,
   removeMyCourse,
-  setMyCoursesProgress,
   invalidateMyCourses,
-  addMyCourseProgress,
-  setFetchError,
-  setFetchIsLoading,
 } = courseSlice.actions;
 
 export const courseSliceReducer = courseSlice.reducer;

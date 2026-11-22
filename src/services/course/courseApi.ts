@@ -58,21 +58,6 @@ export const removeCourse = async (accessToken: string, courseId: string) => {
   });
 };
 
-export const getCourseProgress = async (
-  access: string,
-  courseId: string,
-): Promise<CourseProgressType> => {
-  return await axios
-    .get(BASE_URL + `/users/me/progress?courseId=${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${access}`,
-      },
-    })
-    .then((response) => {
-      return response.data;
-    });
-};
-
 export const resetCourseProgress = async (access: string, courseId: string) => {
   return await axios
     .patch(
