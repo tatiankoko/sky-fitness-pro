@@ -208,6 +208,7 @@ export default function Workout() {
           workout={fetchedWorkout}
           workoutProgress={workoutProgress}
           setWorkoutProgress={setWorkoutProgress}
+          onProgressSaved={() => setProgressRefresh((value) => value + 1)}
           isOpen={showFillProgress}
           onClose={() => setShowFillProgress(false)}
         />

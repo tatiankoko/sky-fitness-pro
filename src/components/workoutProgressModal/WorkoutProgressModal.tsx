@@ -21,6 +21,7 @@ interface workoutProgressModalProps {
   workout: WorkoutType | null;
   workoutProgress: number[];
   setWorkoutProgress: (workoutProgress: number[]) => void;
+  onProgressSaved?: () => void;
 }
 
 export default function WorkoutProgressModal({
@@ -30,6 +31,7 @@ export default function WorkoutProgressModal({
   workout,
   workoutProgress,
   setWorkoutProgress,
+  onProgressSaved,
 }: workoutProgressModalProps) {
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.user.accessToken);
@@ -79,6 +81,7 @@ export default function WorkoutProgressModal({
       .then(() => {
         setWorkoutProgress(progressValues);
         dispatch(invalidateMyCourses());
+        onProgressSaved?.();
         setShowSuccess(true);
       })
       .catch((error) => {
