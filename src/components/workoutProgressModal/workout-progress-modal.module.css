@@ -1,6 +1,4 @@
 .progress__list {
-    list-style-type: disc;
-    list-style-position: outside;
     max-height: 360px;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -28,7 +26,7 @@
 .progress__text {
     font-weight: 400;
     font-size: 18px;
-    line-height: 110.00000000000001%;
+    line-height: 110%;
     letter-spacing: 0;
     color: #000000;
 }
@@ -40,44 +38,17 @@
     padding: 16px 18px;
     font-weight: 400;
     font-size: 18px;
-    line-height: 110.00000000000001%;
+    line-height: 110%;
     letter-spacing: 0;
     color: #000000;
     outline: none;
-}
-
-.progress__input::-webkit-input-placeholder {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 110.00000000000001%;
-    letter-spacing: 0;
-    color: #D0CECE;
-}
-
-.progress__input:-ms-input-placeholder {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 110.00000000000001%;
-    letter-spacing: 0;
-    color: #D0CECE;
-}
-
-.progress__input::-ms-input-placeholder {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 110.00000000000001%;
-    letter-spacing: 0;
-    color: #D0CECE;
 }
 
 .progress__input::placeholder {
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
-    line-height: 110.00000000000001%;
+    line-height: 110%;
     letter-spacing: 0;
     color: #D0CECE;
 }

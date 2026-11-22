@@ -51,7 +51,7 @@
 .training__title {
     font-weight: 400;
     font-size: 32px;
-    line-height: 110.00000000000001%;
+    line-height: 110%;
     letter-spacing: 0;
     color: #000000;
 }
@@ -84,7 +84,6 @@
     }
 
     .progress__block {
-        width: 100%;
         display: flex;
         flex-direction: column;
         gap: 24px;
@@ -106,8 +105,6 @@
     }
 
     .video__block {
-        flex: none;
-        min-height: 189px;
         height: 189px;
     }
 

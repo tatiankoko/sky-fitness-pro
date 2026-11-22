@@ -43,7 +43,7 @@
 .user__name {
     font-weight: 500;
     font-size: 32px;
-    line-height: 110.00000000000001%;
+    line-height: 110%;
     letter-spacing: 0;
     color: #000000;
 }
@@ -51,16 +51,10 @@
 .user__login {
     font-weight: 400;
     font-size: 18px;
-    line-height: 110.00000000000001%;
+    line-height: 110%;
     letter-spacing: 0;
     color: #000000;
     margin-bottom: 14px;
-}
-
-.courses__block {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
 }
 
 .courses__content {
@@ -87,30 +81,6 @@
     line-height: 110%;
     letter-spacing: 0;
     color: #000000;
-}
-
-.subtitle__wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.header__subtitle {
-    font-weight: 400;
-    font-size: 32px;
-    line-height: 110.00000000000001%;
-    letter-spacing: 0;
-    color: #202020;
-
-    background-color: #BCEC30;
-    border-radius: 5px;
-    padding: 16px 20px;
-}
-
-.subtitle__icon {
-    width: 30px;
-    height: 35px;
-    margin-top: -17px;
 }
 
 .courses__block {
