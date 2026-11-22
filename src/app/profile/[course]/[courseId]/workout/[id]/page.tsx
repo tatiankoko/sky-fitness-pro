@@ -10,6 +10,7 @@ import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
 import {
   getWorkoutById,
   getWorkoutProgress,
+  resetWorkoutProgress,
 } from '@/services/workout/workoutApi';
 import { toast } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
@@ -42,6 +43,9 @@ export default function Workout() {
     cachedWorkout ?? null,
   );
   const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
+  const [workoutCompleted, setWorkoutCompleted] = useState<boolean>(false);
+  const [resetting, setResetting] = useState<boolean>(false);
+  const [progressRefresh, setProgressRefresh] = useState<number>(0);
   const [currentCourse, setCurrentCourse] = useState<CourseType | null>(
     cachedCourse ?? null,
   );
@@ -94,7 +98,8 @@ export default function Workout() {
       workoutId: params.id,
     })
       .then((progress) => {
-        if (progress.progressData) setWorkoutProgress(progress.progressData);
+        setWorkoutProgress(progress.progressData ?? []);
+        setWorkoutCompleted(progress.workoutCompleted ?? false);
       })
       .catch((error) => {
         if (isInvalidToken(error)) {
@@ -103,7 +108,34 @@ export default function Workout() {
           setError(getApiErrorMessage(error));
         }
       });
-  }, [accessToken, fetchedWorkout, params.courseId, params.id]);
+  }, [accessToken, fetchedWorkout, params.courseId, params.id, progressRefresh]);
+
+  const progressButtonLabel = workoutCompleted
+    ? 'Начать заново'
+    : workoutProgress.length === 0
+      ? 'Заполнить свой прогресс'
+      : 'Обновить свой прогресс';
+
+  const onResetProgress = () => {
+    if (!accessToken || !fetchedWorkout) return;
+
+    setResetting(true);
+
+    resetWorkoutProgress(accessToken, params.courseId, params.id)
+      .then(() => {
+        setProgressRefresh((value) => value + 1);
+      })
+      .catch((error) => {
+        if (isInvalidToken(error)) {
+          dispatch(setLogout());
+        } else {
+          setError(getApiErrorMessage(error));
+        }
+      })
+      .finally(() => {
+        setResetting(false);
+      });
+  };
 
   const handleError = (error: unknown) => {
     toast.error(error instanceof Error ? error.message : 'Ошибка плеера');
@@ -145,7 +177,7 @@ export default function Workout() {
               <ProgressItem
                 key={exercise._id}
                 title={exercise.name}
-                progress={workoutProgress?.[index] ?? 0} // todo fix it
+                progress={workoutProgress?.[index] ?? 0}
                 max={exercise.quantity}
               />
             ))
@@ -154,13 +186,14 @@ export default function Workout() {
 
         <div className={styles.progress__button}>
           <Button
-            disabled={loading || !workoutProgress || !fetchedWorkout}
-            onClick={() => setShowFillProgress(true)}
+            disabled={loading || resetting || !workoutProgress || !fetchedWorkout}
+            onClick={
+              workoutCompleted
+                ? onResetProgress
+                : () => setShowFillProgress(true)
+            }
           >
-            {workoutProgress?.length == 0 && // todo fix it
-            !workoutProgress.some((value) => value !== 0)
-              ? 'Заполнить свой прогресс'
-              : 'Обновить свой прогресс'}
+            {progressButtonLabel}
           </Button>
         </div>
       </div>

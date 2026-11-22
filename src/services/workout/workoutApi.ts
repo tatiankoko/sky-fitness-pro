@@ -86,3 +86,24 @@ export const saveWorkoutProgress = async ({
       return response.data;
     });
 };
+
+export const resetWorkoutProgress = async (
+  access: string,
+  courseId: string,
+  workoutId: string,
+) => {
+  return await axios
+    .patch(
+      BASE_URL + `/courses/${courseId}/workouts/${workoutId}/reset`,
+      {},
+      {
+        headers: {
+          'content-type': '',
+          Authorization: `Bearer ${access}`,
+        },
+      },
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
