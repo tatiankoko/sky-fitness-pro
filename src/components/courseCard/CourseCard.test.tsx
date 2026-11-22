@@ -98,4 +98,19 @@ describe('CourseCard', () => {
     fireEvent.click(icon(container));
     expect(mockAdd).toHaveBeenCalledTimes(1);
   });
+
+  it('текст tooltip зависит от isAdded', () => {
+    const { container, unmount } = setup();
+    expect(icon(container)).toHaveAttribute(
+      'data-tooltip-content',
+      'Добавить курс',
+    );
+    unmount();
+
+    const added = setup({ isAdded: true });
+    expect(icon(added.container)).toHaveAttribute(
+      'data-tooltip-content',
+      'Удалить курс',
+    );
+  });
 });

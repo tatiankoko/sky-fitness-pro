@@ -13,6 +13,8 @@ import classNames from 'classnames';
 import { useAppSelector } from '@/store/store';
 import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
 import { toast } from 'react-toastify';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 import CourseProgressContent from '@/components/courseProgressContent/CourseProgressContent';
 
 type CourseCardProps = {
@@ -78,11 +80,22 @@ export default function CourseCard({
           alt={`изображение курса ${course?.nameRU}`}
           loading="eager"
         ></Image>
-        <svg className={styles.image__button} onClick={onToggleAddCourse}>
+        <svg
+          className={styles.image__button}
+          onClick={onToggleAddCourse}
+          data-tooltip-id={`course-toggle-${course._id}`}
+          data-tooltip-content={isAdded ? 'Удалить курс' : 'Добавить курс'}
+        >
           <use
             xlinkHref={`/img/icon/sprite.svg#icon-${isAdded ? 'remove' : 'add'}`}
           ></use>
         </svg>
+        <Tooltip
+          id={`course-toggle-${course._id}`}
+          place="bottom"
+          className={styles.course__tooltip}
+          classNameArrow={styles.course__tooltipArrow}
+        />
       </div>
 
       <div className={styles.course__block}>

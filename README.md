@@ -19,7 +19,7 @@
 - **Redux Toolkit** — состояние курсов, тренировок и авторизации
 - **CSS Modules** + **Tailwind CSS v4** — стилизация
 - **axios** — запросы к API
-- **react-player** — видео, **react-toastify** — уведомления, **react-loading-skeleton** — скелетоны
+- **react-player** — видео, **react-toastify** — уведомления, **react-loading-skeleton** — скелетоны, **react-tooltip** — подсказки
 - **Jest** + **ts-jest** + **Testing Library** — тесты
 
 ## Быстрый старт
