@@ -72,3 +72,20 @@ export const getCourseProgress = async (
       return response.data;
     });
 };
+
+export const resetCourseProgress = async (access: string, courseId: string) => {
+  return await axios
+    .patch(
+      BASE_URL + `/courses/${courseId}/reset`,
+      {},
+      {
+        headers: {
+          'content-type': '',
+          Authorization: `Bearer ${access}`,
+        },
+      },
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
