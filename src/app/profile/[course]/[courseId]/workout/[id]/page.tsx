@@ -117,7 +117,7 @@ export default function Workout() {
       : 'Обновить свой прогресс';
 
   const onResetProgress = () => {
-    if (!accessToken || !fetchedWorkout) return;
+    if (resetting || !accessToken || !fetchedWorkout) return;
 
     setResetting(true);
 

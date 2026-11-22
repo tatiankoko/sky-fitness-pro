@@ -69,6 +69,8 @@ export default function WorkoutProgressModal({
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
+    if (loading) return;
+
     setErrorMessage('');
     setLoading(true);
 

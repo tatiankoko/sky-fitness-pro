@@ -48,7 +48,7 @@ export default function CourseProgressContent({
       : 'Начать тренировки';
 
   const onResetProgress = () => {
-    if (!accessToken) return;
+    if (resetting || !accessToken) return;
 
     setResetting(true);
 

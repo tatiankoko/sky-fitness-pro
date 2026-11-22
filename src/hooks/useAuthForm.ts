@@ -65,6 +65,9 @@ export const useAuthForm = ({ fields, submit, validate }: useAuthFormProps) => {
 
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
+
+    if (loading) return;
+
     clearErrors();
 
     const emptyFields = fields.filter((field) => !values[field].trim());

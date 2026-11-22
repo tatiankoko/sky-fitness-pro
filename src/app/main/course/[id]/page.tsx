@@ -71,6 +71,8 @@ export default function Course() {
   }, [error]);
 
   const onAddCourse = () => {
+    if (loading) return;
+
     if (!accessToken) {
       router.push('/main/signin');
       return;
