@@ -10,7 +10,8 @@ export function getDailyDurationInMinutesPanel(from: number, to: number) {
 
 export function capitalize(str: string): string {
   if (!str) return str;
-  return str.toLowerCase().charAt(0).toUpperCase() + str.slice(1);
+  const lower = str.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
 }
 
 export const splitUsername = (email: string): string => {
