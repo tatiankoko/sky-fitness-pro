@@ -1,32 +1,14 @@
 .progress__list {
     list-style-type: disc;
     list-style-position: outside;
-    /*display: flex;
-    flex-direction: column;*/
     max-height: 360px;
     overflow-y: auto;
-}
-.progress__list::-webkit-scrollbar {
-    width: 26px;               /* Ширина вертикального скроллбара */
-    height: 26px;              /* Высота горизонтального скроллбара */
+    scrollbar-width: thin;
+    scrollbar-color: #000000 #F7F7F7;
 }
 
-.progress__list::-webkit-scrollbar-track {
-    background: #F7F7F7;
-    background-clip: content-box;
-    border-left: 20px solid transparent;
-}
-
-.progress__list::-webkit-scrollbar-thumb {
-    background: #000000;
-    background-clip: content-box;
-    border-left: 20px solid transparent;
-}
-
-::-webkit-scrollbar-button {
-    display: none;
-    width: 0;
-    height: 0;
+.scrollable {
+    padding-right: 20px;
 }
 
 .progress__item {

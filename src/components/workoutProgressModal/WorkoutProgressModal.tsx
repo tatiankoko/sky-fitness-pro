@@ -11,6 +11,8 @@ import WorkoutSuccessModal from '@/components/workoutSuccessModal/WorkoutSuccess
 import { isInvalidToken } from '@/utils/helper';
 import { setLogout } from '@/store/features/authSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { useScrollable } from '@/hooks/useScrollable';
+import classNames from 'classnames';
 
 interface workoutProgressModalProps {
   isOpen: boolean;
@@ -39,6 +41,7 @@ export default function WorkoutProgressModal({
       : Array.from({ length: workout?.exercises.length || 0 }, () => 0),
   );
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const { ref, scrollable } = useScrollable<HTMLUListElement>();
 
   useEffect(() => {
     if (errorMessage) toast.error(errorMessage);
@@ -94,7 +97,12 @@ export default function WorkoutProgressModal({
     <WorkoutSuccessModal isOpen={showSuccess} onClose={onClose} />
   ) : (
     <WorkoutModal title={'Мой прогресс'} onClose={onClose}>
-      <ul className={styles.progress__list}>
+      <ul
+        ref={ref}
+        className={classNames(styles.progress__list, {
+          [styles.scrollable]: scrollable,
+        })}
+      >
         {workout?.exercises.map((exercise, index) => (
           <li key={exercise._id} className={styles.progress__item}>
             <p

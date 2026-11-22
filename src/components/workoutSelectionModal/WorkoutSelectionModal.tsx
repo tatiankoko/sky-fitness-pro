@@ -9,6 +9,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useFetchWorkouts } from '@/hooks/useFetchWorkouts';
+import { useScrollable } from '@/hooks/useScrollable';
 import { toast } from 'react-toastify';
 
 interface workoutSelectionModalProps {
@@ -49,6 +50,7 @@ export default function WorkoutSelectionModal({
     workoutId: string;
   } | null>(null);
   const router = useRouter();
+  const { ref, scrollable } = useScrollable<HTMLUListElement>();
 
   useEffect(() => {
     if (errorMsg) toast.error(errorMsg);
@@ -91,7 +93,12 @@ export default function WorkoutSelectionModal({
 
   return (
     <WorkoutModal title={'Выберите тренировку'} onClose={onClose}>
-      <ul className={styles.workouts__list}>
+      <ul
+        ref={ref}
+        className={classNames(styles.workouts__list, {
+          [styles.scrollable]: scrollable,
+        })}
+      >
         {isLoading && courseWorkouts.length === 0 ? (
           <li className={styles.workouts__notification}>
             Загрузка тренировок...

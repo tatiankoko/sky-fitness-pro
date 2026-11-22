@@ -37,3 +37,9 @@
     flex-direction: column;
     gap: 34px;
 }
+
+@media screen and (max-width: 495px) {
+    .dialog {
+        gap: 34px;
+    }
+}
