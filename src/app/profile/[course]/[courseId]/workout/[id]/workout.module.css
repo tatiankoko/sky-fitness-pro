@@ -112,3 +112,12 @@
         width: 100%;
     }
 }
+
+.progress__notification {
+    list-style: none;
+    text-align: left;
+    color: color-mix(in oklab, #000000 60%, transparent);
+    font-size: 24px;
+    line-height: 28px;
+    grid-column: 1 / -1;
+}

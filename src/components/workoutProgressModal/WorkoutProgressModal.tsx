@@ -97,38 +97,44 @@ export default function WorkoutProgressModal({
     <WorkoutSuccessModal isOpen={showSuccess} onClose={onClose} />
   ) : (
     <WorkoutModal title={'Мой прогресс'} onClose={onClose}>
-      <ul
-        ref={ref}
-        className={classNames(styles.progress__list, {
-          [styles.scrollable]: scrollable,
-        })}
-      >
-        {workout?.exercises.map((exercise, index) => (
-          <li key={exercise._id} className={styles.progress__item}>
-            <p
-              className={styles.progress__text}
-            >{`Сколько раз вы сделали ${exercise.name.toLowerCase()}?`}</p>
+      {workout?.exercises.length ? (
+        <ul
+          ref={ref}
+          className={classNames(styles.progress__list, {
+            [styles.scrollable]: scrollable,
+          })}
+        >
+          {workout.exercises.map((exercise, index) => (
+            <li key={exercise._id} className={styles.progress__item}>
+              <p
+                className={styles.progress__text}
+              >{`Сколько раз вы сделали ${exercise.name.toLowerCase()}?`}</p>
 
-            <input
-              type="text"
-              inputMode="numeric" // Открывает цифровую клавиатуру на смартфонах
-              pattern="[0-9]*"
-              name="quantity"
-              min={0}
-              max={exercise.quantity}
-              value={progressValues[index] ?? 0}
-              className={styles.progress__input}
-              placeholder={'0'}
-              onChange={(e) =>
-                updateProgressValueAt(
-                  index,
-                  Number(e.target.value.replace(/\D/g, '')) || 0,
-                )
-              }
-            />
-          </li>
-        ))}
-      </ul>
+              <input
+                type="text"
+                inputMode="numeric" // Открывает цифровую клавиатуру на смартфонах
+                pattern="[0-9]*"
+                name="quantity"
+                min={0}
+                max={exercise.quantity}
+                value={progressValues[index] ?? 0}
+                className={styles.progress__input}
+                placeholder={'0'}
+                onChange={(e) =>
+                  updateProgressValueAt(
+                    index,
+                    Number(e.target.value.replace(/\D/g, '')) || 0,
+                  )
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className={styles.progress__notification}>
+          Сохраните свой прогресс, если вы выполнили все упражнения тренировки
+        </p>
+      )}
 
       <Button onClick={onSubmit} disabled={loading}>
         Сохранить

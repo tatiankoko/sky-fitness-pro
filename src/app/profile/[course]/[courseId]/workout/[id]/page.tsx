@@ -172,8 +172,8 @@ export default function Workout() {
               <Skeleton baseColor={baseSkeletonColor} width={320} height={36} />
               <Skeleton baseColor={baseSkeletonColor} width={320} height={36} />
             </>
-          ) : (
-            fetchedWorkout?.exercises.map((exercise, index) => (
+          ) : fetchedWorkout?.exercises.length ? (
+            fetchedWorkout.exercises.map((exercise, index) => (
               <ProgressItem
                 key={exercise._id}
                 title={exercise.name}
@@ -181,6 +181,10 @@ export default function Workout() {
                 max={exercise.quantity}
               />
             ))
+          ) : (
+            <p className={styles.progress__notification}>
+              Выполните все упражнения на видео и сохраните свой прогресс
+            </p>
           )}
         </div>
 
