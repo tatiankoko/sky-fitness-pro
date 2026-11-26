@@ -2,7 +2,7 @@
 
 import styles from './course.module.css';
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/store';
+import { useAppSelector } from '@/store/store';
 import { useParams, useRouter } from 'next/navigation';
 import { getCourseById } from '@/services/course/courseApi';
 import Button from '@/components/button/Button';
@@ -20,13 +20,11 @@ import {
 import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
 import { CourseType } from '@/sharedTypes/sharedTypes';
 import { isInvalidToken } from '@/utils/helper';
-import { setLogout } from '@/store/features/authSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 import { useFetchMyCourses } from '@/hooks/useFetchMyCourses';
 
 export default function Course() {
   const params = useParams<{ id: string }>();
-  const dispatch = useAppDispatch();
   const { allCourses, selectedCourseIds } = useAppSelector(
     (state) => state.courses,
   );
@@ -53,9 +51,7 @@ export default function Course() {
         setCourse(course);
       })
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           setError(getApiErrorMessage(error));
         }
       })

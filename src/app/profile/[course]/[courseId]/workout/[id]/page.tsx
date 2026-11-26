@@ -5,7 +5,7 @@ import Button from '@/components/button/Button';
 import WorkoutProgressModal from '@/components/workoutProgressModal/WorkoutProgressModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/store';
+import { useAppSelector } from '@/store/store';
 import { CourseType, WorkoutType } from '@/sharedTypes/sharedTypes';
 import {
   getWorkoutById,
@@ -20,12 +20,10 @@ import ProgressItem from '@/components/progressItem/ProgressItem';
 import { getCourseById } from '@/services/course/courseApi';
 import { useRedirectMain } from '@/hooks/useRedirectMain';
 import { isInvalidToken } from '@/utils/helper';
-import { setLogout } from '@/store/features/authSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 
 export default function Workout() {
   const params = useParams<{ id: string; course: string; courseId: string }>();
-  const dispatch = useAppDispatch();
   const { allWorkouts } = useAppSelector((state) => state.workouts);
   const { myCourses } = useAppSelector((state) => state.courses);
   const { accessToken } = useAppSelector((state) => state.user);
@@ -65,9 +63,7 @@ export default function Workout() {
         setCurrentCourse(course);
       })
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           setError(getApiErrorMessage(error));
         }
       });
@@ -81,9 +77,7 @@ export default function Workout() {
         setFetchedWorkout(result);
       })
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           setError(getApiErrorMessage(error));
         }
       });
@@ -102,9 +96,7 @@ export default function Workout() {
         setWorkoutCompleted(progress.workoutCompleted ?? false);
       })
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           setError(getApiErrorMessage(error));
         }
       });
@@ -126,9 +118,7 @@ export default function Workout() {
         setProgressRefresh((value) => value + 1);
       })
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           setError(getApiErrorMessage(error));
         }
       })

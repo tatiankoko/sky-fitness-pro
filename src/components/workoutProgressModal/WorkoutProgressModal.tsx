@@ -9,7 +9,6 @@ import { useAppDispatch, useAppSelector } from '@/store/store';
 import { toast } from 'react-toastify';
 import WorkoutSuccessModal from '@/components/workoutSuccessModal/WorkoutSuccessModal';
 import { isInvalidToken } from '@/utils/helper';
-import { setLogout } from '@/store/features/authSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 import { useScrollable } from '@/hooks/useScrollable';
 import classNames from 'classnames';
@@ -87,9 +86,7 @@ export default function WorkoutProgressModal({
         setShowSuccess(true);
       })
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           setErrorMessage(getApiErrorMessage(error));
         }
       })

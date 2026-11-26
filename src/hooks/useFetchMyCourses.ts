@@ -7,7 +7,6 @@ import {
   startMyCoursesFetch,
 } from '@/store/features/courseSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
-import { setLogout } from '@/store/features/authSlice';
 import { isInvalidToken } from '@/utils/helper';
 
 export const useFetchMyCourses = () => {
@@ -35,9 +34,7 @@ export const useFetchMyCourses = () => {
     getMyCourses(accessToken)
       .then((response) => dispatch(setMyCoursesResponse(response)))
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           dispatch(setMyCoursesFetchError(getApiErrorMessage(error)));
         }
       });

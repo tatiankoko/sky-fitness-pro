@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from '@/store/store';
 import { CourseType } from '@/sharedTypes/sharedTypes';
 import { useCallback } from 'react';
 import { isInvalidToken } from '@/utils/helper';
-import { setLogout } from '@/store/features/authSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 
 interface toggleAddCourseProps {
@@ -34,9 +33,7 @@ export const useToggleAddCourseAction = () => {
           toast.success(`Курс успешно ${add ? 'добавлен' : 'удален'}!`);
         })
         .catch((error) => {
-          if (isInvalidToken(error)) {
-            dispatch(setLogout());
-          } else {
+          if (!isInvalidToken(error)) {
             setErrorMsg(getApiErrorMessage(error));
           }
         })

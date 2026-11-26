@@ -1,4 +1,4 @@
-import axios from 'axios';
+import apiClient from '@/services/apiClient';
 import { BASE_URL } from '@/services/constants';
 import { WorkoutProgressType, WorkoutType } from '@/sharedTypes/sharedTypes';
 
@@ -6,7 +6,7 @@ export const getWorkouts = async (
   access: string,
   courseId: string,
 ): Promise<WorkoutType[]> => {
-  return await axios
+  return await apiClient
     .get(BASE_URL + `/courses/${courseId}/workouts`, {
       headers: {
         'content-type': '',
@@ -22,7 +22,7 @@ export const getWorkoutById = async (
   access: string,
   workoutId: string,
 ): Promise<WorkoutType> => {
-  return await axios
+  return await apiClient
     .get(BASE_URL + `/workouts/${workoutId}`, {
       headers: {
         'content-type': '',
@@ -45,7 +45,7 @@ export const getWorkoutProgress = async ({
   courseId,
   workoutId,
 }: workoutProgressProps): Promise<WorkoutProgressType> => {
-  return await axios
+  return await apiClient
     .get(
       BASE_URL +
         `/users/me/progress?courseId=${courseId}&workoutId=${workoutId}`,
@@ -71,7 +71,7 @@ export const saveWorkoutProgress = async ({
   workoutId,
   progressData,
 }: saveWorkoutProgressProps) => {
-  return await axios
+  return await apiClient
     .patch(
       BASE_URL + `/courses/${courseId}/workouts/${workoutId}`,
       { progressData: progressData },
@@ -92,7 +92,7 @@ export const resetWorkoutProgress = async (
   courseId: string,
   workoutId: string,
 ) => {
-  return await axios
+  return await apiClient
     .patch(
       BASE_URL + `/courses/${courseId}/workouts/${workoutId}/reset`,
       {},

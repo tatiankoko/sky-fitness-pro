@@ -8,15 +8,22 @@ import {
 import { courseSliceReducer } from '@/store/features/courseSlice';
 import { workoutSliceReducer } from '@/store/features/workoutSlice';
 import { authSliceReducer } from '@/store/features/authSlice';
+import { setupApiInterceptors } from '@/services/apiClient';
 
 export const makeStore = () => {
-  return configureStore({
+  const store = configureStore({
     reducer: combineReducers({
       courses: courseSliceReducer,
       workouts: workoutSliceReducer,
       user: authSliceReducer,
     }),
   });
+
+  if (typeof window !== 'undefined') {
+    setupApiInterceptors(store.dispatch);
+  }
+
+  return store;
 };
 
 // Infer the type of makeStore

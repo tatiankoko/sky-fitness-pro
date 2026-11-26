@@ -9,7 +9,6 @@ import {
   startWorkoutFetch,
 } from '@/store/features/workoutSlice';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
-import { setLogout } from '@/store/features/authSlice';
 import { isInvalidToken } from '@/utils/helper';
 
 export const useFetchWorkouts = (courseId?: string, enabled = true) => {
@@ -36,9 +35,7 @@ export const useFetchWorkouts = (courseId?: string, enabled = true) => {
     getWorkouts(accessToken, courseId)
       .then((workouts) => dispatch(addWorkout({ courseId, workouts })))
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           dispatch(
             setWorkoutFetchError({
               courseId,

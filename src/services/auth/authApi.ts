@@ -1,4 +1,4 @@
-import axios from 'axios';
+import apiClient from '@/services/apiClient';
 import { BASE_URL } from '@/services/constants';
 
 type authUserProps = {
@@ -13,7 +13,7 @@ type authUserResponse = {
 export const authUser = async (
   data: authUserProps,
 ): Promise<authUserResponse> => {
-  const response = await axios.post(BASE_URL + '/auth/login/', data, {
+  const response = await apiClient.post(BASE_URL + '/auth/login/', data, {
     headers: {
       'content-type': '',
     },
@@ -29,7 +29,7 @@ type regUserResponse = {
 export const registerUser = async (
   data: authUserProps,
 ): Promise<regUserResponse> => {
-  const response = await axios.post(BASE_URL + '/auth/register/', data, {
+  const response = await apiClient.post(BASE_URL + '/auth/register/', data, {
     headers: {
       'content-type': '',
     },

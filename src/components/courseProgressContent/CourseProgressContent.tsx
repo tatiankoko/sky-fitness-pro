@@ -8,7 +8,6 @@ import Button from '@/components/button/Button';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { resetCourseProgress } from '@/services/course/courseApi';
 import { invalidateMyCourses } from '@/store/features/courseSlice';
-import { setLogout } from '@/store/features/authSlice';
 import { isInvalidToken } from '@/utils/helper';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
 import { toast } from 'react-toastify';
@@ -57,9 +56,7 @@ export default function CourseProgressContent({
         dispatch(invalidateMyCourses());
       })
       .catch((error) => {
-        if (isInvalidToken(error)) {
-          dispatch(setLogout());
-        } else {
+        if (!isInvalidToken(error)) {
           toast.error(getApiErrorMessage(error));
         }
       })
