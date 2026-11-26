@@ -1,0 +1,74 @@
+.progress__list {
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #000000 #F7F7F7;
+}
+
+.scrollable {
+    padding-right: 20px;
+}
+
+.progress__item {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    border: none;
+    padding: 0 0 10px 2px;
+}
+
+.progress__item:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.progress__text {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.progress__input {
+    width: 100%;
+    border: 1px solid #D0CECE;
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #000000;
+    outline: none;
+}
+
+.progress__input::placeholder {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #D0CECE;
+}
+
+.progress__input::-webkit-outer-spin-button,
+.progress__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Для Firefox */
+.progress__input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.progress__notification {
+    list-style: none;
+    text-align: left;
+    color: color-mix(in oklab, #000000 60%, transparent);
+    font-size: 24px;
+    line-height: 28px;
+}
+

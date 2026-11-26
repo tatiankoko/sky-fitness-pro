@@ -1,0 +1,70 @@
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import { useAppSelector } from '@/store/store';
+import React, { useState } from 'react';
+import styles from './header.module.css';
+import Button from '@/components/button/Button';
+import { useInitAuth } from '@/hooks/useInitAuth';
+import classNames from 'classnames';
+import { usePathname } from 'next/navigation';
+import UserModal from '@/components/userModal/UserModal';
+import { splitUsername } from '@/utils/helper';
+
+export default function Header() {
+  useInitAuth();
+
+  const { user } = useAppSelector((state) => state.user);
+  const [showUser, setShowUser] = useState(false);
+  const pathname = usePathname();
+
+  const returnTo =
+    pathname === '/main' || /^\/main\/course\/[^/]+$/.test(pathname)
+      ? pathname
+      : null;
+  const signInHref = returnTo
+    ? `/main/signin?returnTo=${encodeURIComponent(returnTo)}`
+    : '/main/signin';
+
+  return (
+    <div className={classNames(styles.header__container)}>
+      <Link href="/">
+        <Image
+          src="/img/logo.png"
+          alt="logo"
+          width={223}
+          height={36}
+          loading="eager"
+        />
+      </Link>
+      <div className={styles.auth__block}>
+        {user ? (
+          <div className={styles.user__block}>
+            <svg className={styles.user__icon}>
+              <use xlinkHref="/img/icon/sprite.svg#icon-user"></use>
+            </svg>
+            <a
+              className={styles.user__name}
+              onClick={() => setShowUser(!showUser)}
+            >
+              <span className={styles.user__nameText}>
+                {splitUsername(user?.email || 'username')}
+              </span>
+            </a>
+
+            <UserModal
+              isOpen={showUser}
+              onClose={() => setShowUser(!showUser)}
+              user={user}
+            />
+          </div>
+        ) : (
+          <Link href={signInHref} className={styles.auth__button}>
+            <Button compact>Войти</Button>
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}

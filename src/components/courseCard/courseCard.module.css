@@ -1,0 +1,94 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    min-width: 343px;
+    max-width: 360px;
+    box-shadow: 0 4px 67px -12px #00000021;
+    cursor: default;
+}
+
+.wrapper_clickable {
+    cursor: pointer;
+}
+
+.image__block {
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.image__button {
+    position: absolute;
+    top: 23px;
+    right: 23px;
+    width: 27px;
+    height: 27px;
+    z-index: 2;
+    cursor: default;
+}
+
+.course__block {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px 30px 15px 30px;
+}
+
+.course__title {
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.course__info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .wrapper {
+        width: 343px;
+    }
+
+    .image__block {
+        height: 325px;
+    }
+
+    .image__block img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+@media screen and (max-width: 495px) {
+    .course__title {
+        font-size: 24px;
+    }
+}
+
+.course__tooltip.course__tooltip {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 0;
+    font-family: var(--font-roboto), Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #202020;
+    opacity: 1;
+}
+
+.course__tooltipArrow {
+    display: none;
+}

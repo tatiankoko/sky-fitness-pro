@@ -1,0 +1,121 @@
+'use client';
+
+import styles from './courseCard.module.css';
+import Image from 'next/image';
+import {
+  CourseInfo,
+  CourseProgressType,
+  CourseType,
+} from '@/sharedTypes/sharedTypes';
+import InfoItem from '@/components/infoItem/InfoItem';
+import React, { useCallback, useState } from 'react';
+import classNames from 'classnames';
+import { useAppSelector } from '@/store/store';
+import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
+import { toast } from 'react-toastify';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
+import CourseProgressContent from '@/components/courseProgressContent/CourseProgressContent';
+
+type CourseCardProps = {
+  course: CourseType;
+  courseProgress?: CourseProgressType;
+  isAdded?: boolean;
+  showUserContent?: boolean;
+  onClickAction?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onWorkoutAction?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => void;
+};
+
+export default function CourseCard({
+  course,
+  courseProgress,
+  isAdded = false,
+  showUserContent = false,
+  onClickAction,
+  onWorkoutAction,
+}: CourseCardProps) {
+  const { accessToken } = useAppSelector((state) => state.user);
+  const { selectedCourseIds } = useAppSelector((state) => state.courses);
+  const [loading, setLoading] = useState<boolean>(false);
+  const toggleAddCourse = useToggleAddCourseAction();
+
+  const onToggleAddCourse = useCallback(
+    (event: React.MouseEvent<HTMLOrSVGElement, MouseEvent>) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (loading) return;
+
+      if (!accessToken) {
+        toast.info('Авторизуйтесь, чтобы добавить курс');
+        return;
+      }
+
+      const contains = selectedCourseIds.includes(course._id);
+
+      toggleAddCourse({
+        add: !contains,
+        course: course,
+        setIsLoading: setLoading,
+        setErrorMsg: toast.error,
+      });
+    },
+    [accessToken, selectedCourseIds, loading, course, toggleAddCourse],
+  );
+
+  return (
+    <div
+      className={classNames(styles.wrapper, {
+        [styles.wrapper_clickable]: !showUserContent,
+      })}
+      onClick={onClickAction}
+    >
+      <div className={styles.image__block}>
+        <Image
+          width={360}
+          height={325}
+          src={`/img/course_${course?.order}.png`}
+          alt={`изображение курса ${course?.nameRU}`}
+          loading="eager"
+        ></Image>
+        <svg
+          className={styles.image__button}
+          onClick={onToggleAddCourse}
+          data-tooltip-id={`course-toggle-${course._id}`}
+          data-tooltip-content={isAdded ? 'Удалить курс' : 'Добавить курс'}
+        >
+          <use
+            xlinkHref={`/img/icon/sprite.svg#icon-${isAdded ? 'remove' : 'add'}`}
+          ></use>
+        </svg>
+        <Tooltip
+          id={`course-toggle-${course._id}`}
+          place="bottom"
+          className={styles.course__tooltip}
+          classNameArrow={styles.course__tooltipArrow}
+        />
+      </div>
+
+      <div className={styles.course__block}>
+        <h2 className={styles.course__title}>{course?.nameRU}</h2>
+
+        <div className={styles.course__info}>
+          <InfoItem type={CourseInfo.durationInDays} course={course} />
+          <InfoItem type={CourseInfo.dailyDurationInMinutes} course={course} />
+          <InfoItem type={CourseInfo.difficulty} course={course} />
+        </div>
+
+        {showUserContent ? (
+          <CourseProgressContent
+            course={course}
+            courseProgress={courseProgress}
+            isActionLoading={loading}
+            onWorkoutAction={onWorkoutAction}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}

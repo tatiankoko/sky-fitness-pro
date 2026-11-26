@@ -1,0 +1,70 @@
+.workouts__list {
+    color: #000000;
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #000000 #F7F7F7;
+}
+
+.scrollable {
+    padding-right: 20px;
+}
+
+.workouts__item {
+    list-style: none;
+    cursor: pointer;
+}
+.workouts__item:not(:last-child) {
+    margin-bottom: 9px;
+}
+
+.selected {
+    background: #E9ECED;
+}
+
+.workouts__notification {
+    list-style: none;
+    text-align: center;
+    color: color-mix(in oklab, #000000 60%, transparent);
+    font-size: 24px;
+    line-height: 28px;
+}
+
+.workout__content {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border: none;
+    border-bottom: 1px solid #C4C4C4;
+    padding: 0 0 9px 2px;
+
+}
+
+.workout__icon {
+    min-width: 20px;
+    width: 20px;
+    min-height: 20px;
+    height: 20px;
+}
+
+.workout__info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.workout__title {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #000000;
+}
+
+.workout__description {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #000000;
+}

@@ -1,0 +1,22 @@
+.course__info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    background-color: #F7F7F7;
+    border-radius: 50px;
+    padding: 10px;
+}
+
+.info__icon {
+    width: 15px;
+    height: 15px;
+}
+
+.info__text {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 110%;
+    letter-spacing: 0;
+    color: #202020;
+}

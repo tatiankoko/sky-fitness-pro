@@ -1,0 +1,237 @@
+'use client';
+
+import styles from './course.module.css';
+import React, { useEffect, useState } from 'react';
+import { useAppSelector } from '@/store/store';
+import { useParams, useRouter } from 'next/navigation';
+import { getCourseById } from '@/services/course/courseApi';
+import Button from '@/components/button/Button';
+import Image from 'next/image';
+import classNames from 'classnames';
+import { baseSkeletonColor } from '@/utils/constants';
+import Skeleton from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
+import {
+  courseImageStyleParams,
+  courseImageSrc,
+  courseImageSrcMobile,
+  COURSE_IMAGE_HEIGHT,
+} from '@/app/main/course/[id]/courseImageConstants';
+import { useToggleAddCourseAction } from '@/hooks/useToggleAddCourseAction';
+import { CourseType } from '@/sharedTypes/sharedTypes';
+import { isInvalidToken } from '@/utils/helper';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage';
+import { useFetchMyCourses } from '@/hooks/useFetchMyCourses';
+
+export default function Course() {
+  const params = useParams<{ id: string }>();
+  const { allCourses, selectedCourseIds } = useAppSelector(
+    (state) => state.courses,
+  );
+  const { accessToken } = useAppSelector((state) => state.user);
+
+  const cachedCourse = allCourses.find((course) => course._id === params.id);
+
+  const [course, setCourse] = useState<CourseType | null>(cachedCourse ?? null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const isAdded = selectedCourseIds.includes(params.id);
+  const toggleAddCourse = useToggleAddCourseAction();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (cachedCourse || !params.id) {
+      return;
+    }
+
+    setLoading(true);
+
+    getCourseById(params.id)
+      .then((course) => {
+        setCourse(course);
+      })
+      .catch((error) => {
+        if (!isInvalidToken(error)) {
+          setError(getApiErrorMessage(error));
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [cachedCourse, params.id]);
+
+  const { isLoading, errorMsg } = useFetchMyCourses();
+
+  useEffect(() => {
+    if (error || errorMsg) toast.error(error || errorMsg);
+  }, [error]);
+
+  const onAddCourse = () => {
+    if (loading) return;
+
+    if (!accessToken) {
+      router.push('/main/signin');
+      return;
+    }
+
+    if (!course) return;
+
+    toggleAddCourse({
+      add: true,
+      course: course,
+      setIsLoading: setLoading,
+      setErrorMsg: setError,
+    });
+  };
+
+  if (!course) {
+    return <></>;
+  }
+
+  return (
+    <div className={styles.course__container}>
+      {loading || isLoading ? (
+        <div className={styles.fitting__container}>
+          <Skeleton
+            baseColor={baseSkeletonColor}
+            width={1160}
+            height={310}
+            borderRadius={30}
+          />
+        </div>
+      ) : null}
+
+      <div
+        className={styles.header__container}
+        style={{
+          backgroundColor: courseImageStyleParams(course)?.color,
+        }}
+      >
+        <div className={styles.title__block}>
+          <h1 className={styles.title__text}>{course.nameRU}</h1>
+        </div>
+
+        <div className={styles.image__block}>
+          <picture>
+            <source
+              media="(max-width: 495px)"
+              srcSet={courseImageSrcMobile(course)}
+            />
+            <Image
+              width={courseImageStyleParams(course)?.width}
+              height={COURSE_IMAGE_HEIGHT}
+              src={courseImageSrc(course)}
+              alt={`изображение курса ${course?.nameRU}`}
+              loading="eager"
+              style={{
+                flexShrink: 0,
+                marginRight: courseImageStyleParams(course)?.marginRight,
+              }}
+            ></Image>
+          </picture>
+        </div>
+      </div>
+
+      <div className={styles.fitting__container}>
+        <h2 className={styles.block__title}>Подойдет для вас, если:</h2>
+
+        <div className={styles.fitting__block}>
+          {course.fitting.map((item, index) => (
+            <div className={styles.fitting__item} key={index}>
+              <span className={styles.fitting__number}>{index + 1}</span>
+              <p className={styles.fitting__text}>{item}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Направления */}
+      <div className={styles.directions__container}>
+        <h2 className={styles.block__title}>Направления</h2>
+
+        <div className={styles.directions__block}>
+          {course.directions.map((item, index) => (
+            <span className={styles.directions__item} key={index}>
+              ✦ {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.addCourse__container}>
+        {/* Image — вся ширина на mobile/tablet, скрыт в desktop */}
+        <div className={styles.addCourse__imageMobile}>
+          <Image
+            width={375}
+            height={456}
+            src={'/img/crouching_man_group_lg.png'}
+            alt={
+              'мужчина в зелёной рубашке-поло и тёмно-синих шортах сидит на корточках'
+            }
+            loading="eager"
+          />
+        </div>
+
+        {/* Белый блок с тенью */}
+        <div className={styles.addCourse__block}>
+          <div className={styles.addCourse__info}>
+            <h2 className={styles.addCourse__title}>
+              Начните путь
+              <br /> к новому телу
+            </h2>
+
+            <ul className={styles.addCourse__list}>
+              <li className={styles.addCourse__item}>
+                проработка всех групп мышц
+              </li>
+              <li className={styles.addCourse__item}>тренировка суставов</li>
+              <li className={styles.addCourse__item}>
+                улучшение циркуляции крови
+              </li>
+              <li className={styles.addCourse__item}>
+                упражнения заряжают бодростью
+              </li>
+              <li className={styles.addCourse__item}>
+                помогают противостоять стрессам
+              </li>
+            </ul>
+
+            <Button onClick={onAddCourse} disabled={isAdded}>
+              {accessToken
+                ? isAdded
+                  ? 'Курс добавлен'
+                  : 'Добавить курс'
+                : 'Войдите, чтобы добавить курс'}
+            </Button>
+          </div>
+
+          {/* Desktop заглушка изображения — only на lg+ */}
+          <div
+            className={classNames(styles.addCourse__image, styles.image_main)}
+          >
+            <Image
+              width={487}
+              height={538}
+              src={'/img/crouching_man.png'}
+              alt={
+                'мужчина в зелёной рубашке-поло и тёмно-синих шортах сидит на корточках'
+              }
+              loading="eager"
+            />
+          </div>
+          <div
+            className={classNames(styles.addCourse__image, styles.image_bottom)}
+          >
+            <Image
+              width={1160}
+              height={532}
+              src={'/img/mask.png'}
+              alt={'зеленая полоса и черная дуга'}
+              loading="eager"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
