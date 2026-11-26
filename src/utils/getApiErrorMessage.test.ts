@@ -3,6 +3,7 @@ import type { AxiosResponse } from 'axios';
 import { getApiErrorMessage } from './getApiErrorMessage';
 
 const FALLBACK = 'Произошла ошибка. Попробуйте позже';
+const NETWORK_ERROR = 'Нет соединения / проверьте интернет.';
 
 const withResponse = (data: unknown) =>
   new AxiosError('error', 'ERR_BAD_REQUEST', undefined, undefined, {
@@ -28,14 +29,19 @@ describe('getApiErrorMessage', () => {
     expect(getApiErrorMessage(withResponse(null))).toBe(FALLBACK);
   });
 
-  it('fallback при сетевой ошибке (request без response)', () => {
+  it('показывает понятное сообщение при сетевой ошибке', () => {
     const error = new AxiosError(
       'Network Error',
       'ERR_NETWORK',
       undefined,
       {} as XMLHttpRequest,
     );
-    expect(getApiErrorMessage(error)).toBe(FALLBACK);
+    expect(getApiErrorMessage(error)).toBe(NETWORK_ERROR);
+  });
+
+  it('показывает понятное сообщение при прерывании запроса по таймауту', () => {
+    const error = new AxiosError('timeout', 'ECONNABORTED');
+    expect(getApiErrorMessage(error)).toBe(NETWORK_ERROR);
   });
 
   it('«Неизвестная ошибка» для AxiosError без request и response', () => {

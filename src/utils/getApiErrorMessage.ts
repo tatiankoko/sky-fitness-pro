@@ -2,6 +2,10 @@ import { AxiosError } from 'axios';
 
 export function getApiErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
+    if (error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED') {
+      return 'Нет соединения / проверьте интернет.';
+    }
+
     if (error.response) {
       const responseData = error.response.data;
       return typeof responseData === 'string'
