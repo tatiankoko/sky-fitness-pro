@@ -4,7 +4,8 @@
     flex: 1;
     min-height: 0;
     gap: 40px;
-    margin: 60px 0;
+    margin-top: 60px;
+    padding-bottom: 60px;
     overflow-y: auto;
     padding-left: calc(50% - 580px);
     padding-right: calc(50% - 580px);
