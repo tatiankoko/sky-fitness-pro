@@ -74,7 +74,7 @@ src/
 
 ## API
 
-Внешнее API: `https://wedev-api.sky.pro/api/fitness` (константа `BASE_URL` в `src/services/constants.ts`). Авторизация — Bearer-токен; данные сессии хранятся в localStorage и восстанавливаются при загрузке (условие учебного задания).
+Внешнее API: `https://wedev-api.sky.pro/api/fitness` (константа `BASE_URL` в `src/services/constants.ts`). Запросы выполняются через общий Axios-клиент; interceptor автоматически завершает сессию при ответе `401` на авторизованный запрос. 
 
 ## Тесты
 
@@ -82,7 +82,7 @@ src/
 npm test
 ```
 
-Jest (jsdom) + Testing Library, 84 теста: утилиты, редьюсеры Redux, константы картинок и компоненты (`Button`, `ProgressItem`, `Modal`, `CourseProgressContent`, `CourseCard`). Конфигурация: `jest.config.js` + `tsconfig.jest.json`, setup — `jest.setup.ts`.
+Jest (jsdom) + Testing Library, 88 тестов: утилиты, редьюсеры Redux, Axios-interceptor, константы картинок и компоненты (`Button`, `ProgressItem`, `Modal`, `CourseProgressContent`, `CourseCard`). Конфигурация: `jest.config.js` + `tsconfig.jest.json`, setup — `jest.setup.ts`.
 
 ## Стиль кода
 
