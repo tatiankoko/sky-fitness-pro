@@ -27,7 +27,7 @@ a {
 
 .container {
   height: 100%;
-  margin: 50px 16px;/*auto*/
+  margin: 50px 16px 0 16px;/*auto*/
   position: relative;
   background-color: #FAFAFA;
 }
@@ -35,18 +35,18 @@ a {
 .main {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 152px);
+  height: calc(100vh - 102px);
   width: 100%;
 }
 
 @media screen and (max-width: 495px) {
   .container {
     max-width: 100%;
-    margin: 40px 16px;
+    margin: 40px 16px 0 16px;
   }
 
   .main {
-    height: calc(100vh - 116px);
+    height: calc(100vh - 76px);
   }
 }
 
